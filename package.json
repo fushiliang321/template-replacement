@@ -1,0 +1,20 @@
+{
+  "name": "template-replacement",
+  "version": "1.4.8",
+  "description": "模板文件替换",
+  "type": "module",
+  "main": "dist/template-replacement.umd.js",
+  "module": "dist/template-replacement.es.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "crypto-js": "^4.1.1",
+    "jszip": "^3.10.1",
+    "nanoid": "^4.0.2",
+    "streamsaver": "^2.0.6"
+  },
+  "author": "fushiliang <994301536@qq.com>",
+  "license": "ISC"
+}
