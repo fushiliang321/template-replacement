@@ -1,7 +1,6 @@
 import xml from "./xml";
 
-const headerRegExp = /word\/header(\d+?).xml/  //页眉
-const footerRegExp = /word\/footer(\d+?).xml/  //页脚
+const documentFileRegExp = /(word\/footer|word\/header|word\/diagrams\/data|word\/diagrams\/drawing)(\d+).xml/  //页眉，页脚，图表数据
 
 export default class extends xml{
     documentFile = 'word/document.xml'
@@ -16,10 +15,7 @@ export default class extends xml{
             return files
         }
         for (const file in zip.files) {
-            if(file !== this.documentFile && !zip.files[file].dir && (
-                headerRegExp.test(file) ||
-                footerRegExp.test(file)
-            )) {
+            if(file !== this.documentFile && !zip.files[file].dir && documentFileRegExp.test(file)) {
                 files.push(file)
             }
         }

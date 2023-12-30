@@ -1,5 +1,4 @@
 import JSZip from 'jszip'
-import streamSaver from "streamsaver"
 import { stream } from '../download'
 
 export default class zip {

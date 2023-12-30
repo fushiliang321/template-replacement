@@ -1,10 +1,10 @@
 export default {
     build: {
-      outDir: 'dist', // 构建输出路径
+      outDir: 'dist', 
       lib: {
-        entry: 'index.js', // 入口文件路径
-        name: 'template-replacement', // 包名称
-        formats: ['es', 'umd'], // 输出的文件格式
+        entry: 'index.js', 
+        name: 'template-replacement', 
+        formats: ['es', 'umd'],
       },
     },
   };

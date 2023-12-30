@@ -70,7 +70,7 @@ export default class {
                     continue
                 }
                 const fileData = await zip.files[file].async('string')
-                const data = replace(fileData,tempTextData)
+                const data = replace(fileData, tempTextData)
                 if (data == fileData) {
                     continue
                 }
