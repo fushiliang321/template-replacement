@@ -1,22 +1,9 @@
+import { decode } from '../office/xml'
+
 const tempFieldRegExp = /\$([^{}$]*?)\{([^{}$]+)\}/g //过滤出包含${}的字符串
 const tempPrefixRegExp = /\$((<[^<>]*?>)|\s)*?\{/ //匹配模板前缀$和{之间只允许有空格
 const filterTagRegExp = /<.*?>/g//过滤掉标签
 const filterSpaceRegExp = /\s+/g//过滤掉空格
-
-const arrEntities = {
-    'lt': '<',
-    'gt': '>',
-    'apos': "'",
-    'quot': '"',
-    'amp': '&',
-}
-
-//字符解码
-function escape(str) {
-    return str.replace(/&(lt|gt|apos|amp|quot);/ig, (all, t) => {
-        return arrEntities[t]
-    }).replace(/\\/g, '/')
-}
 
 //提取原始模板数据
 export function rawTemps(content) {
@@ -48,7 +35,7 @@ export function toValue(rawTemp) {
     if (!rawTemp) {
         return rawTemp
     }
-    return escape(rawTemp.replace(filterTagRegExp, '').replace(filterSpaceRegExp, ''))
+    return decode(rawTemp.replace(filterTagRegExp, '').replace(filterSpaceRegExp, ''))
 }
 
 //过滤掉标签后的多个原始模板数据值

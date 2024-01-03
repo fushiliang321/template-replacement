@@ -3,6 +3,36 @@ import replace from '../replace'
 import extract from '../extract'
 import { base64HashString, base64ToBlob, filesReaderArrayBuffer } from '../helper'
 
+//特殊字符编码
+const characterEncoderMap = {
+    '<': '&lt;',
+    '>': '&gt;',
+    "'": '&apos;',
+    '"': '&quot;',
+    '&': '&amp;',
+}
+
+//特殊字符解码
+const characterDecoderMap = {
+    'lt': '<',
+    'gt': '>',
+    'apos': "'",
+    'quot': '"',
+    'amp': '&',
+}
+
+export function decode(str) {
+    return str.replace(/&(lt|gt|apos|amp|quot);/ig, (all, t) => {
+        return characterDecoderMap[t]
+    }).replace(/\\/g, '/')
+}
+
+export function encode(str) {
+    return str.replace(/(<|>|'|"|&)/ig, (all, t) => {
+        return characterEncoderMap[t]
+    })
+}
+
 export default class {
     fileBlob
 
@@ -11,27 +41,27 @@ export default class {
 
     _fileZip
     isZipFile = true
-    
+
     tempImages = {}
     extractTempImagesFinish = false
 
     constructor(blob) {
         this.fileBlob = blob
     }
-    
+
     async fileZip() {
         if (!this.isZipFile) {
             return null
         }
         if (!this._fileZip) {
-            try{
+            try {
                 let blob = this.fileBlob
                 if (this.fileBlob.constructor === File) {
                     const buffers = await filesReaderArrayBuffer([this.fileBlob])
                     blob = buffers[0].buffer
                 }
                 this._fileZip = await JSZip.loadAsync(blob)
-            }catch(e) {
+            } catch (e) {
                 console.error(e)
                 this.isZipFile = false
                 return null
@@ -49,7 +79,7 @@ export default class {
 
     //替换文本
     async replaceText(tempTextData = {}) {
-        if (!tempTextData || Object.keys(tempTextData).length==0) {
+        if (!tempTextData || Object.keys(tempTextData).length == 0) {
             return false
         }
         const files = await this.getDocumentFiles()
@@ -74,7 +104,7 @@ export default class {
                 if (data == fileData) {
                     continue
                 }
-                zip.file(file,data)
+                zip.file(file, data)
                 res = true
             } catch (error) {
                 console.error(error)
@@ -86,7 +116,7 @@ export default class {
 
     //替换图片文件
     async replaceImages(tempImagesData = {}) {
-        if (!tempImagesData || Object.keys(tempImagesData).length==0) {
+        if (!tempImagesData || Object.keys(tempImagesData).length == 0) {
             return false
         }
         const tempImages = await this.extractTempImages()
@@ -104,12 +134,12 @@ export default class {
                 continue
             }
             const blob = base64ToBlob(tempImagesData[temp.hash])
-            zip.file(key,blob)
+            zip.file(key, blob)
             res = true
         }
         return res
     }
-    
+
     //提取模板变量字段
     async extractTempFields() {
         const files = await this.getDocumentFiles()
@@ -128,10 +158,10 @@ export default class {
                 }
                 const fileData = await zip.files[file].async('string')
                 const extractFields = extract(fileData)
-                extractFields.forEach((tempField)=>{
+                extractFields.forEach((tempField) => {
                     fields.add(tempField)
                 })
-                
+
             } catch (error) {
                 console.error(error)
             }
@@ -153,7 +183,7 @@ export default class {
         for (const path in zip.files) {
             if (path.startsWith(this.mediaDir) && path !== this.mediaDir) {
                 const file = zip.files[path]
-                awaits.push(new Promise(async resolve=>{
+                awaits.push(new Promise(async resolve => {
                     const base64 = await file.async("base64")
                     resolve({
                         path: path,
@@ -177,6 +207,6 @@ export default class {
     }
 
     async generateArrayBuffer() {
-        return (await this.fileZip())?.generateAsync({type:"ArrayBuffer",compression:'DEFLATE'})
+        return (await this.fileZip())?.generateAsync({ type: "ArrayBuffer", compression: 'DEFLATE' })
     }
 }

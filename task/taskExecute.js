@@ -5,6 +5,7 @@ import axios from "axios"
 import word from "../office/word.js";
 import excel from "../office/excel.js";
 import { fileTypeByName, fileTypes, filesReaderArrayBuffer } from "../helper/index.js";
+import { encode } from '../office/xml'
 
 export default class replace{
     eventsMonitorStatus = {}
@@ -17,7 +18,19 @@ export default class replace{
         this.taskId = taskId
         this.key = key
         this.fileBuffer = fileBuffer
-        this.tempData = tempData
+
+        this.tempData = {
+            textData: null,
+            mediaData: tempData.mediaData??null,
+        }
+
+        if (tempData.textData) {
+            this.tempData.textData = {}
+            for (const key in tempData.textData) {
+                this.tempData.textData[key] = encode(tempData.textData[key])
+            }
+        }
+        console.log(this.tempData)
         this.eventsMonitorStatus = eventsMonitorStatus
     }
     
