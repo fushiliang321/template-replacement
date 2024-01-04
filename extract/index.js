@@ -1,9 +1,10 @@
 import { decode } from '../office/xml'
 
-const tempFieldRegExp = /\$([^{}$]*?)\{([^{}$]+)\}/g //过滤出包含${}的字符串
-const tempPrefixRegExp = /\$((<[^<>]*?>)|\s)*?\{/ //匹配模板前缀$和{之间只允许有空格
-const filterTagRegExp = /<.*?>/g//过滤掉标签
-const filterSpaceRegExp = /\s+/g//过滤掉空格
+// const tempFieldRegExp = /\$([^{}$]*?)\{([^{}$]+)\}/g //过滤出包含${}的字符串
+const tempFieldRegExp = /\$((<[^<>{}$]*?>)|\s)*\{([^{}$]+)\}/g//过滤出包含${}的字符串,$和{之间只允许有空格
+// const tempPrefixRegExp = /\$((<[^<>]*?>)|\s)*?\{/ //匹配模板前缀$和{之间只允许有空格
+const tempExcludeRegExp = /<(\/w|w):(p|drawing|tc|tbl)>/ //需要排除包含指定数据的原始模板数据
+const filterTagAndSpaceRegExp = /<.*?>|\s+/g//过滤掉标签和空格
 
 //提取原始模板数据
 export function rawTemps(content) {
@@ -15,11 +16,9 @@ export function rawTemps(content) {
         const _rawTemp = []
         for (const rawTemp of matchRes) {
             if (
-                //判断模板前缀是否符合要求
-                tempPrefixRegExp.test(rawTemp) &&
                 !_rawTemp.includes(rawTemp) &&
-                //不能包含换行符
-                rawTemp.search('</w:p>') === -1) {
+                //判断模板前缀是否符合要求
+                !tempExcludeRegExp.test(rawTemp)) {
                 _rawTemp.push(rawTemp)
             }
         }
@@ -35,7 +34,7 @@ export function toValue(rawTemp) {
     if (!rawTemp) {
         return rawTemp
     }
-    return decode(rawTemp.replace(filterTagRegExp, '').replace(filterSpaceRegExp, ''))
+    return decode(rawTemp.replace(filterTagAndSpaceRegExp, ''))
 }
 
 //过滤掉标签后的多个原始模板数据值
@@ -51,7 +50,6 @@ export function toValues(rawTemps) {
             fields.push(field)
         }
     }
-    // console.log(fields)
     return fields
 }
 
@@ -61,7 +59,6 @@ export default (content) => {
         return []
     }
     const tempFields = rawTemps(content)
-    // console.log(tempFields)
     if (!tempFields.length) {
         return []
     }
