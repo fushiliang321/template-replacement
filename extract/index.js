@@ -3,7 +3,7 @@ import { decode } from '../office/xml'
 // const tempFieldRegExp = /\$([^{}$]*?)\{([^{}$]+)\}/g //过滤出包含${}的字符串
 const tempFieldRegExp = /\$((<[^<>{}$]*?>)|\s)*\{([^{}$]+)\}/g//过滤出包含${}的字符串,$和{之间只允许有空格
 // const tempPrefixRegExp = /\$((<[^<>]*?>)|\s)*?\{/ //匹配模板前缀$和{之间只允许有空格
-const tempExcludeRegExp = /<(\/w|w):(p|drawing|tc|tbl)>/ //需要排除包含指定数据的原始模板数据
+const tempExcludeRegExp = /<(\/|)w:(p|drawing|tc|tbl)>/i //需要排除包含指定数据的原始模板数据(忽略大小写)
 const filterTagAndSpaceRegExp = /<.*?>|\s+/g//过滤掉标签和空格
 
 //提取原始模板数据
