@@ -1,10 +1,12 @@
 import { generateId } from "../helper/index.js"
 import tempDataClass from "../replace/tempData.js"
+import image from '../replace/image'
 
 export default class baseTask {
     id
     items
     tempData
+    valueFileBuffers=null
 
     constructor(items,tempData,events) {
         if (!items) {
@@ -59,17 +61,40 @@ export default class baseTask {
         }
     }
 
+    //获取变量值里面的Buffer数据
+    getValueBuffers() {
+        if (this.valueFileBuffers === null && Object.keys(this.tempData.textData).length) {
+            this.valueFileBuffers = []
+            for (const key in this.tempData.textData) {
+                if (this.tempData.textData[key] instanceof image && this.tempData.textData[key].fileArrayBufferData) {
+                    this.valueFileBuffers.push(this.tempData.textData[key].fileArrayBufferData)
+                }
+            }
+        }
+        return this.valueFileBuffers
+    }
+
     async getData() {
         return {
             taskId:this.id,
             urls:this.items,
-            tempData:JSON.parse(JSON.stringify(this.tempData)),
+            tempData:this.tempData,
             eventsMonitorStatus:this.getEventsMonitorStatus()
         }
     }
 
     async getTargetOrigin() {
-        return undefined
+        const buffers = []
+        const valueFileBuffers = this.getValueBuffers()
+        if (valueFileBuffers && valueFileBuffers.length) {
+            for (const fileBuffer of valueFileBuffers) {
+              buffers.push(fileBuffer)
+            }
+        }
+        if(!buffers.length) {
+            return undefined
+        }
+        return buffers
     }
 
     onPlayed(progress) {}

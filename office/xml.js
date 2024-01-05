@@ -2,6 +2,7 @@ import JSZip from 'jszip'
 import replace from '../replace'
 import extract from '../extract'
 import { base64HashString, base64ToBlob, filesReaderArrayBuffer } from '../helper'
+import { XMLParser, XMLBuilder } from 'fast-xml-parser'
 
 //特殊字符编码
 const characterEncoderMap = {
@@ -21,6 +22,8 @@ const characterDecoderMap = {
     'amp': '&',
 }
 
+const relationshipUriBase = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/'
+
 export function decode(str) {
     return str.replace(/&(lt|gt|apos|amp|quot);/ig, (all, t) => {
         return characterDecoderMap[t]
@@ -36,6 +39,7 @@ export function encode(str) {
 export default class {
     fileBlob
 
+    rootDir
     documentFile
     mediaDir
 
@@ -70,6 +74,44 @@ export default class {
         return this._fileZip
     }
 
+    async getRelsData(fileName) {
+        const zip = await this.fileZip()
+        if (!zip) {
+            return false
+        }
+        if (!zip.files[this.rootDir + '_rels/' + fileName + '.rels']) {
+            return {
+                "?xml": {
+                    "@_version": "1.0",
+                    "@_encoding": "UTF-8",
+                    "@_standalone": "yes"
+                },
+                "Relationships": {
+                    "Relationship": [],
+                    "@_xmlns": "http://schemas.openxmlformats.org/package/2006/relationships"
+                }
+            }
+        }
+        const relsXmlData = await zip.files[this.rootDir + '_rels/' + fileName + '.rels'].async('string')
+        const parser = new XMLParser({
+            ignoreAttributes: false
+        })
+        return parser.parse(relsXmlData)
+    }
+
+    async setRelsData(fileName, data) {
+        const zip = await this.fileZip()
+        if (!zip) {
+            return false
+        }
+
+        const builder = new XMLBuilder({
+            ignoreAttributes: false
+        });
+        let xmlDataStr = builder.build(data)
+        return zip.file(this.rootDir + '_rels/' + fileName + '.rels', xmlDataStr)
+    }
+
     //获取所有需要替换的文件名
     async getDocumentFiles() {
         return [
@@ -94,23 +136,41 @@ export default class {
 
         let res = false
 
-        for (const file of files) {
+        for (const filePath of files) {
             try {
-                if (!zip.files[file]) {
+                if (!zip.files[filePath]) {
                     continue
                 }
-                const fileData = await zip.files[file].async('string')
+                const fileData = await zip.files[filePath].async('string')
                 const data = replace(fileData, tempTextData)
-                if (data == fileData) {
+                if (data.content == fileData) {
                     continue
                 }
-                zip.file(file, data)
+                zip.file(filePath, data.content)
+                if (data.mediaFiles) {
+                    //写入媒体文件
+                    const fileName = filePath.split("/").pop()
+                    const relsData = await this.getRelsData(fileName)
+                    for (const name in data.mediaFiles) {
+                        if (zip.files[this.mediaDir + name]) {
+                            continue
+                        }
+                        zip.file(this.mediaDir + name, data.mediaFiles[name].arrayBuffer)
+                        if (relsData?.Relationships?.Relationship) {
+                            relsData.Relationships.Relationship.push({
+                                '@_Id': name,
+                                '@_Type': relationshipUriBase + data.mediaFiles[name].relationship,
+                                '@_Target': 'media/' + name,
+                            })
+                        }
+                    }
+                    this.setRelsData(fileName, relsData)
+                }
                 res = true
             } catch (error) {
                 console.error(error)
             }
         }
-
         return res
     }
 

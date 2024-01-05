@@ -1,6 +1,9 @@
 import xml from "./xml";
 
+const rootDir = 'xl/'
+
 export default class extends xml {
-    documentFile = 'xl/sharedStrings.xml'
-    mediaDir = 'xl/media/'
+    rootDir = rootDir
+    documentFile = rootDir+'sharedStrings.xml'
+    mediaDir = rootDir+'media/'
 }

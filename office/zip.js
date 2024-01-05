@@ -35,7 +35,7 @@ export default class zip {
     }
 
     async setZipData(path,data) {
-       (await this.fileZip())?.file(path,data)
+       (await this.fileZip())?.file(path, data)
        this._lastUpdateTime = (new Date()).getTime()
     }
 

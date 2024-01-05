@@ -49,6 +49,13 @@ export function generateId() {
     return nanoid()
 }
 
+//只能在web worker内使用
+export function blobToArrayBuffer(blob) {
+    const reader = new FileReaderSync()
+    const arrayBuffer = reader.readAsArrayBuffer(blob)
+    return arrayBuffer
+}
+
 export async function filesReaderArrayBuffer(files) {
     const awaits = []
     for (const file of files) {
@@ -132,6 +139,11 @@ export function base64ToBlob(base64) {
     }
     const blob = new Blob([byteArray], { type: mime })
     return blob
+}
+
+export function ArrayBufferToMD5(arrayBuffer) {
+    const wordArray = CryptoJS.lib.WordArray.create(arrayBuffer)
+    return CryptoJS.MD5(wordArray).toString()
 }
 
 //urls提取为文件二进制数据
