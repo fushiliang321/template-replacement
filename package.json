@@ -1,6 +1,6 @@
 {
   "name": "template-replacement",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "模板文件替换",
   "type": "module",
   "main": "dist/template-replacement.umd.js",
