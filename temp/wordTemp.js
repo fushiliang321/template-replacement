@@ -1,6 +1,6 @@
 import word from '../office/word'
 
-export default class wordTemp extends word{
+export default class wordTemp extends word {
     name
     file
     url
@@ -13,7 +13,7 @@ export default class wordTemp extends word{
 
     constructor(file, url) {
         super(file)
-        
+
         if (file) {
             this.name = file.name
             this.file = file
@@ -25,11 +25,11 @@ export default class wordTemp extends word{
     setStatus(status) {
         this.status = status
     }
-    
+
     setOutputFile(file) {
         this._output = file
     }
-    
+
     outputFile() {
         return this._output
     }

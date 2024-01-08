@@ -1,6 +1,6 @@
 import streamSaver from "streamsaver"
 
-function download(fileName,blob) {
+function download(fileName, blob) {
     const href = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = href
@@ -12,8 +12,8 @@ function download(fileName,blob) {
     window.URL.revokeObjectURL(href)
 }
 
-export default async (fileName,blob) => {
-    download(fileName,blob)
+export default async (fileName, blob) => {
+    download(fileName, blob)
 }
 
 //流式下载
@@ -38,7 +38,7 @@ export function stream(fileName, size) {
             writer.releaseLock()
             return res
         },
-        async abort(error){
+        async abort(error) {
             return await fileStream.abort(error)
         }
     }

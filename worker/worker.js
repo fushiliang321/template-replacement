@@ -6,28 +6,28 @@ import image from "../replace/image";
 
 
 async function tempDataEncode(tempData) {
-  const textData = tempData.textData??null
+  const textData = tempData.textData ?? null
   if (textData) {
     for (const key in textData) {
-        if(textData[key] instanceof Object) {
-            textData[key] = Object.assign(new image(textData[key].fileArrayBufferData), textData[key]);
-        }else{
-          textData[key] = encode(textData[key])
-        }
+      if (textData[key] instanceof Object) {
+        textData[key] = Object.assign(new image(textData[key].fileArrayBufferData), textData[key]);
+      } else {
+        textData[key] = encode(String(textData[key]))
+      }
     }
   }
   return {
     textData,
-    mediaData: tempData.mediaData??null,
+    mediaData: tempData.mediaData ?? null,
   }
 }
 
-addEventListener('message',async event => {
+addEventListener('message', async event => {
   const { data } = event
   if (data.taskId === undefined) {
     data.taskId = generateId()
   }
-  
+
   const tempData = await tempDataEncode(data.tempData)
 
   const awaits = []
@@ -35,14 +35,14 @@ addEventListener('message',async event => {
   if (data.urls && data.urls.length) {
     for (const urlObj of data.urls) {
       const task = new taskExecute(data.taskId, urlObj.url, null, tempData, data.eventsMonitorStatus)
-      awaits.push(task.execute()) 
+      awaits.push(task.execute())
     }
   }
 
   if (data.fileBuffers && data.fileBuffers.length) {
     for (const file of data.fileBuffers) {
       const task = new taskExecute(data.taskId, file.name, file.buffer, tempData, data.eventsMonitorStatus)
-      awaits.push(task.execute()) 
+      awaits.push(task.execute())
     }
   }
 
@@ -65,8 +65,8 @@ addEventListener('message',async event => {
     finishStatusCount.success++
     resData[progressItem.key] = progressItem.data
   }
-  const p = new progress(data.taskId,'',status.finishAll,(100*finishStatusCount.success/finishStatusCount.total).toFixed(2))
+  const p = new progress(data.taskId, '', status.finishAll, (100 * finishStatusCount.success / finishStatusCount.total).toFixed(2))
   p.setData(resData)
   postMessage(p, Object.values(resData))
-}) 
+})
 export default {}

@@ -1,6 +1,6 @@
 import webworker from "./worker.js?worker&inline"
 
-export default class worker{
+export default class worker {
     counter = 0
     workers = []
     listenerList = []
@@ -9,7 +9,7 @@ export default class worker{
         num = Number(num)
         if (!num || num < 1) {
             this.num = navigator.hardwareConcurrency
-        }else{
+        } else {
             this.num = num
         }
         for (let index = 0; index < this.num; index++) {
@@ -18,7 +18,7 @@ export default class worker{
     }
 
     _addOneWorker() {
-        const worker =  new webworker()
+        const worker = new webworker()
         worker.onmessage = event => {
             for (const fun of this.listenerList) {
                 fun(event)
@@ -27,21 +27,21 @@ export default class worker{
         this.workers.push(worker)
     }
 
-    postMessage(data,targetOrigin) {
+    postMessage(data, targetOrigin) {
         if (!this.workers[this.counter]) {
             this.counter = 0
         }
-        this.workers[this.counter].postMessage(data,targetOrigin)
+        this.workers[this.counter].postMessage(data, targetOrigin)
     }
 
     addListener(fun) {
         this.listenerList.push(fun)
     }
 
-    removeListener(fun){
+    removeListener(fun) {
         for (const i in this.listenerList) {
             if (this.listenerList[i] == fun) {
-                this.listenerList.splice(i,1)
+                this.listenerList.splice(i, 1)
                 return
             }
         }

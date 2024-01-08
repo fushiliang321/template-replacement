@@ -1,6 +1,6 @@
 import excel from '../office/excel'
 
-export default class excelTemp extends excel{
+export default class excelTemp extends excel {
     name
     file
     url
@@ -13,7 +13,7 @@ export default class excelTemp extends excel{
 
     constructor(file, url) {
         super(file)
-        
+
         if (file) {
             this.name = file.name
             this.file = file
@@ -25,11 +25,11 @@ export default class excelTemp extends excel{
     setStatus(status) {
         this.status = status
     }
-    
+
     setOutputFile(file) {
         this._output = file
     }
-    
+
     outputFile() {
         return this._output
     }

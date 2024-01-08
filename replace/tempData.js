@@ -2,7 +2,7 @@ export default class tempData {
     textData = {}
     mediaData = {}
 
-    constructor(text,media) {
+    constructor(text, media) {
         if (text && text.constructor === Object) {
             this.textData = text
         }
@@ -12,6 +12,6 @@ export default class tempData {
     }
 
     isEmpty() {
-       return Object.keys(this.testData).length === 0 && Object.keys(this.mediaData).length === 0
+        return Object.keys(this.testData).length === 0 && Object.keys(this.mediaData).length === 0
     }
 }

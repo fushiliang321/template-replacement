@@ -1,7 +1,7 @@
 import { filesReaderArrayBuffer } from "../helper"
 import unknownFile from "../office/unknownFile"
 
-export default class unknownTemp extends unknownFile{
+export default class unknownTemp extends unknownFile {
     name
     file
     url
@@ -24,16 +24,16 @@ export default class unknownTemp extends unknownFile{
     setStatus(status) {
         this.status = status
     }
-    
+
     setOutputFile(file) {
         this._output = file
     }
-    
+
     outputFile() {
         return this._output
     }
 
-    async generateArrayBuffer(){
+    async generateArrayBuffer() {
         const res = await filesReaderArrayBuffer([this.file])
         return res[0]
     }

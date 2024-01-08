@@ -6,28 +6,28 @@ export default class baseTask {
     id
     items
     tempData
-    valueFileBuffers=null
+    valueFileBuffers = null
 
-    constructor(items,tempData,events) {
+    constructor(items, tempData, events) {
         if (!items) {
             throw new Error("缺少模板文件或模板链接数据")
         }
-        
-        switch(items.constructor){
+
+        switch (items.constructor) {
             case Array:
                 this.items = items
                 break;
             case String:
-                this.items =  [items]
+                this.items = [items]
                 break;
             default:
                 throw new Error("模板文件或模板链接数据类型错误")
         }
-        
+
         if (tempData) {
-            switch(tempData.constructor) {
+            switch (tempData.constructor) {
                 case Object:
-                    if (Object.keys(tempData).length){
+                    if (Object.keys(tempData).length) {
                         this.tempData = new tempDataClass(tempData)
                     }
                     break;
@@ -76,10 +76,10 @@ export default class baseTask {
 
     async getData() {
         return {
-            taskId:this.id,
-            urls:this.items,
-            tempData:this.tempData,
-            eventsMonitorStatus:this.getEventsMonitorStatus()
+            taskId: this.id,
+            urls: this.items,
+            tempData: this.tempData,
+            eventsMonitorStatus: this.getEventsMonitorStatus()
         }
     }
 
@@ -88,19 +88,19 @@ export default class baseTask {
         const valueFileBuffers = this.getValueBuffers()
         if (valueFileBuffers && valueFileBuffers.length) {
             for (const fileBuffer of valueFileBuffers) {
-              buffers.push(fileBuffer)
+                buffers.push(fileBuffer)
             }
         }
-        if(!buffers.length) {
+        if (!buffers.length) {
             return undefined
         }
         return buffers
     }
 
-    onPlayed(progress) {}
-    onDownloading(progress) {}
-    onRunning(progress){}
-    onFinish(progress){}
-    onFinishAll(progress){}
-    onError(progress){}
+    onPlayed(progress) { }
+    onDownloading(progress) { }
+    onRunning(progress) { }
+    onFinish(progress) { }
+    onFinishAll(progress) { }
+    onError(progress) { }
 }

@@ -6,7 +6,7 @@ import word from "../office/word.js";
 import excel from "../office/excel.js";
 import { fileTypeByName, fileTypes, filesReaderArrayBuffer } from "../helper/index.js";
 
-export default class replace{
+export default class replace {
     eventsMonitorStatus = {}
     taskId
     key
@@ -20,9 +20,9 @@ export default class replace{
         this.tempData = tempData
         this.eventsMonitorStatus = eventsMonitorStatus
     }
-    
-    postProgress(status,progressValue) {
-        this.postMessage(new progress(this.taskId,this.key,status,progressValue))
+
+    postProgress(status, progressValue) {
+        this.postMessage(new progress(this.taskId, this.key, status, progressValue))
     }
 
     postMessage(data) {
@@ -65,7 +65,7 @@ export default class replace{
 
     async execute() {
         this.postProgress()
-        try{
+        try {
             this.postProgress(status.downloading)
             const fileBlob = this.fileBuffer ? new Blob([this.fileBuffer]) : await this.getFileBlob()
             if (!fileBlob) {
@@ -74,8 +74,8 @@ export default class replace{
                 this.postMessage(p)
                 return
             }
-            this.postProgress(status.downloading,100)
-            
+            this.postProgress(status.downloading, 100)
+
             this.postProgress(status.running)
             let office;
             switch (fileTypeByName(this.key)) {
@@ -94,12 +94,12 @@ export default class replace{
             let buffer = null
             if (textRes || imageRes) {
                 buffer = await office.generateArrayBuffer()
-            }else{
+            } else {
                 const buffers = await filesReaderArrayBuffer([fileBlob])
                 buffer = buffers[0]?.buffer
             }
             this.postProgress(status.running, 100)
-            const p = new progress(this.taskId,this.key,status.finish)
+            const p = new progress(this.taskId, this.key, status.finish)
             if (!buffer) {
                 this.postMessage(p)
                 return p
@@ -107,7 +107,7 @@ export default class replace{
             p.setData(buffer)
             this.postMessage(p)
             return p
-        } catch(e) {
+        } catch (e) {
             console.error(e)
             const p = new progress(status.error)
             p.setError(e.message)
@@ -131,22 +131,22 @@ export default class replace{
         })
         return getData
     }
-    
-    async get(){
+
+    async get() {
         const response = await axios({
-            url:this.key,
+            url: this.key,
             method: 'get',
             responseType: 'blob',
             onDownloadProgress: progressEvent => {
-                const progressVal = (progressEvent.progress*100).toFixed(2)
-                const p = new progress(this.taskId,this.key,status.downloading,progressVal)
+                const progressVal = (progressEvent.progress * 100).toFixed(2)
+                const p = new progress(this.taskId, this.key, status.downloading, progressVal)
                 p.setData({
-                    bytes:progressEvent.bytes,
-                    estimated:progressEvent.estimated,
-                    loaded:progressEvent.loaded,
-                    progress:progressEvent.progress,
-                    rate:progressEvent.rate,
-                    total:progressEvent.total,
+                    bytes: progressEvent.bytes,
+                    estimated: progressEvent.estimated,
+                    loaded: progressEvent.loaded,
+                    progress: progressEvent.progress,
+                    rate: progressEvent.rate,
+                    total: progressEvent.total,
                 })
                 this.postMessage(p)
             }

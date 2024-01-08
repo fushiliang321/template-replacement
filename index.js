@@ -5,13 +5,13 @@ import { generateId } from './helper'
 const worker = new workerDispatch(1)
 const taskMap = {}
 
-worker.addListener(event=> {
-  if(!event.data.taskId || !taskMap.hasOwnProperty(event.data.taskId) || !taskMap[event.data.taskId].task) {
+worker.addListener(event => {
+  if (!event.data.taskId || !taskMap.hasOwnProperty(event.data.taskId) || !taskMap[event.data.taskId].task) {
     return;
   }
   const task = taskMap[event.data.taskId].task
   const progress = event.data
-  switch(progress.status) {
+  switch (progress.status) {
     case status.unplayed:
       task.onPlayed && task.onPlayed(progress)
       break;
@@ -39,15 +39,17 @@ worker.addListener(event=> {
   }
 })
 
-const eventNames = ['onPlayed','onDownloading','onRunning','onFinish','onFinishAll','onError'] 
+const eventNames = ['onPlayed', 'onDownloading', 'onRunning', 'onFinish', 'onFinishAll', 'onError']
 
-export async function addTask(taskData) {
+export async function addTask(taskData, postTargetOrigin = true) {
   let data = taskData
-  let targetOrigin
-  
-  if (taskData.getData && taskData.getTargetOrigin) {
-     data = await taskData.getData()
-     targetOrigin = await taskData.getTargetOrigin()
+  let targetOrigin = undefined
+
+  if (taskData.getData) {
+    data = await taskData.getData()
+    if (postTargetOrigin && taskData.getTargetOrigin) {
+      targetOrigin = await taskData.getTargetOrigin()
+    }
   }
 
   let hasMonitorEvent = false //是否有监听事件
@@ -64,20 +66,20 @@ export async function addTask(taskData) {
   const taskId = data.taskId
 
   const task = {
-    task:taskData,
-    resolve:null,
-    reject:null
+    task: taskData,
+    resolve: null,
+    reject: null
   }
   taskMap[taskId] = task
-  if(hasMonitorEvent) {
-    worker.postMessage(data,targetOrigin)
+  if (hasMonitorEvent) {
+    worker.postMessage(data, targetOrigin)
     return
   }
   data.onFinishAll = true
   data.onError = true
-  worker.postMessage(data,targetOrigin)
+  worker.postMessage(data, targetOrigin)
 
-  return await new Promise((resolve,reject)=>{
+  return await new Promise((resolve, reject) => {
     task.resolve = resolve
     task.reject = reject
   })
@@ -87,6 +89,6 @@ export function addListener(fun) {
   worker.addListener(fun)
 }
 
-export function removeListener(fun){
+export function removeListener(fun) {
   worker.removeListener(fun)
 }

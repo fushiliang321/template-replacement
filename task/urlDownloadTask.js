@@ -37,9 +37,9 @@ export default class urlDownloadTask {
         return getData
     }
 
-    async download(url){
+    async download(url) {
         const response = await axios({
-            url:url,
+            url: url,
             method: 'get',
             responseType: 'blob',
             onDownloadProgress: this.onDownloadProgress
@@ -47,5 +47,5 @@ export default class urlDownloadTask {
         return response.data
     }
 
-    onDownloadProgress(progressEvent) {}
+    onDownloadProgress(progressEvent) { }
 }

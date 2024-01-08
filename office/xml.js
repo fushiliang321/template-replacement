@@ -22,8 +22,6 @@ const characterDecoderMap = {
     'amp': '&',
 }
 
-const relationshipUriBase = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/'
-
 export function decode(str) {
     return str.replace(/&(lt|gt|apos|amp|quot);/ig, (all, t) => {
         return characterDecoderMap[t]
@@ -80,23 +78,9 @@ export default class {
             return false
         }
         if (!zip.files[this.rootDir + '_rels/' + fileName + '.rels']) {
-            return {
-                "?xml": {
-                    "@_version": "1.0",
-                    "@_encoding": "UTF-8",
-                    "@_standalone": "yes"
-                },
-                "Relationships": {
-                    "Relationship": [],
-                    "@_xmlns": "http://schemas.openxmlformats.org/package/2006/relationships"
-                }
-            }
+            return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>'
         }
-        const relsXmlData = await zip.files[this.rootDir + '_rels/' + fileName + '.rels'].async('string')
-        const parser = new XMLParser({
-            ignoreAttributes: false
-        })
-        return parser.parse(relsXmlData)
+        return await zip.files[this.rootDir + '_rels/' + fileName + '.rels'].async('string')
     }
 
     async setRelsData(fileName, data) {
@@ -104,12 +88,7 @@ export default class {
         if (!zip) {
             return false
         }
-
-        const builder = new XMLBuilder({
-            ignoreAttributes: false
-        });
-        let xmlDataStr = builder.build(data)
-        return zip.file(this.rootDir + '_rels/' + fileName + '.rels', xmlDataStr)
+        return zip.file(this.rootDir + '_rels/' + fileName + '.rels', data)
     }
 
     //获取所有需要替换的文件名
@@ -151,20 +130,21 @@ export default class {
                     //写入媒体文件
                     const fileName = filePath.split("/").pop()
                     const relsData = await this.getRelsData(fileName)
+                    const index = relsData.indexOf('</Relationships>')
+                    if (index == -1) {
+                        continue
+                    }
+                    let relationships = ''
                     for (const name in data.mediaFiles) {
                         if (zip.files[this.mediaDir + name]) {
                             continue
                         }
+                        relationships += '<Relationship Id="' + name + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="' + 'media/' + name + '"/>'
                         zip.file(this.mediaDir + name, data.mediaFiles[name].arrayBuffer)
-                        if (relsData?.Relationships?.Relationship) {
-                            relsData.Relationships.Relationship.push({
-                                '@_Id': name,
-                                '@_Type': relationshipUriBase + data.mediaFiles[name].relationship,
-                                '@_Target': 'media/' + name,
-                            })
-                        }
                     }
-                    this.setRelsData(fileName, relsData)
+                    if (relationships) {
+                        this.setRelsData(fileName, relsData.substring(0, index) + relationships + relsData.substring(index))
+                    }
                 }
                 res = true
             } catch (error) {

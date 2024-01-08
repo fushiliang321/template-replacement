@@ -1,7 +1,7 @@
 import baseTask from "./baseTask.js";
 import urlTaskItem from "./urlTaskItem.js";
 
-export default class urlTask extends baseTask{
+export default class urlTask extends baseTask {
     urlObjs = null
 
     async getUrlObjs() {
@@ -17,10 +17,10 @@ export default class urlTask extends baseTask{
     async getData() {
         const urlObjs = await this.getUrlObjs()
         return {
-            taskId:this.id,
-            urls:urlObjs,
-            tempData:JSON.parse(JSON.stringify(this.tempData)),
-            eventsMonitorStatus:this.getEventsMonitorStatus()
+            taskId: this.id,
+            urls: urlObjs,
+            tempData: JSON.parse(JSON.stringify(this.tempData)),
+            eventsMonitorStatus: this.getEventsMonitorStatus()
         }
     }
 }

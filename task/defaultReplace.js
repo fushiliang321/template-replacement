@@ -13,9 +13,9 @@ export default class defaultReplace {
     async replace(tempData) {
         return true
     }
-    
+
     //替换图片文件
-    async replaceImage(key,file) {
+    async replaceImage(key, file) {
         return true
     }
 
@@ -25,7 +25,7 @@ export default class defaultReplace {
         }
         return new Promise(resolve => {
             const reader = new FileReader()
-            reader.onloadend= function() {
+            reader.onloadend = function () {
                 this.fileBuffer = reader.result
                 resolve(reader.result)
             }

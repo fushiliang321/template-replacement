@@ -4,10 +4,10 @@ const documentFileRegExp = /(word\/footer|word\/header|word\/diagrams\/data|word
 
 const rootDir = 'word/'
 
-export default class extends xml{
+export default class extends xml {
     rootDir = rootDir
-    documentFile = rootDir+'document.xml'
-    mediaDir = rootDir+'media/'
+    documentFile = rootDir + 'document.xml'
+    mediaDir = rootDir + 'media/'
 
     async getDocumentFiles() {
         const files = [
@@ -18,7 +18,7 @@ export default class extends xml{
             return files
         }
         for (const file in zip.files) {
-            if(file !== this.documentFile && !zip.files[file].dir && documentFileRegExp.test(file)) {
+            if (file !== this.documentFile && !zip.files[file].dir && documentFileRegExp.test(file)) {
                 files.push(file)
             }
         }

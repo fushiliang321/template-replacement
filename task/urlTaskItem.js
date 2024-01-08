@@ -1,4 +1,4 @@
-export default class urlTaskItem{
+export default class urlTaskItem {
     url
     name
 
@@ -6,7 +6,7 @@ export default class urlTaskItem{
         this.url = url
         if (name) {
             this.name = name
-        }else{
+        } else {
             this.name = url.split("/").pop()
         }
     }

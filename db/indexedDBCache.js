@@ -1,15 +1,15 @@
 export default class indexedDBCache {
-    _initFinishCallBackFuns=[];
+    _initFinishCallBackFuns = [];
     _isInitFinish = false;
 
     // 构造函数
     constructor() {
-      this._db = null //数据库
-      this._transaction = null //事务
-      this._request = null
-      this._dbName = 'file' //数据库名
-      this._cacheTableName = 'templates' //表名
-      this._dbversion = 1 //数据库版本 
+        this._db = null //数据库
+        this._transaction = null //事务
+        this._request = null
+        this._dbName = 'file' //数据库名
+        this._cacheTableName = 'templates' //表名
+        this._dbversion = 1 //数据库版本 
     }
 
     initDB() {
@@ -43,8 +43,8 @@ export default class indexedDBCache {
     }
 
     async awaitInit() {
-        await new Promise((resolve, reject) =>{
-            this._initFinishCallBackFuns.push(()=>{
+        await new Promise((resolve, reject) => {
+            this._initFinishCallBackFuns.push(() => {
                 resolve()
             })
         })
@@ -56,7 +56,7 @@ export default class indexedDBCache {
 
     async store(mode) {
         if (!this._isInitFinish) {
-             await this.awaitInit()
+            await this.awaitInit()
         }
         const transaction = this._db.transaction(this._cacheTableName, mode)
         return transaction.objectStore(this._cacheTableName)
@@ -85,7 +85,7 @@ export default class indexedDBCache {
     getDataByKey(key) {
         return new Promise(async (resolve, reject) => {
             // 通过主键读取数据
-            const request =(await this.store()).get(key)
+            const request = (await this.store()).get(key)
             // 操作成功
             request.onsuccess = () => {
                 resolve(request.result)
@@ -99,7 +99,7 @@ export default class indexedDBCache {
 
     // 清空数据库数据
     clearDB() {
-        return new Promise(async(resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const response = (await this.store('readwrite')).clear()
             // 操作成功
             response.onsuccss = (event) => {
@@ -112,4 +112,4 @@ export default class indexedDBCache {
         })
     }
 
-  }
+}

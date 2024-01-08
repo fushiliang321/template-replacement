@@ -17,13 +17,13 @@ export default class unknownFile {
     async replace(tempData) {
         return true
     }
-    
-    async replaceText(tempData = {}){
+
+    async replaceText(tempData = {}) {
         return true
     }
 
     //替换图片文件
-    async replaceImages(tempData = {}){
+    async replaceImages(tempData = {}) {
         return true
     }
 
@@ -31,7 +31,7 @@ export default class unknownFile {
         return []
     }
 
-    async extractTempImages(){
+    async extractTempImages() {
         return {}
     }
 
@@ -41,7 +41,7 @@ export default class unknownFile {
         }
         return new Promise(resolve => {
             const reader = new FileReader()
-            reader.onloadend= function() {
+            reader.onloadend = function () {
                 this.fileBuffer = reader.result
                 resolve(reader.result)
             }
