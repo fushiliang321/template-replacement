@@ -1,10 +1,15 @@
 export default {
-    build: {
-      outDir: 'dist', 
-      lib: {
-        entry: 'index.js', 
-        name: 'template-replacement', 
-        formats: ['es', 'umd'],
+  build: {
+    outDir: 'dist', 
+    lib: {
+      entry: 'index.js', 
+      name: 'template-replacement', 
+      formats: ['es', 'umd'],
+    },
+    rollupOptions: {
+      output: {
+        format: 'es',
       },
     },
-  };
+  },
+}

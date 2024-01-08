@@ -2,7 +2,6 @@ import JSZip from 'jszip'
 import replace from '../replace'
 import extract from '../extract'
 import { base64HashString, base64ToBlob, filesReaderArrayBuffer } from '../helper'
-import { XMLParser, XMLBuilder } from 'fast-xml-parser'
 
 //特殊字符编码
 const characterEncoderMap = {
