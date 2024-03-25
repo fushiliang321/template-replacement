@@ -1,4 +1,4 @@
-import { filesReaderArrayBuffer } from "../helper"
+import { filesReaderArrayBuffer, urlsToFileBlobs } from "../helper"
 import unknownFile from "../office/unknownFile"
 
 export default class unknownTemp extends unknownFile {
@@ -19,6 +19,16 @@ export default class unknownTemp extends unknownFile {
         }
         this.url = url
         this._output = file
+    }
+    
+    async getFileBlob() {
+        if (!this.fileBlob && this.url) {
+            const blobs = await urlsToFileBlobs([this.url])
+            if (blobs[0]) {
+                this.fileBlob = blobs[0]
+            }
+        }
+        return this.fileBlob
     }
 
     setStatus(status) {

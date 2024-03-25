@@ -50,15 +50,19 @@ export default class {
         this.fileBlob = blob
     }
 
+    async getFileBlob() {
+        return this.fileBlob
+    }
+
     async fileZip() {
         if (!this.isZipFile) {
             return null
         }
         if (!this._fileZip) {
             try {
-                let blob = this.fileBlob
-                if (this.fileBlob.constructor === File) {
-                    const buffers = await filesReaderArrayBuffer([this.fileBlob])
+                let blob = await this.getFileBlob() 
+                if (blob.constructor === File) {
+                    const buffers = await filesReaderArrayBuffer([blob])
                     blob = buffers[0].buffer
                 }
                 this._fileZip = await JSZip.loadAsync(blob)

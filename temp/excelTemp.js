@@ -1,5 +1,6 @@
 import excel from '../office/excel'
-
+import { urlsToFileBlobs } from '../helper'
+ 
 export default class excelTemp extends excel {
     name
     file
@@ -20,6 +21,16 @@ export default class excelTemp extends excel {
         }
         this.url = url
         this._output = file
+    }
+    
+    async getFileBlob() {
+        if (!this.fileBlob && this.url) {
+            const blobs = await urlsToFileBlobs([this.url])
+            if (blobs[0]) {
+                this.fileBlob = blobs[0]
+            }
+        }
+        return this.fileBlob
     }
 
     setStatus(status) {

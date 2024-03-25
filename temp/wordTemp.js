@@ -1,4 +1,5 @@
 import word from '../office/word'
+import { urlsToFileBlobs } from '../helper'
 
 export default class wordTemp extends word {
     name
@@ -20,6 +21,16 @@ export default class wordTemp extends word {
         }
         this.url = url
         this._output = file
+    }
+    
+    async getFileBlob() {
+        if (!this.fileBlob && this.url) {
+            const blobs = await urlsToFileBlobs([this.url])
+            if (blobs[0]) {
+                this.fileBlob = blobs[0]
+            }
+        }
+        return this.fileBlob
     }
 
     setStatus(status) {

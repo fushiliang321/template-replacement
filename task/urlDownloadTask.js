@@ -42,7 +42,12 @@ export default class urlDownloadTask {
             url: url,
             method: 'get',
             responseType: 'blob',
-            onDownloadProgress: this.onDownloadProgress
+            onDownloadProgress:(progressEvent)=>{
+                this.onDownloadProgress && this.onDownloadProgress({
+                    url,
+                    ...progressEvent
+                })
+            }
         })
         return response.data
     }

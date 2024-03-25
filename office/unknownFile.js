@@ -6,6 +6,10 @@ export default class unknownFile {
         this.fileBlob = blob
     }
 
+    async getFileBlob() {
+        return this.fileBlob
+    }
+
     async fileZip() {
         return null
     }
@@ -39,13 +43,14 @@ export default class unknownFile {
         if (this.fileBuffer && this.fileBuffer.byteLength) {
             return this.fileBuffer
         }
+        const blob = await this.getFileBlob()
         return new Promise(resolve => {
             const reader = new FileReader()
             reader.onloadend = function () {
                 this.fileBuffer = reader.result
                 resolve(reader.result)
             }
-            reader.readAsArrayBuffer(new Blob([this.fileBlob]))
+            reader.readAsArrayBuffer(new Blob([blob]))
         })
     }
 }

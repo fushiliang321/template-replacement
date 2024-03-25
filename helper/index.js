@@ -147,7 +147,10 @@ export function ArrayBufferToMD5(arrayBuffer) {
 }
 
 //urls提取为文件二进制数据
-export async function urlsToFileBlobs(urls) {
+export async function urlsToFileBlobs(urls, onDownloadProgress) {
     const task = new urlDownloadTask(urls)
+    if(onDownloadProgress) {
+        task.onDownloadProgress = onDownloadProgress
+    }
     return await task.start()
 }
