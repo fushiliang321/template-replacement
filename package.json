@@ -1,12 +1,12 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "1.6.0",
+  "version": "1.6.2",
   "author": "fushiliang <994301536@qq.com>",
   "license": "ISC",
   "type": "module",
-  "main": "dist/template-replacement.js",
-  "module": "dist/template-replacement.umd.cjs",
+  "main": "dist/template-replacement.umd.cjs",
+  "module": "dist/template-replacement.js",
   "scripts": {
     "postinstall": "npx vite build"
   },
