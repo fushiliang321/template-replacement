@@ -59,18 +59,15 @@ export function blobToArrayBuffer(blob) {
 export async function filesReaderArrayBuffer(files) {
     const awaits = []
     for (const file of files) {
-        awaits.push(new Promise((resolve, reject) => {
-            const fileReader = new FileReader()
-            fileReader.onload = function (e) {
+        awaits.push(new Promise(async (resolve, reject) => {
+            try {
                 resolve({
                     name: file.name,
-                    buffer: e.target.result
+                    buffer: await file.arrayBuffer()
                 })
+            } catch (error) {
+                reject(error)
             }
-            fileReader.onerror = function (e) {
-                reject(e)
-            }
-            fileReader.readAsArrayBuffer(file)
         }))
     }
     return await Promise.all(awaits)

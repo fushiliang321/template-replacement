@@ -8,9 +8,15 @@ export default class worker {
     constructor(num) {
         num = Number(num)
         if (!num || num < 1) {
-            this.num = navigator.hardwareConcurrency
+            try {
+                this.num = navigator.hardwareConcurrency
+            } catch (error) {
+            }
         } else {
             this.num = num
+        }
+        if (!this.num || this.num<0) {
+            this.num = 1
         }
         for (let index = 0; index < this.num; index++) {
             this._addOneWorker()
@@ -28,7 +34,7 @@ export default class worker {
     }
 
     postMessage(data, targetOrigin) {
-        if (!this.workers[this.counter]) {
+        if (!this.workers[++this.counter]) {
             this.counter = 0
         }
         this.workers[this.counter].postMessage(data, targetOrigin)

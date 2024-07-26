@@ -250,6 +250,10 @@ export default class {
     }
 
     async generateArrayBuffer() {
-        return (await this.fileZip())?.generateAsync({ type: "ArrayBuffer", compression: 'DEFLATE' })
+        return (await this.fileZip())?.generateAsync({ type: "ArrayBuffer", compression: 'DEFLATE', compressionOptions:{ level: 1}  })
+    }
+
+    async generateBlob() {
+        return (await this.fileZip())?.generateAsync({ type: "blob", compression: 'DEFLATE', compressionOptions:{ level: 1} })
     }
 }

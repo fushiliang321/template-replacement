@@ -24,6 +24,7 @@ async function tempDataEncode(tempData) {
 
 addEventListener('message', async event => {
   const { data } = event
+
   if (data.taskId === undefined) {
     data.taskId = generateId()
   }
@@ -42,6 +43,13 @@ addEventListener('message', async event => {
   if (data.fileBuffers && data.fileBuffers.length) {
     for (const file of data.fileBuffers) {
       const task = new taskExecute(data.taskId, file.name, file.buffer, tempData, data.eventsMonitorStatus)
+      awaits.push(task.execute())
+    }
+  }
+
+  if (data.files && data.files.length) {
+    for (const file of data.files) {
+      const task = new taskExecute(data.taskId, file.name, file, tempData, data.eventsMonitorStatus)
       awaits.push(task.execute())
     }
   }
@@ -67,6 +75,6 @@ addEventListener('message', async event => {
   }
   const p = new progress(data.taskId, '', status.finishAll, (100 * finishStatusCount.success / finishStatusCount.total).toFixed(2))
   p.setData(resData)
-  postMessage(p, Object.values(resData))
+  postMessage(p)
 })
 export default {}

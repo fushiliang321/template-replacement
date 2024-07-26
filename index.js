@@ -2,7 +2,7 @@ import workerDispatch from './worker/workerDispatch'
 import { status } from './task/progress.js'
 import { generateId } from './helper'
 
-const worker = new workerDispatch(1)
+const worker = new workerDispatch()
 const taskMap = {}
 
 worker.addListener(event => {

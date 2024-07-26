@@ -44,13 +44,6 @@ export default class unknownFile {
             return this.fileBuffer
         }
         const blob = await this.getFileBlob()
-        return new Promise(resolve => {
-            const reader = new FileReader()
-            reader.onloadend = function () {
-                this.fileBuffer = reader.result
-                resolve(reader.result)
-            }
-            reader.readAsArrayBuffer(new Blob([blob]))
-        })
+        return blob.arrayBuffer()
     }
 }

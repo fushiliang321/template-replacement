@@ -67,7 +67,16 @@ export default class replace {
         this.postProgress()
         try {
             this.postProgress(status.downloading)
-            const fileBlob = this.fileBuffer ? new Blob([this.fileBuffer]) : await this.getFileBlob()
+            let fileBlob
+            if (this.fileBuffer) {
+                if(this.fileBuffer instanceof File) {
+                    fileBlob = this.fileBuffer
+                }else{
+                    fileBlob = new Blob([this.fileBuffer])
+                }
+            }else {
+                fileBlob = await this.getFileBlob()
+            }
             if (!fileBlob) {
                 const p = new progress(status.error)
                 p.setError('没有可用的文件数据')
@@ -91,20 +100,16 @@ export default class replace {
             }
             const textRes = await office.replaceText(this.tempData.textData)
             const imageRes = await office.replaceImages(this.tempData.mediaData)
-            let buffer = null
             if (textRes || imageRes) {
-                buffer = await office.generateArrayBuffer()
-            } else {
-                const buffers = await filesReaderArrayBuffer([fileBlob])
-                buffer = buffers[0]?.buffer
+                fileBlob = await office.generateBlob()
             }
             this.postProgress(status.running, 100)
             const p = new progress(this.taskId, this.key, status.finish)
-            if (!buffer) {
+            if (!fileBlob) {
                 this.postMessage(p)
                 return p
             }
-            p.setData(buffer)
+            p.setData(fileBlob)
             this.postMessage(p)
             return p
         } catch (e) {
