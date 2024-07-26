@@ -8,6 +8,8 @@ export default {
     },
     rollupOptions: {
       output: {
+        entryFileNames: '[name].[format].js',
+        chunkFileNames: '[name].[format].js',
         format: 'es',
       },
     },
