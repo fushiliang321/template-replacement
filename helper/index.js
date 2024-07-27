@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid'
 import CryptoJS from "crypto-js"
+import jsMd5 from 'js-md5'
 import urlDownloadTask from '../task/urlDownloadTask'
 
 export function urlSuffix(url) {
@@ -98,10 +99,15 @@ export async function filesReaderBase64(files) {
     return await Promise.all(awaits)
 }
 
-export function base64Hash(base64) {
-    const sha256 = Base64ToSHA256(base64)
-    const md5 = Base64ToMD5(base64)
+export function WordArrayHash(wordArray) {
+    const sha256 = CryptoJS.SHA256(wordArray).toString()
+    const md5 = CryptoJS.MD5(wordArray).toString()
     return [sha256, md5]
+}
+
+export function base64Hash(base64) {
+    const wordArray = CryptoJS.enc.Base64.parse(base64)
+    return WordArrayHash(wordArray)
 }
 
 export function base64HashString(base64) {
@@ -138,9 +144,18 @@ export function base64ToBlob(base64) {
     return blob
 }
 
-export function ArrayBufferToMD5(arrayBuffer) {
+export function ArrayBufferHash(arrayBuffer) {
     const wordArray = CryptoJS.lib.WordArray.create(arrayBuffer)
-    return CryptoJS.MD5(wordArray).toString()
+    return WordArrayHash(wordArray)
+}
+
+export function ArrayBufferHashString(arrayBuffer) {
+    const hash = ArrayBufferHash(arrayBuffer)
+    return hash[0] + hash[1]
+}
+
+export function ArrayBufferToMD5(arrayBuffer) {
+    return jsMd5(arrayBuffer)
 }
 
 //urls提取为文件二进制数据

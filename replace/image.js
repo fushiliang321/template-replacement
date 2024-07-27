@@ -1,4 +1,4 @@
-import { ArrayBufferToMD5, filesReaderArrayBuffer } from '../helper/index'
+import { ArrayBufferToMD5 } from '../helper/index'
 
 export function pxToEMU(px) {
     return px * (914400 / 96)
@@ -16,7 +16,7 @@ const textWrapTypes = {
 
 //图片替换
 export default class image {
-    fileArrayBufferData
+    file
     fileInfo
     relationship = 'image'
     id
@@ -26,23 +26,18 @@ export default class image {
 
     awaitInitQueue = []
 
-    constructor(fileArrayBufferData) {
-        if (fileArrayBufferData instanceof ArrayBuffer) {
-            this.fileArrayBufferData = fileArrayBufferData
+    constructor(file) {
+        if (file instanceof Blob) {
+            this.file = file
             this.init()
-        } else if (fileArrayBufferData instanceof Blob) {
-            this.init(fileArrayBufferData)
         } else {
             throw new Error("不支持的数据类型");
         }
     }
 
-    async init(blob) {
+    async init() {
         this.awaitInitQueue = []
-        if (blob) {
-            this.fileArrayBufferData = await blob.arrayBuffer()
-        }
-        this.id = ArrayBufferToMD5(this.fileArrayBufferData)
+        this.id = ArrayBufferToMD5(await this.file.arrayBuffer())
         await this.getExtent()
         for (const resolve of this.awaitInitQueue) {
             resolve()
@@ -61,7 +56,7 @@ export default class image {
     async getExtent() {
         if (!this["wp:extent"]) {
             if (!this.fileInfo) {
-                this.fileInfo = await createImageBitmap(new Blob([this.fileArrayBufferData]))
+                this.fileInfo = await createImageBitmap(this.file)
             }
             this.setPxExtent(this.fileInfo.width, this.fileInfo.height)
         }

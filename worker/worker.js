@@ -9,8 +9,10 @@ async function tempDataEncode(tempData) {
   const textData = tempData.textData ?? null
   if (textData) {
     for (const key in textData) {
-      if (textData[key] instanceof Object) {
-        textData[key] = Object.assign(new image(textData[key].fileArrayBufferData), textData[key]);
+      if (textData[key] instanceof image) {
+        continue
+      }else if (textData[key] instanceof Object) {
+        textData[key] = Object.assign(new image(textData[key].file), textData[key]);
       } else {
         textData[key] = encode(String(textData[key]))
       }

@@ -1,7 +1,7 @@
 import JSZip from 'jszip'
 import replace from '../replace'
 import extract from '../extract'
-import { base64HashString, base64ToBlob, filesReaderArrayBuffer } from '../helper'
+import { ArrayBufferHash, base64HashString, base64ToBlob, filesReaderArrayBuffer } from '../helper'
 
 //特殊字符编码
 const characterEncoderMap = {
@@ -61,10 +61,6 @@ export default class {
         if (!this._fileZip) {
             try {
                 let blob = await this.getFileBlob() 
-                if (blob.constructor === File) {
-                    const buffers = await filesReaderArrayBuffer([blob])
-                    blob = buffers[0].buffer
-                }
                 this._fileZip = await JSZip.loadAsync(blob)
             } catch (e) {
                 console.error(e)
@@ -143,7 +139,7 @@ export default class {
                             continue
                         }
                         relationships += '<Relationship Id="' + name + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="' + 'media/' + name + '"/>'
-                        zip.file(this.mediaDir + name, data.mediaFiles[name].arrayBuffer)
+                        zip.file(this.mediaDir + name, data.mediaFiles[name].file)
                     }
                     if (relationships) {
                         this.setRelsData(fileName, relsData.substring(0, index) + relationships + relsData.substring(index))
@@ -176,8 +172,13 @@ export default class {
             if (!tempImagesData[temp.hash]) {
                 continue
             }
-            const blob = base64ToBlob(tempImagesData[temp.hash])
-            zip.file(key, blob)
+            if (tempImagesData[temp.hash] instanceof Blob) {
+                zip.file(key, tempImagesData[temp.hash])
+            }else {
+                const blob = base64ToBlob(tempImagesData[temp.hash])
+                zip.file(key, blob)
+            }
+            
             res = true
         }
         return res
@@ -227,11 +228,12 @@ export default class {
             if (path.startsWith(this.mediaDir) && path !== this.mediaDir) {
                 const file = zip.files[path]
                 awaits.push(new Promise(async resolve => {
-                    const base64 = await file.async("base64")
+                    const blob = await file.async('blob')
+                    const arrayBuffer = await blob.arrayBuffer()
                     resolve({
                         path: path,
-                        base64: base64,
-                        hash: base64HashString(base64),
+                        blob: blob,
+                        hash: ArrayBufferHash(arrayBuffer),
                     })
                 }))
             }

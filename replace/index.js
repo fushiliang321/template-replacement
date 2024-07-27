@@ -21,7 +21,7 @@ export default (content, tempMap = {}) => {
                     mediaFiles = {}
                 }
                 mediaFiles[tempMap[key].id] = {
-                    arrayBuffer: tempMap[key].fileArrayBufferData,
+                    file: tempMap[key].file,
                     relationship: tempMap[key].relationship,
                 }
             } else {
