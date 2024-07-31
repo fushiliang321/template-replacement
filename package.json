@@ -1,24 +1,30 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "1.10.0",
+  "version": "2.0.1",
   "author": "fushiliang <994301536@qq.com>",
   "license": "ISC",
   "type": "module",
-  "main": "dist/index.umd.js",
-  "module": "dist/index.es.js",
+  "main": "index.ts",
   "scripts": {
-    "postinstall": "npx vite build --config template-replacement-vite.config.js"
+    "build": "npx vite build --config vite.config.ts"
   },
   "dependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/streamsaver": "^2.0.4",
     "axios": "^1.4.0",
     "crypto-js": "^4.1.1",
+    "fflate": "^0.8.2",
     "js-md5": "^0.8.3",
-    "jszip": "^3.10.1",
     "nanoid": "^4.0.2",
     "streamsaver": "^2.0.6"
   },
   "devDependencies": {
+    "@types/js-md5": "^0.7.2",
+    "typescript": "^5.5.4",
     "vite": "^5.0.0"
-  }
+  },
+  "keywords": [
+    "template-replacement"
+  ]
 }

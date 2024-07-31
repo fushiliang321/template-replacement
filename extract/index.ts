@@ -1,0 +1,66 @@
+import { decode } from '../office/xml'
+
+// const tempFieldRegExp = /\$([^{}$]*?)\{([^{}$]+)\}/g //过滤出包含${}的字符串
+const tempFieldRegExp: RegExp = /\$((<[^<>{}$]*?>)|\s)*\{([^{}$]+)\}/g//过滤出包含${}的字符串,$和{之间只允许有空格
+// const tempPrefixRegExp = /\$((<[^<>]*?>)|\s)*?\{/ //匹配模板前缀$和{之间只允许有空格
+const tempExcludeRegExp: RegExp = /<(\/|)w:(p|drawing|tc|tbl)>/i //需要排除包含指定数据的原始模板数据(忽略大小写)
+const filterTagAndSpaceRegExp: RegExp = /<.*?>|\s+/g//过滤掉标签和空格
+
+//提取原始模板数据
+export function rawTemps(content: string): string[] {
+    try {
+        if (!content) {
+            return []
+        }
+        const matchRes: string[] = content.match(tempFieldRegExp) ?? []
+        const _rawTemp: string[] = []
+        for (const rawTemp of matchRes) {
+            if (
+                !_rawTemp.includes(rawTemp) &&
+                //判断模板前缀是否符合要求
+                !tempExcludeRegExp.test(rawTemp)) {
+                _rawTemp.push(rawTemp)
+            }
+        }
+        return _rawTemp
+    } catch (error) {
+        console.error(error)
+        return []
+    }
+}
+
+//过滤掉标签后的原始模板数据值
+export function toValue(rawTemp: string): string {
+    if (!rawTemp) {
+        return rawTemp
+    }
+    return decode(rawTemp.replace(filterTagAndSpaceRegExp, ''))
+}
+
+//过滤掉标签后的多个原始模板数据值
+export function toValues(rawTemps: string[]): string[] {
+    if (!rawTemps.length) {
+        return []
+    }
+    const fields: string[] = []
+    for (const tempField of rawTemps) {
+        //过滤掉标签信息
+        const field = toValue(tempField)
+        if (field !== '' && !fields.includes(field)) {
+            fields.push(field)
+        }
+    }
+    return fields
+}
+
+//提取所有模板变量字段
+export default (content: string): string[] => {
+    if (!content) {
+        return []
+    }
+    const tempFields = rawTemps(content)
+    if (!tempFields.length) {
+        return []
+    }
+    return toValues(tempFields)
+}
