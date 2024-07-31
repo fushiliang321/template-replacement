@@ -1,0 +1,22 @@
+version: '1.0'
+name: publish_to_npmjs
+displayName: 发布到npmjs
+triggers:
+  trigger: auto
+  push:
+    branches:
+      include:
+        - master
+stages:
+  - name: compile
+    displayName: 发布
+    strategy: naturally
+    trigger: auto
+    steps:
+      - step: build@nodejs
+        name: publish_to_npmjs
+        displayName: 发布到npmjs
+        nodeVersion: 20.10.0
+        commands:
+          - npm publish
+        strategy: {}
