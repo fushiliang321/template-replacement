@@ -21,7 +21,6 @@ stages:
         displayName: 发布到npmjs
         nodeVersion: 20.10.0
         commands:
-          - echo ${NODE_AUTH_TOKEN}
-          - echo $NODE_AUTH_TOKEN
+          - echo ${NODE_AUTH_TOKEN} >> NODE_AUTH_TOKEN
           - npm publish
         strategy: {}
