@@ -7,6 +7,9 @@ triggers:
     branches:
       include:
         - master
+variables:
+  global:
+    - NODE_AUTH_TOKEN
 stages:
   - name: compile
     displayName: 发布
