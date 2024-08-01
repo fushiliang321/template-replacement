@@ -9,30 +9,30 @@ export default class urlTask extends baseTask {
 
     constructor(items: items, tempData: tempDataClass|Object, events: Partial<events>) {
         super(tempData, events)
-        switch (true) {
-            case items instanceof String:
-                this.urlObjs.push(new urlTaskItem(items as string))
-                break;
-            case items instanceof urlTaskItem:
-                this.urlObjs.push(items)
-                break;
-            case items instanceof Array:
-                for (const item of items) {
-                    switch (true) {
-                        case item instanceof String:
-                            this.urlObjs.push(new urlTaskItem(item as string))
-                            break;
-                        case item instanceof urlTaskItem:
-                            this.urlObjs.push(item)
-                            break;
-                        default:
-                            throw new Error("链接数据类型错误")
-                    }
+        if (!this.addUrl(items)) {
+            if (!items || !Array.isArray(items) || items.length === 0) {
+                throw new Error("缺少链接或链接数据类型错误")
+            }
+            for (const item of items) {
+                if (!this.addUrl(item)) {
+                    throw new Error("链接数据类型错误")
                 }
+            }
+        }
+    }
+
+    addUrl(url: any): boolean {
+        switch (true) {
+            case typeof url === 'string':
+                this.urlObjs.push(new urlTaskItem(url as string))
+                break;
+            case url instanceof urlTaskItem:
+                this.urlObjs.push(url)
                 break;
             default:
-                throw new Error("缺少链接或链接数据类型错误")
+                return false
         }
+        return true
     }
 
     getData(): taskData {
