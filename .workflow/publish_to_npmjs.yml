@@ -5,7 +5,7 @@ triggers:
   trigger: auto
   push:
     branches:
-      include:
+      precise:
         - master
 variables:
   global:
