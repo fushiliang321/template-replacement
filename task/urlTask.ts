@@ -36,11 +36,8 @@ export default class urlTask extends baseTask {
     }
 
     getData(): taskData {
-        return {
-            taskId: this.id,
-            urls: this.urlObjs,
-            tempData: JSON.parse(JSON.stringify(this.tempData)),
-            eventsMonitorStatus: this.getEventsMonitorStatus()
-        }
+        const data = super.getData()
+        data.urls = this.urlObjs
+        return data
     }
 }
