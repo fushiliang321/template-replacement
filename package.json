@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "@types/crypto-js": "^4.2.2",
-    "@types/streamsaver": "^2.0.4",
-    "axios": "^1.4.0",
-    "crypto-js": "^4.1.1",
+    "@types/streamsaver": "^2.0.5",
+    "axios": "^1.7.9",
+    "crypto-js": "^4.2.0",
     "fflate": "^0.8.2",
     "js-md5": "^0.8.3",
     "nanoid": "^4.0.2",
@@ -21,8 +21,8 @@
   },
   "devDependencies": {
     "@types/js-md5": "^0.7.2",
-    "typescript": "^5.5.4",
-    "vite": "^5.0.0"
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11"
   },
   "keywords": [
     "template-replacement"
