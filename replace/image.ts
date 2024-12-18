@@ -7,11 +7,23 @@ export function pxToEMU(px: number): number {
 export function cmToEMU(cm: number): number {
     return cm * 914400
 }
- 
+
 export enum textWrapTypes {
     embed,//嵌入型
     belowText,//嵌于文字下方
     aboveText,//嵌于文字上方
+}
+
+function getFileExtension(filename: string): string {
+    const ext = filename.split('.').pop()
+    if (ext === undefined) {
+        return ''
+    }
+    return '.' + ext
+}
+
+async function generateId(file: Blob): Promise<string> {
+    return ArrayBufferToMD5(await file.arrayBuffer()) + getFileExtension((file as any)?.name)
 }
 
 type extent = {
@@ -41,7 +53,7 @@ export default class image {
 
     async init(): Promise<void> {
         this.awaitInitQueue = []
-        this.id = ArrayBufferToMD5(await this.file.arrayBuffer())
+        this.id = await generateId(this.file)
         await this.getExtent()
         for (const resolve of this.awaitInitQueue) {
             resolve()
@@ -49,7 +61,7 @@ export default class image {
         delete this.awaitInitQueue
     }
 
-    async awaitInit(): Promise<void> { 
+    async awaitInit(): Promise<void> {
         if (this.awaitInitQueue) {
             await new Promise(resolve => {
                 this.awaitInitQueue?.push(resolve)
