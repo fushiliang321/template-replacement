@@ -1,5 +1,9 @@
 import streamSaver from "streamsaver"
 
+export function setMitm(mitm: string) {
+    streamSaver.mitm = mitm
+}
+
 export default class Stream {
     tasks: Promise<any>[] = []
     writer: WritableStreamDefaultWriter<any>

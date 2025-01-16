@@ -91,7 +91,7 @@ export default class Zip {
         if (fileName == undefined) {
             fileName = this.name
         }
-        
+
         const downloadStream = stream(fileName)
         const zip = new fflateZip((err, dat, final) => {
             if (err) {
@@ -103,11 +103,11 @@ export default class Zip {
                 downloadStream.close()
             }
         })
-        
+
         for (const key in data) {
             const deflate = new ZipDeflate(key, {
                 level: 9
-            });  
+            });
             zip.add(deflate)
             deflate.push(data[key], true);
         }

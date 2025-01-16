@@ -1,4 +1,4 @@
-import { ArrayBufferToMD5 } from '../helper/index'
+// import { add_media } from "template-replacement-core-wasm"
 
 export function pxToEMU(px: number): number {
     return px * (914400 / 96)
@@ -9,9 +9,9 @@ export function cmToEMU(cm: number): number {
 }
 
 export enum textWrapTypes {
-    embed,//嵌入型
-    belowText,//嵌于文字下方
-    aboveText,//嵌于文字上方
+    embed = "Embed",//嵌入型
+    belowText = "BelowText",//嵌于文字下方
+    aboveText = "AboveText",//嵌于文字上方
 }
 
 function getFileExtension(filename: string): string {
@@ -22,11 +22,12 @@ function getFileExtension(filename: string): string {
     return '.' + ext
 }
 
-async function generateId(file: Blob): Promise<string> {
-    return ArrayBufferToMD5(await file.arrayBuffer()) + getFileExtension((file as any)?.name)
-}
+// async function generateId(file: Blob): Promise<string> {
+//     const buffer = await file.arrayBuffer()
+//     return await add_media(new Uint8Array(buffer))
+// }
 
-type extent = {
+export type extent = {
     cy: number,
     cx: number,
 }
@@ -53,13 +54,17 @@ export default class image {
 
     async init(): Promise<void> {
         this.awaitInitQueue = []
-        this.id = await generateId(this.file)
         await this.getExtent()
         for (const resolve of this.awaitInitQueue) {
             resolve()
         }
         delete this.awaitInitQueue
     }
+
+    // async generateId(): Promise<string> {
+    //     this.id = await generateId(this.file)
+    //     return this.id
+    // }
 
     async awaitInit(): Promise<void> {
         if (this.awaitInitQueue) {
@@ -72,7 +77,7 @@ export default class image {
     async getExtent(): Promise<extent> {
         if (!this.wpExtent) {
             const bitmap = await createImageBitmap(this.file)
-            this.setPxExtent(bitmap.width, bitmap.height)
+            !this.wpExtent && this.setPxExtent(bitmap.width, bitmap.height)
             bitmap.close()
         }
         return this.wpExtent as extent
@@ -81,16 +86,16 @@ export default class image {
     //设置图片范围（像素）
     setPxExtent(width: number, height: number): void {
         this.wpExtent = {
-            cy: pxToEMU(width),
-            cx: pxToEMU(height),
+            cy: pxToEMU(height),
+            cx: pxToEMU(width),
         }
     }
 
     //设置图片范围（厘米）
     setCmExtent(width: number, height: number): void {
         this.wpExtent = {
-            cy: cmToEMU(width),
-            cx: cmToEMU(height),
+            cy: cmToEMU(height),
+            cx: cmToEMU(width),
         }
     }
 
@@ -103,29 +108,9 @@ export default class image {
         return data
     }
 
-    async outTags(): Promise<string> {
-        await this.awaitInit()
-        return this.outTagsSync()
-    }
-
-    outTagsSync(): string {
-        let extent: string = ''
-        let drawingChildNodes: string = ''
-        if (this.wpExtent) {
-            extent = `<wp:extent cx="${this.wpExtent.cx}" cy="${this.wpExtent.cy}"/>`
+    setPropertys(data: Record<string, any>) {
+        for (const key in data) {
+            this[key as keyof image] = data[key]
         }
-        const imageContentTags: string = `${extent}<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:blipFill><a:blip r:embed="${this.id}"/></pic:blipFill></pic:pic></a:graphicData></a:graphic>`
-        switch (this.textWrap) {
-            case textWrapTypes.embed:
-                drawingChildNodes = `<wp:inline distT="0" distB="0" distL="0" distR="0">${imageContentTags}</wp:inline>`
-                break
-            case textWrapTypes.belowText:
-                drawingChildNodes = `<wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" behindDoc="1" locked="0" layoutInCell="1" allowOverlap="1"><wp:positionH relativeFrom="character"><wp:posOffset>0</wp:posOffset></wp:positionH><wp:positionV relativeFrom="line"><wp:posOffset>0</wp:posOffset></wp:positionV>${imageContentTags}</wp:anchor>`
-                break
-            case textWrapTypes.aboveText:
-                drawingChildNodes = `<wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" behindDoc="0" locked="0" layoutInCell="1" allowOverlap="1"><wp:positionH relativeFrom="character"><wp:posOffset>0</wp:posOffset></wp:positionH><wp:positionV relativeFrom="line"><wp:posOffset>0</wp:posOffset></wp:positionV>${imageContentTags}</wp:anchor>`
-                break
-        }
-        return `</w:t></w:r><w:r><w:drawing>${drawingChildNodes}</w:drawing></w:r><w:r><w:t>`
     }
 }

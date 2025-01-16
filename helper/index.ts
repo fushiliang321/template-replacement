@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid'
 import CryptoJS from "crypto-js"
 import jsMd5 from 'js-md5'
 import urlDownloadTask from '../task/urlDownloadTask'
+import { fileTypeFromBuffer } from 'file-type'
 
 export function urlSuffix(url: string): string {
     url = url.split('?')[0]
@@ -25,7 +26,7 @@ export const enum fileTypes  {
 
 export const officeMIMETypes: Record<string, fileTypes> = {
     //docx
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': fileTypes.word, 
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': fileTypes.word,
     //dotx
     'application/vnd.openxmlformats-officedocument.wordprocessingml.template': fileTypes.word,
     //xlsx
@@ -33,7 +34,7 @@ export const officeMIMETypes: Record<string, fileTypes> = {
 }
 
 export const officeSuffixTypes: Record<string, fileTypes> = {
-    'docx': fileTypes.word, 
+    'docx': fileTypes.word,
     'dotx': fileTypes.word,
     'xlsx': fileTypes.excel,
 }
@@ -44,6 +45,17 @@ export function fileType(file: File): fileTypes {
 
 export function fileTypeByName(name: string): fileTypes {
     return officeSuffixTypes[urlSuffix(name)] ?? fileTypes.unknown
+}
+
+export async function fileTypeByBuffer(buffer: Uint8Array|ArrayBuffer|Blob): Promise<fileTypes> {
+    if (buffer instanceof Blob) {
+        buffer = await buffer.arrayBuffer()
+    }
+    const type = await fileTypeFromBuffer(buffer)
+    if (type && officeMIMETypes[type.mime]) {
+        return officeMIMETypes[type.mime]
+    }
+    return fileTypes.unknown
 }
 
 export function generateId(): string {
@@ -120,7 +132,7 @@ export function WordArrayHash(wordArray: CryptoJS.lib.WordArray): Hash {
     const sha256 = CryptoJS.SHA256(wordArray).toString()
     const md5 = CryptoJS.MD5(wordArray).toString()
     return {
-        sha256, 
+        sha256,
         md5
     }
 }
@@ -205,8 +217,8 @@ export function TextEncodeInto(input: string, destination: Uint8Array): TextEnco
     return encoder.encodeInto(input, destination)
 }
 
-export function splitArrayIntoChunks(array: any[], chunkSize: number): any[] {
-    const result:any[] = []
+export function splitArrayIntoChunks<T>(array: T[], chunkSize: number): T[][] {
+    const result: T[][] = []
     for (let i = 0; i < array.length; i += chunkSize) {
         const chunk = array.slice(i, i + chunkSize)
         result.push(chunk)

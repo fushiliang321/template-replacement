@@ -1,7 +1,7 @@
 
-type templateData = {
+type templateData<T> = {
     url: string
-    data: Blob
+    data: T
 }
 
 export default class indexedDBCache {
@@ -13,7 +13,7 @@ export default class indexedDBCache {
     _dbversion: number  = 1 //数据库版本
     _cacheTableName: string = 'templates' //表名
     _tableMap: any = {} //表配置
-    
+
 
     // 构造函数
     constructor() {
@@ -81,7 +81,7 @@ export default class indexedDBCache {
      * @param        {Object} params 添加到数据库中的数据 { url: 文件地址, data: 文件blob }
      * @return       {*}
      */
-    putData(params: templateData): Promise<any> {
+    putData<T>(params: templateData<T>): Promise<any> {
         return new Promise(async (resolve, reject) => {
             const response = (await this.store('readwrite')).put(params)
             // 操作成功
@@ -96,7 +96,7 @@ export default class indexedDBCache {
     }
 
     // 通过主键读取数据
-    getDataByKey(key: string): Promise<templateData> {
+    getDataByKey<T>(key: string): Promise<templateData<T>> {
         return new Promise(async (resolve, reject) => {
             // 通过主键读取数据
             const request = (await this.store()).get(key)

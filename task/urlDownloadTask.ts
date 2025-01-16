@@ -21,7 +21,7 @@ export default class urlDownloadTask {
     }
 
     async getUrlData(url: string): Promise<Blob|undefined> {
-        const data = await db.getDataByKey(url)
+        const data = await db.getDataByKey<Blob>(url)
         if (data && data.data) {
             return data.data
         }
@@ -29,7 +29,7 @@ export default class urlDownloadTask {
         if (!getData) {
             return undefined
         }
-        db.putData({
+        db.putData<Blob>({
             url: url,
             data: getData,
         })
@@ -50,7 +50,7 @@ export default class urlDownloadTask {
         return response.data
     }
 
-    onDownloadProgress(listen: (progressEvent: AxiosProgressEvent) => void) { 
+    onDownloadProgress(listen: (progressEvent: AxiosProgressEvent) => void) {
         this.downloadProgressListener.push(listen)
     }
 }
