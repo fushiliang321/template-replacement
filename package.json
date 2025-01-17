@@ -1,7 +1,7 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "3.0.1",
+  "version": "3.0.3",
   "author": "fushiliang <994301536@qq.com>",
   "license": "ISC",
   "type": "module",
@@ -20,7 +20,7 @@
     "nanoid": "^4.0.2",
     "streamsaver": "^2.0.6",
     "template-replacement-core-wasm": "^1.0.0",
-    "template-replacement-sign-core-wasm": "^1.0.0",
+    "template-replacement-sign-core-wasm": "^1.0.1",
     "vite-plugin-wasm-pack": "^0.1.12"
   },
   "devDependencies": {

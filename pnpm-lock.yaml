@@ -39,8 +39,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       template-replacement-sign-core-wasm:
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.0.1
+        version: 1.0.1
       vite-plugin-wasm-pack:
         specifier: ^0.1.12
         version: 0.1.12
@@ -750,8 +750,8 @@ packages:
   template-replacement-core-wasm@1.0.0:
     resolution: {integrity: sha512-72ODvhlSrJd8Fw93K9mGToe7fDdwAt734cc6dG4Vc3848PzQnZRyJwzP3gDKw96+x4AHsnC5ad5QCIr6ZYRCIQ==}
 
-  template-replacement-sign-core-wasm@1.0.0:
-    resolution: {integrity: sha512-9R6BnL5YO1fX1hliKTB4qhYRc/oeI3nuAnWrHZrAhhQnPBpyi1p7uTJTI2yvwebGNU0GOufhjhBHlfVDpjpmzQ==}
+  template-replacement-sign-core-wasm@1.0.1:
+    resolution: {integrity: sha512-jRlu5Rx46+y0VSk6vmRchCIEE9VHu8dNvsC/7r5cAEJ+Oj8Wb6q5jPnOWDvgBLQJCjO5iJ5fHsR99NobrVk2Zw==}
 
   token-types@6.0.0:
     resolution: {integrity: sha512-lbDrTLVsHhOMljPscd0yitpozq7Ga2M5Cvez5AjGg8GASBjtt6iERCAJ93yommPmz62fb45oFIXHEZ3u9bfJEA==}
@@ -1444,7 +1444,7 @@ snapshots:
 
   template-replacement-core-wasm@1.0.0: {}
 
-  template-replacement-sign-core-wasm@1.0.0: {}
+  template-replacement-sign-core-wasm@1.0.1: {}
 
   token-types@6.0.0:
     dependencies:
