@@ -1,4 +1,4 @@
-import Replace from '../../replace/general';
+import Replace from '../../replace/sign';
 import init, { call } from './base';
 
 const replace = new Replace()
