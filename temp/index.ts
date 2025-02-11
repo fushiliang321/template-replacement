@@ -53,7 +53,7 @@ export default class Temp implements TempInterface{
         if (name) {
             this.name = name
         }else{
-            this.name = (file as File)?.name ?? (url ? getFileNameFromUrl(url) : '')
+            this.name = (file as File)?.name ?? ''
         }
 
         if (!url && !file && !uint8Array) {

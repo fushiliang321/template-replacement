@@ -1,6 +1,5 @@
 import { nanoid } from 'nanoid'
 import CryptoJS from "crypto-js"
-import jsMd5 from 'js-md5'
 import urlDownloadTask from '../task/urlDownloadTask'
 import { fileTypeFromBuffer } from 'file-type'
 
@@ -187,10 +186,6 @@ export function ArrayBufferHash(arrayBuffer: ArrayBuffer): Hash {
 export function ArrayBufferHashString(arrayBuffer: ArrayBuffer): string {
     const hash = ArrayBufferHash(arrayBuffer)
     return hash.sha256 + hash.md5
-}
-
-export function ArrayBufferToMD5(arrayBuffer: ArrayBuffer): string {
-    return jsMd5(arrayBuffer)
 }
 
 //urls提取为文件二进制数据
