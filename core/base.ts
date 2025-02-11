@@ -1,4 +1,5 @@
 export interface Interface {
+    await(): Promise<Interface>
     add_template(file: Uint8Array): Promise<number>
     add_media(file: Uint8Array): Promise<string>
     extract_one_file_variable_names(data: Uint8Array): Promise<(string)[]>
@@ -14,6 +15,11 @@ export default class implements Interface {
     constructor(init: Promise<any>, module: any) {
         this.awaitInit = init
         this.module = module
+    }
+
+    async await(): Promise<Interface> {
+        await this.awaitInit
+        return this
     }
 
     async add_template(file: Uint8Array): Promise<number> {

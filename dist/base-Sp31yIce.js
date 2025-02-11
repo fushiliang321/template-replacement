@@ -5361,6 +5361,9 @@ class re {
   constructor(P, d) {
     this.awaitInit = P, this.module = d;
   }
+  async await() {
+    return await this.awaitInit, this;
+  }
   async add_template(P) {
     return await this.awaitInit, this.module.add_template(P);
   }
