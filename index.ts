@@ -15,6 +15,7 @@ export function Sign(): ReplaceInterface {
 export function WorkerGeneral(concurrency?: number): ReplaceInterface {
   return workerGeneral(concurrency)
 }
+
 export function WorkerSign(concurrency?: number): ReplaceInterface {
   return workerSign(concurrency)
 }
