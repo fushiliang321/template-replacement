@@ -1,7 +1,7 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "author": "fushiliang <994301536@qq.com>",
   "license": "ISC",
   "type": "module",
@@ -13,7 +13,6 @@
     "@types/crypto-js": "^4.2.2",
     "@types/streamsaver": "^2.0.5",
     "axios": "^1.7.9",
-    "crypto-js": "^4.2.0",
     "fflate": "^0.8.2",
     "file-type": "^19.6.0",
     "nanoid": "^4.0.2",

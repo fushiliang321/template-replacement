@@ -1,5 +1,4 @@
 import { nanoid } from 'nanoid'
-import CryptoJS from "crypto-js"
 import urlDownloadTask from '../task/urlDownloadTask'
 import { fileTypeFromBuffer } from 'file-type'
 
@@ -122,40 +121,6 @@ export async function filesReaderBase64(files: File[]): Promise<fileBase64Data[]
     return await Promise.all(awaits) as fileBase64Data[]
 }
 
-type Hash = {
-    sha256: string,
-    md5: string
-}
-
-export function WordArrayHash(wordArray: CryptoJS.lib.WordArray): Hash {
-    const sha256 = CryptoJS.SHA256(wordArray).toString()
-    const md5 = CryptoJS.MD5(wordArray).toString()
-    return {
-        sha256,
-        md5
-    }
-}
-
-export function base64Hash(base64: string): Hash {
-    const wordArray = CryptoJS.enc.Base64.parse(base64)
-    return WordArrayHash(wordArray)
-}
-
-export function base64HashString(base64: string): string {
-    const hash = base64Hash(base64)
-    return hash.sha256 + hash.md5
-}
-
-export function Base64ToSHA256(base64: string): string {
-    const wordArray = CryptoJS.enc.Base64.parse(base64)
-    return CryptoJS.SHA256(wordArray).toString()
-}
-
-export function Base64ToMD5(base64: string): string {
-    const wordArray = CryptoJS.enc.Base64.parse(base64)
-    return CryptoJS.MD5(wordArray).toString()
-}
-
 export function base64ToBlob(base64: string): Blob {
     const arr = base64.split(',')
     let mime
@@ -178,16 +143,6 @@ export function base64ToBlob(base64: string): Blob {
     return new Blob([byteArray], { type: mime })
 }
 
-export function ArrayBufferHash(arrayBuffer: ArrayBuffer): Hash {
-    const wordArray = CryptoJS.lib.WordArray.create(arrayBuffer)
-    return WordArrayHash(wordArray)
-}
-
-export function ArrayBufferHashString(arrayBuffer: ArrayBuffer): string {
-    const hash = ArrayBufferHash(arrayBuffer)
-    return hash.sha256 + hash.md5
-}
-
 //urls提取为文件二进制数据
 export async function urlsToFileBlobs(urls: string[], onDownloadProgress?: (progressEvent: any) => void): Promise<(Blob|undefined)[]> {
     const task = new urlDownloadTask(urls)
@@ -195,21 +150,6 @@ export async function urlsToFileBlobs(urls: string[], onDownloadProgress?: (prog
         task.onDownloadProgress(onDownloadProgress)
     }
     return await task.start()
-}
-
-const decoder = new TextDecoder('utf-8')
-export function TextDecode(input: AllowSharedBufferSource): string {
-    return decoder.decode(input, {
-        stream: false
-    })
-
-}
-const encoder = new TextEncoder()
-export function TextEncode(input: string): Uint8Array {
-    return encoder.encode(input)
-}
-export function TextEncodeInto(input: string, destination: Uint8Array): TextEncoderEncodeIntoResult {
-    return encoder.encodeInto(input, destination)
 }
 
 export function splitArrayIntoChunks<T>(array: T[], chunkSize: number): T[][] {
