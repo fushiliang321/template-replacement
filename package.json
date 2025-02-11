@@ -1,7 +1,7 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "author": "fushiliang <994301536@qq.com>",
   "license": "ISC",
   "type": "module",

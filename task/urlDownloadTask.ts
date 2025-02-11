@@ -47,6 +47,18 @@ export default class urlDownloadTask {
                 }
             }
         })
+
+        const contentDisposition = response.headers['content-disposition']
+
+        // 解析文件名
+        if (contentDisposition) {
+            const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition)
+            if (matches != null && matches[1]) {
+                const filename = matches[1].replace(/['"]/g, '')
+                const contentType = response.headers['content-type'] ?? 'application/octet-stream'
+                return new File([response.data], filename, { type: contentType })
+            }
+        }
         return response.data
     }
 

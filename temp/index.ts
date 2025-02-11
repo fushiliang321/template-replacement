@@ -61,6 +61,17 @@ export default class Temp implements TempInterface{
         }
     }
 
+    getName() {
+        if (this.name) {
+            return this.name
+        }
+        if ((this.blob as File)?.name) {
+            this.name = (this.blob as File).name
+            return this.name
+        }
+        return this.url ? getFileNameFromUrl(this.url) : ''
+    }
+
     async type(): Promise<fileTypes> {
         if (this._type) {
             return this._type
@@ -139,7 +150,7 @@ export default class Temp implements TempInterface{
             return undefined
         }
         return {
-            name: this.name,
+            name: this.getName(),
             uint8Array: new Uint8Array(uint8Array.buffer.slice(0)),
         }
     }
