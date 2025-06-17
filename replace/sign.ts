@@ -7,14 +7,14 @@ export default class Sign extends Base {
         super(core())
     }
 
-    async handle(paramsData: paramsData, files: Uint8Array[]): Promise<Uint8Array[]> {
+    async handle(paramsData: paramsData, files: Uint8Array[], isDecode: boolean = false): Promise<Uint8Array[]> {
         paramsData.add_media = add_media
         const [params] = await paramsData.toReplaceParams()
 
         const addFileTasks: Promise<number>[] = []
         files.forEach((file, i) => {
             addFileTasks.push(new Promise<number>(async resolve => {
-                resolve(await add_template(file))
+                resolve(await add_template(file, isDecode))
             }))
         })
 

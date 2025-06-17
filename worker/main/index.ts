@@ -16,7 +16,7 @@ const allowCallMethodNames: Partial<Record<methodKeys<ReplaceInterface>, boolean
 // 分片最小任务数量
 const chunkMinNum = 20
 
-export default class WorkerReplace implements ReplaceInterface{
+export default class WorkerReplace implements ReplaceInterface {
   #files: Temp[] = []
   #dispatcher: DispatcherInterface
   #tasks: Record<string, Function> = {}
@@ -92,19 +92,19 @@ export default class WorkerReplace implements ReplaceInterface{
         method,
         params
       }
-    }, { transfer })
+    }, transfer.length ? { transfer } :  undefined)
     return new Promise((resolve, reject) => {
       this.#tasks[replyId] = resolve
     })
   }
 
   //分片
-  #chunk<T>(files: T[], chunkPackage?: (chunkData:T[]) => any): any[] {
+  #chunk<T>(files: T[], chunkPackage?: (chunkData: T[]) => any): (T[] | ((chunkData: T[]) => any))[] {
     let chunks = []
     if (this.#concurrency > 1 && files.length > chunkMinNum) {
-      const chunkSize = Math.ceil(files.length/(Math.round(files.length/chunkMinNum)))
-      chunks = splitArrayIntoChunks(files, chunkSize)
-    }else {
+      const chunkSize = Math.ceil(files.length / (Math.round(files.length / chunkMinNum)))
+      chunks = splitArrayIntoChunks<T>(files, chunkSize)
+    } else {
       chunks = [files]
     }
     if (chunkPackage) {
@@ -119,7 +119,7 @@ export default class WorkerReplace implements ReplaceInterface{
     if (!files) {
       files = this.#files
     }
-    const tasks: Promise<transmitFileInfo|undefined>[] = []
+    const tasks: Promise<transmitFileInfo | undefined>[] = []
     files.forEach(file => {
       tasks.push(file.getTransmitFileInfo())
     })
@@ -127,23 +127,24 @@ export default class WorkerReplace implements ReplaceInterface{
     return res.filter(item => !!item)
   }
 
-  addTempFile(tempFile: Temp): void {
-    this.#files.push(tempFile)
-  }
 
   clear(): void {
     this.#files.length = 0
   }
 
-  async #chunkCall(method: string, paramChunks: any[]): Promise<Record<string, any>>{
+  async #chunkCall(method: string, paramChunks: any[]): Promise<Record<string, any>> {
     const tasks: Promise<Record<string, any>>[] = []
     paramChunks.forEach(chunk => {
       tasks.push(this.#call(method, chunk))
     })
     const tasksRes = await Promise.all(tasks)
     return tasksRes.reduce((accumulator, current) => {
-      return {...accumulator, ...current}
+      return { ...accumulator, ...current }
     }, {})
+  }
+
+  addTempFile(tempFile: Temp): void {
+    this.#files.push(tempFile)
   }
 
   async extractVariables(files: Temp[] | undefined): Promise<Record<string, string[]>> {
@@ -172,5 +173,20 @@ export default class WorkerReplace implements ReplaceInterface{
       return [params, chunkData]
     })
     return this.#chunkCall('execute', chunks)
+  }
+
+  async fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
+    return await this.#call('fileEncrypt', [file])
+  }
+
+  async filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
+    const chunks = this.#chunk<Uint8Array>(files) as (Uint8Array[])[]
+
+    const tasks: Promise<Uint8Array[]>[] = []
+    chunks.forEach(chunk => {
+      tasks.push(this.#call('filesEncrypt', [chunk]))
+    })
+    const tasksRes = await Promise.all(tasks)
+    return tasksRes.flat()
   }
 }

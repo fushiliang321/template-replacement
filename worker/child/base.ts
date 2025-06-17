@@ -2,7 +2,6 @@ import agency from './agency'
 import { messageData, messageTypes, methodCall } from '../type';
 import ReplaceInterface, { media } from '../../replace/interface';
 import { generateId } from '../../helper';
-import { c } from 'vite/dist/node/types.d-aGj9QkWt';
 
 type methodKeys<T> = {
   [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never;
@@ -13,6 +12,8 @@ const allowCallMethodNames: Partial<Record<methodKeys<ReplaceInterface>, boolean
   extractVariables: true,
   extractMedias: true,
   execute: true,
+  filesEncrypt: true,
+  fileEncrypt: true,
 }
 
 const tasks: Record<string, Function> = {} = {}
@@ -44,6 +45,7 @@ addEventListener('message', async event => {
     const data = event.data as messageData
     switch (data.type) {
       case messageTypes.methodCall:
+        // 调用方法
         const callData = data.data as methodCall
         const method = callData.method as methodKeys<ReplaceInterface>
         if (!allowCallMethodNames[method]) {
@@ -71,6 +73,15 @@ addEventListener('message', async event => {
                     transfer.push(media.data.buffer)
                   })
                 }
+                break;
+                case 'fileEncrypt':
+                  (res as Uint8Array).length && transfer.push((res as Uint8Array).buffer)
+                  break;
+                case 'filesEncrypt':
+                  for (const item of (res as Uint8Array[])) {
+                    transfer.push(item.buffer)
+                  }
+                  break;
             }
           }
           postMessage({
@@ -79,10 +90,11 @@ addEventListener('message', async event => {
               replyId: callData.replyId,
               result: res
             }
-          }, { transfer })
+          }, transfer.length ? { transfer } : undefined)
         }
         break;
       case messageTypes.methodCallReply:
+        // 方法调用的返回数据
         tasks[data?.data?.replyId](data?.data?.result)
         delete tasks[data?.data?.replyId]
     }

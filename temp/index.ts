@@ -19,13 +19,17 @@ export enum status {
 export type transmitFileInfo = {
     name: string,
     uint8Array: Uint8Array,
+    isDecode: boolean,
 }
 
+//将传递的文件信息转为模板对象
 export function transmitFileInfoToTemp(data: transmitFileInfo) {
     if (!data.uint8Array || !data.name) {
         throw new Error("模板文件信息错误")
     }
-    return new Temp(undefined, undefined, data.uint8Array, data.name)
+    const temp = new Temp(undefined, undefined, data.uint8Array, data.name)
+    temp.isDecode = data.isDecode
+    return temp
 }
 
 export default class Temp implements TempInterface{
@@ -34,6 +38,7 @@ export default class Temp implements TempInterface{
     uint8Array?: Uint8Array
     url?: string
     status = status.waitLoad // 0文件待加载,1文件已加载,2完成替换,3替换失败
+    isDecode: boolean = false //文件是否被加密
 
     _output?: File|Blob
     _type?: fileTypes
@@ -107,7 +112,7 @@ export default class Temp implements TempInterface{
         }
         if (!this.blob) {
             if (this.uint8Array) {
-                this.blob = new Blob([ this.uint8Array ])
+                this.blob = new Blob([ this.uint8Array as BlobPart ])
             }else if (this.url) {
                 const [ blob ] = await urlsToFileBlobs([ this.url ])
                 if (blob) {
@@ -152,6 +157,7 @@ export default class Temp implements TempInterface{
         return {
             name: this.getName(),
             uint8Array: new Uint8Array(uint8Array.buffer.slice(0)),
+            isDecode: this.isDecode,
         }
     }
 }

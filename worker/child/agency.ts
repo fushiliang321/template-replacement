@@ -75,4 +75,13 @@ export default class implements ReplaceInterface {
     return this.replace.execute(new paramsData(text, media), files)
   }
 
+  //文件加密
+  fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
+    return this.replace.fileEncrypt(file)
+  }
+
+  //文件批量加密
+  filesEncrypt(files: (Uint8Array)[]): Promise<(Uint8Array)[]> {
+    return this.replace.filesEncrypt(files)
+  }
 }

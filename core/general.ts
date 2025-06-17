@@ -8,6 +8,6 @@ export default () => {
     if (!awaitInit) {
         awaitInit = init()
     }
-    return new base(awaitInit, core)
+    return new base(awaitInit as Promise<any>, core)
 }
 

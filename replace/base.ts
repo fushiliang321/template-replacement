@@ -29,8 +29,8 @@ export default class Base implements Interface{
         for (const file of files) {
             tasks.push(new Promise<void>(async (resolve, reject) => {
                 const buffer = await file.getBuffer()
-                if (buffer && (await file.type()) !== fileTypes.unknown) {
-                    data[file.name] = await this.#core.extract_one_file_variable_names(buffer)
+                if (buffer && (file.isDecode || (await file.type()) !== fileTypes.unknown)) {
+                    data[file.name] = await this.#core.extract_one_file_variable_names(buffer, file.isDecode)
                 }
                 resolve()
             }))
@@ -48,8 +48,8 @@ export default class Base implements Interface{
         for (const file of files) {
             tasks.push(new Promise<void>(async (resolve, reject) => {
                 const buffer = await file.getBuffer()
-                if (buffer && (await file.type()) !== fileTypes.unknown) {
-                    let medias = await this.#core.extract_one_file_medias(buffer)
+                if (buffer && (file.isDecode || (await file.type()) !== fileTypes.unknown)) {
+                    let medias = await this.#core.extract_one_file_medias(buffer, file.isDecode)
                     data[file.name] = []
                     if (medias && Array.isArray(medias)) {
                         medias.forEach(m => {
@@ -69,7 +69,7 @@ export default class Base implements Interface{
         return data
     }
 
-    async handle(paramsData: paramsData, files: Uint8Array[]): Promise<Uint8Array[]> {
+    async handle(paramsData: paramsData, files: Uint8Array[], isDecode: boolean = false): Promise<Uint8Array[]> {
         return []
     }
 
@@ -82,43 +82,70 @@ export default class Base implements Interface{
             files = this.#files
         }
 
-        const fileData: { names: string[], uint8Arrays: Uint8Array[] } = {
-            names: [],
-            uint8Arrays: [],
-        }
-
+        //等待文件加载完成
         const tasks = []
         for (const file of files) {
-            tasks.push(new Promise<Uint8Array|undefined>(async (resolve, reject) => {
-                resolve(file.getBuffer())
-            }))
+            tasks.push(file.getBuffer())
         }
         await Promise.all(tasks)
 
+        const fileMap: { decode: { names: string[], uint8Arrays: Uint8Array[] }, noDecode: { names: string[], uint8Arrays: Uint8Array[] }} = {
+            //需要解密的文件
+            decode: {
+                names: [],
+                uint8Arrays: [],
+            },
+            //不需要解密的文件
+            noDecode: {
+                names: [],
+                uint8Arrays: [],
+            }
+        };
+
+        //整理出需要解密和不需要解密的文件
         for (const file of files) {
-            if (file.uint8Array) {
-                fileData.names.push(file.name)
-                fileData.uint8Arrays.push(file.uint8Array)
+            if (!file.uint8Array) {
+                continue;
+            }
+            if (file.isDecode) {
+                fileMap.decode.names.push(file.name)
+                fileMap.decode.uint8Arrays.push(file.uint8Array)
+            } else {
+                fileMap.noDecode.names.push(file.name)
+                fileMap.noDecode.uint8Arrays.push(file.uint8Array)
             }
         }
+        //分别处理需要解密和不需要解密的文件
+        const res = await Promise.all([
+            this._execute(params, fileMap.noDecode.names, fileMap.noDecode.uint8Arrays, false),
+            this._execute(params, fileMap.decode.names, fileMap.decode.uint8Arrays, true),
+        ])
 
-        if(!fileData.uint8Arrays.length) {
-            return {}
+        return {
+            ...res[0],
+            ...res[1],
         }
+    }
 
-        const res = await this.handle(params, fileData.uint8Arrays)
-        const finishStatusCount = {
-            success: 0,
-            total: fileData.uint8Arrays.length
-        } //完成状态统计
+    async _execute(params: paramsData, names: string[], uint8Arrays: Uint8Array[], isDecode: boolean = false): Promise<Record<string, Uint8Array>> {
         const resData: Record<string, Uint8Array> = {}
-
+        if (!uint8Arrays.length) {
+            return resData
+        }
+        const res = await this.handle(params, uint8Arrays, isDecode)
         res.forEach((file, i) => {
             if (file.length) {
-                resData[fileData.names[i]] = file
-                finishStatusCount.success++
+                resData[names[i]] = file
             }
         })
         return resData
+    }
+
+    async fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
+        return await this.#core.file_encrypt(file)
+    }
+
+    async filesEncrypt(files: (Uint8Array)[]): Promise<(Uint8Array)[]> {
+        return await this.#core.files_encrypt(files)
     }
 }

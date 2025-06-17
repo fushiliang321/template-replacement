@@ -1,7 +1,7 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "3.0.8",
+  "version": "3.1.0",
   "author": "fushiliang <994301536@qq.com>",
   "license": "ISC",
   "type": "module",
@@ -12,19 +12,19 @@
   "dependencies": {
     "@types/crypto-js": "^4.2.2",
     "@types/streamsaver": "^2.0.5",
-    "axios": "^1.7.9",
+    "axios": "^1.10.0",
     "fflate": "^0.8.2",
     "file-type": "^19.6.0",
     "nanoid": "^4.0.2",
     "streamsaver": "^2.0.6",
-    "template-replacement-core-wasm": "^1.0.0",
-    "template-replacement-sign-core-wasm": "^1.0.1",
+    "template-replacement-core-wasm": "^1.1.1",
+    "template-replacement-sign-core-wasm": "^1.1.1",
     "vite-plugin-wasm-pack": "^0.1.12"
   },
   "devDependencies": {
-    "typescript": "^5.7.3",
-    "vite": "^6.1.0",
-    "vite-plugin-dts": "^4.5.0"
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.5.4"
   },
   "keywords": [
     "template-replacement"
