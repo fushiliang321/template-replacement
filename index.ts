@@ -19,3 +19,13 @@ export function WorkerGeneral(concurrency?: number): ReplaceInterface {
 export function WorkerSign(concurrency?: number): ReplaceInterface {
   return workerSign(concurrency)
 }
+
+type signFun = (data: any) => Promise<string>;
+
+export default (concurrency?: number, signFn?: signFun): ReplaceInterface => {
+  if (concurrency) {
+    return signFn ? workerSign(concurrency) : workerGeneral(concurrency)
+  }else {
+    return signFn ? sign() : general()
+  }
+}
