@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import urlDownloadTask from '../task/urlDownloadTask'
 import { fileTypeFromBuffer } from 'file-type'
 
@@ -57,7 +56,7 @@ export async function fileTypeByBuffer(buffer: Uint8Array|ArrayBuffer|Blob): Pro
 }
 
 export function generateId(): string {
-    return nanoid()
+    return crypto.randomUUID()
 }
 
 export type fileArrayBufferData = {
@@ -67,7 +66,6 @@ export type fileArrayBufferData = {
 
 export async function filesReaderArrayBuffer(files: File[]): Promise<fileArrayBufferData[]> {
     const awaits = []
-    files.forEach
     for (const file of files) {
         awaits.push(new Promise(async (resolve, reject) => {
             try {
