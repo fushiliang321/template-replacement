@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import wasmPack from 'vite-plugin-wasm-pack';
 import dts from 'vite-plugin-dts';
+import { terser } from 'rollup-plugin-terser';
 
 export default defineConfig({
   plugins: [
@@ -18,9 +19,20 @@ export default defineConfig({
       fileName: (format, entryName) => `${entryName}.js`,
       formats: ['es'],
     },
+    minify:"terser",
     rollupOptions: {
+      plugins: [terser({
+        format: {
+          // 取消代码注释
+          comments: false,
+        },
+        mangle: {
+          keep_classnames: false,
+          reserved: [],
+        },
+      })],
       output: {
-        entryFileNames: info => {
+        entryFileNames: (info: { facadeModuleId: string; }) => {
           const modules = info.facadeModuleId?.split('/')
           if (!modules?.length || modules?.length < 2) {
             return '[name].js'
