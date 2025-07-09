@@ -1,5 +1,16 @@
 import axios, { AxiosProgressEvent } from "axios"
-import db from "../db/index"
+import file from "../fileSystem"
+
+async function hashString(str: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    const hashBuffer = await window.crypto.subtle.digest("SHA-1", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    return hashHex;
+}
 
 export default class urlDownloadTask {
     urls: string[]
@@ -21,18 +32,17 @@ export default class urlDownloadTask {
     }
 
     async getUrlData(url: string): Promise<Blob|undefined> {
-        const data = await db.getDataByKey<Blob>(url)
-        if (data && data.data) {
-            return data.data
+        const hash = await hashString(url)
+        const fileObj = file(hash)
+        const data = await fileObj.read()
+        if (data.size) {
+            return data
         }
         const getData = await this.download(url)
         if (!getData) {
             return undefined
         }
-        db.putData<Blob>({
-            url: url,
-            data: getData,
-        })
+        fileObj.write(getData)
         return getData
     }
 
