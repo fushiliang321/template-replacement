@@ -13,7 +13,6 @@
     "axios": "^1.10.0",
     "fflate": "^0.8.2",
     "file-type": "^19.6.0",
-    "rollup-plugin-terser": "^7.0.2",
     "streamsaver": "^2.0.6",
     "template-replacement-core-wasm": "^1.1.1",
     "template-replacement-sign-core-wasm": "^1.1.1",
