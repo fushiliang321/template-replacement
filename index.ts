@@ -23,9 +23,21 @@ export function WorkerSign(concurrency?: number): ReplaceInterface {
 type signFun = (data: any) => Promise<string>;
 
 export default (concurrency?: number, signFn?: signFun): ReplaceInterface => {
+  let res = undefined
   if (concurrency) {
-    return signFn ? workerSign(concurrency) : workerGeneral(concurrency)
+    if (signFn) {
+      res = workerSign(concurrency)
+      res.sign = signFn
+    }else{
+      res = workerGeneral(concurrency)
+    }
   }else {
-    return signFn ? sign() : general()
+    if (signFn) {
+      res = sign()
+      res.sign = signFn
+    }else{
+      res = general()
+    }
   }
+  return res
 }

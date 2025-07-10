@@ -1,4 +1,4 @@
-import { b as d, B as x } from "../base-Bcdx0Hdl.js";
+import { b as d, B as x } from "../base-DIR-qpD-.js";
 let C;
 function k(I) {
   const A = C.__externref_table_alloc();
