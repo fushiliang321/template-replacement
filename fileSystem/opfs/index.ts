@@ -1,10 +1,12 @@
 import FileSystem, {fileDataType} from '../interface'
 
-let opfsRoot: Promise<FileSystemDirectoryHandle> | undefined = undefined
+let opfsRoot: FileSystemDirectoryHandle | undefined = undefined
 
-function getOpfsRoot(): Promise<FileSystemDirectoryHandle> {
+async function getOpfsRoot(): Promise<FileSystemDirectoryHandle> {
     if (!opfsRoot) {
-        opfsRoot = navigator.storage.getDirectory()
+        opfsRoot = await (await navigator.storage.getDirectory()).getDirectoryHandle('template_replacement', {
+            create: true,
+        })
     }
     return opfsRoot
 }
