@@ -1,4 +1,4 @@
-import { w as C } from "../index-BkwrGCka.js";
+import { w as C } from "../index-5nrkfdR0.js";
 const B = `var yI = (I) => {
   throw TypeError(I);
 };
@@ -3937,12 +3937,12 @@ class rB {
         const D = await B.getBuffer();
         if (D && (B.isDecode || await B.type() !== xA.unknown)) {
           let w = await Y(this, l).extract_one_file_medias(D, B.isDecode);
-          g[B.name] = [], w && Array.isArray(w) && w.forEach((o) => {
-            o.id && o.data && g[B.name].push({
-              id: o.id,
-              data: new Uint8Array(o.data)
-            });
-          });
+          if (g[B.name] = [], w && Array.isArray(w))
+            for (const o of w)
+              o.id && o.data && g[B.name].push({
+                id: o.id,
+                data: new Uint8Array(o.data)
+              });
         }
         C();
       }));
@@ -3988,9 +3988,14 @@ class rB {
   }
   async _execute(A, g, Q, B = !1) {
     const C = {};
-    return Q.length && (await this.handle(A, Q, B)).forEach((D, w) => {
-      D.length && (C[g[w]] = D);
-    }), C;
+    if (!Q.length)
+      return C;
+    const E = await this.handle(A, Q, B);
+    for (let D = 0; D < E.length; D++) {
+      const w = E[D];
+      w.length && (C[g[D]] = w);
+    }
+    return C;
   }
   async executeMultipleParams(A, g) {
     g || (g = Y(this, f));
@@ -4837,7 +4842,7 @@ const DC = {
   filesEncrypt: !0,
   fileEncrypt: !0,
   executeMultipleParams: !0
-}, CI = {};
+}, CI = /* @__PURE__ */ new Map();
 let dA;
 function wC(I) {
   dA = new EC(I);
@@ -4852,7 +4857,7 @@ async function iC(I, ...A) {
       params: A
     }
   }), new Promise((Q, B) => {
-    CI[g] = Q;
+    CI.set(g, Q);
   });
 }
 addEventListener("message", async (I) => {
@@ -4868,34 +4873,35 @@ addEventListener("message", async (I) => {
         return;
       const w = await Promise.resolve(D.apply(dA, C.params));
       if (C.replyId) {
-        const o = [];
+        const N = [];
         if (w)
           switch (E) {
             case "execute":
-              for (const N in w) {
-                const G = w[N];
-                G.buffer && o.push(G.buffer);
+              for (const G in w) {
+                const R = w[G];
+                R.buffer && N.push(R.buffer);
               }
               break;
             case "executeMultipleParams":
-              for (const N of w)
-                for (const G in N) {
-                  const R = N[G];
-                  R.buffer && o.push(R.buffer);
+              for (const G of w)
+                for (const R in G) {
+                  const s = G[R];
+                  s.buffer && N.push(s.buffer);
                 }
               break;
             case "extractMedias":
-              for (const N in w)
-                w[N].forEach((R) => {
-                  o.push(R.data.buffer);
-                });
+              for (const G in w) {
+                const R = w[G];
+                for (const s of R)
+                  N.push(s.data.buffer);
+              }
               break;
             case "fileEncrypt":
-              w.length && o.push(w.buffer);
+              w.length && N.push(w.buffer);
               break;
             case "filesEncrypt":
-              for (const N of w)
-                o.push(N.buffer);
+              for (const G of w)
+                N.push(G.buffer);
               break;
           }
         postMessage({
@@ -4904,11 +4910,14 @@ addEventListener("message", async (I) => {
             replyId: C.replyId,
             result: w
           }
-        }, o.length ? { transfer: o } : void 0);
+        }, N.length ? { transfer: N } : void 0);
       }
       break;
     case kA.methodCallReply:
-      CI[(g = A == null ? void 0 : A.data) == null ? void 0 : g.replyId]((Q = A == null ? void 0 : A.data) == null ? void 0 : Q.result), delete CI[(B = A == null ? void 0 : A.data) == null ? void 0 : B.replyId];
+      const o = CI.get((g = A == null ? void 0 : A.data) == null ? void 0 : g.replyId);
+      if (!o)
+        return;
+      o((Q = A == null ? void 0 : A.data) == null ? void 0 : Q.result), CI.delete((B = A == null ? void 0 : A.data) == null ? void 0 : B.replyId);
   }
 });
 const ag = new BC();

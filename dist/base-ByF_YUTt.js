@@ -2,7 +2,7 @@ var w = (r) => {
   throw TypeError(r);
 };
 var y = (r, e, t) => e.has(r) || w("Cannot " + t);
-var o = (r, e, t) => (y(r, e, "read from private field"), t ? t.call(r) : e.get(r)), f = (r, e, t) => e.has(r) ? w("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(r) : e.set(r, t), p = (r, e, t, s) => (y(r, e, "write to private field"), s ? s.call(r, t) : e.set(r, t), t);
+var o = (r, e, t) => (y(r, e, "read from private field"), t ? t.call(r) : e.get(r)), m = (r, e, t) => e.has(r) ? w("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(r) : e.set(r, t), p = (r, e, t, s) => (y(r, e, "write to private field"), s ? s.call(r, t) : e.set(r, t), t);
 class b {
   //表配置
   // 构造函数
@@ -96,11 +96,11 @@ class b {
   }
 }
 new b();
-var m = /* @__PURE__ */ ((r) => (r.word = "word", r.excel = "excel", r.unknown = "unknown", r))(m || {}), l, h;
+var f = /* @__PURE__ */ ((r) => (r.word = "word", r.excel = "excel", r.unknown = "unknown", r))(f || {}), l, h;
 class P {
   constructor(e) {
-    f(this, l, []);
-    f(this, h);
+    m(this, l, []);
+    m(this, h);
     p(this, h, e);
   }
   addTempFile(e) {
@@ -115,7 +115,7 @@ class P {
     for (const a of e)
       s.push(new Promise(async (i, c) => {
         const n = await a.getBuffer();
-        n && (a.isDecode || await a.type() !== m.unknown) && (t[a.name] = await o(this, h).extract_one_file_variable_names(n, a.isDecode)), i();
+        n && (a.isDecode || await a.type() !== f.unknown) && (t[a.name] = await o(this, h).extract_one_file_variable_names(n, a.isDecode)), i();
       }));
     return await Promise.all(s), t;
   }
@@ -125,14 +125,14 @@ class P {
     for (const a of e)
       s.push(new Promise(async (i, c) => {
         const n = await a.getBuffer();
-        if (n && (a.isDecode || await a.type() !== m.unknown)) {
+        if (n && (a.isDecode || await a.type() !== f.unknown)) {
           let u = await o(this, h).extract_one_file_medias(n, a.isDecode);
-          t[a.name] = [], u && Array.isArray(u) && u.forEach((d) => {
-            d.id && d.data && t[a.name].push({
-              id: d.id,
-              data: new Uint8Array(d.data)
-            });
-          });
+          if (t[a.name] = [], u && Array.isArray(u))
+            for (const d of u)
+              d.id && d.data && t[a.name].push({
+                id: d.id,
+                data: new Uint8Array(d.data)
+              });
         }
         i();
       }));
@@ -178,9 +178,14 @@ class P {
   }
   async _execute(e, t, s, a = !1) {
     const i = {};
-    return s.length && (await this.handle(e, s, a)).forEach((n, u) => {
-      n.length && (i[t[u]] = n);
-    }), i;
+    if (!s.length)
+      return i;
+    const c = await this.handle(e, s, a);
+    for (let n = 0; n < c.length; n++) {
+      const u = c[n];
+      u.length && (i[t[n]] = u);
+    }
+    return i;
   }
   async executeMultipleParams(e, t) {
     t || (t = o(this, l));

@@ -17,7 +17,7 @@ const allowCallMethodNames: Partial<Record<methodKeys<ReplaceInterface>, boolean
   executeMultipleParams: true,
 }
 
-const tasks: Record<string, Function> = {} = {}
+const tasks = new Map<string, Function>()
 
 let dispatch: ReplaceInterface
 
@@ -37,7 +37,7 @@ export async function call<T>(method: string, ...params: any[]): Promise<T> {
   })
 
   return new Promise<T>((resolve, reject) => {
-    tasks[replyId] = resolve
+    tasks.set(replyId, resolve)
   })
 }
 
@@ -78,9 +78,9 @@ addEventListener('message', async event => {
               case 'extractMedias':
                 for (const key in (res as Record<string, Uint8Array>)) {
                   const medias: media[] = res[key]
-                  medias.forEach(media => {
+                  for (const media of medias) {
                     transfer.push(media.data.buffer)
-                  })
+                  }
                 }
                 break;
               case 'fileEncrypt':
@@ -104,7 +104,11 @@ addEventListener('message', async event => {
         break;
       case messageTypes.methodCallReply:
         // 方法调用的返回数据
-        tasks[data?.data?.replyId](data?.data?.result)
-        delete tasks[data?.data?.replyId]
+        const fn = tasks.get(data?.data?.replyId)
+        if (!fn) {
+          return
+        }
+        fn(data?.data?.result)
+        tasks.delete(data?.data?.replyId)
     }
 })

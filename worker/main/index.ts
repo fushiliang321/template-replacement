@@ -19,7 +19,7 @@ const chunkMinNum = 20
 export default class WorkerReplace implements ReplaceInterface {
   #files: Temp[] = []
   #dispatcher: DispatcherInterface
-  #tasks: Record<string, Function> = {}
+  #tasks = new Map<string, Function>()
   #concurrency: number = 1
 
   constructor(dispatcher: DispatcherInterface) {
@@ -36,9 +36,10 @@ export default class WorkerReplace implements ReplaceInterface {
           if (!replyData) {
             return
           }
-          if (this.#tasks[replyData.replyId]) {
-            this.#tasks[replyData.replyId](replyData.result)
-            delete this.#tasks[replyData.replyId]
+          const fn = this.#tasks.get(replyData.replyId)
+          if (fn) {
+            fn(replyData.result)
+            this.#tasks.delete(replyData.replyId)
           }
           break;
         case messageTypes.methodCall:
@@ -94,7 +95,7 @@ export default class WorkerReplace implements ReplaceInterface {
       }
     }, transfer.length ? { transfer } :  undefined)
     return new Promise((resolve, reject) => {
-      this.#tasks[replyId] = resolve
+      this.#tasks.set(replyId, resolve)
     })
   }
 
@@ -120,9 +121,9 @@ export default class WorkerReplace implements ReplaceInterface {
       files = this.#files
     }
     const tasks: Promise<transmitFileInfo | undefined>[] = []
-    files.forEach(file => {
+    for (const file of files) {
       tasks.push(file.getTransmitFileInfo())
-    })
+    }
     const res = await Promise.all(tasks)
     return res.filter(item => !!item)
   }

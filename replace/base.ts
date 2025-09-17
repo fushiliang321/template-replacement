@@ -52,14 +52,14 @@ export default class Base implements Interface{
                     let medias = await this.#core.extract_one_file_medias(buffer, file.isDecode)
                     data[file.name] = []
                     if (medias && Array.isArray(medias)) {
-                        medias.forEach(m => {
+                        for (const m of medias) {
                             if (m.id && m.data) {
                                 data[file.name].push({
                                     id: m.id,
                                     data: new Uint8Array(m.data)
                                 })
                             }
-                        })
+                        }
                     }
                 }
                 resolve()
@@ -136,11 +136,12 @@ export default class Base implements Interface{
             return resData
         }
         const res = await this.handle(params, uint8Arrays, isDecode)
-        res.forEach((file, i) => {
+        for (let index = 0; index < res.length; index++) {
+            const file = res[index]
             if (file.length) {
-                resData[names[i]] = file
+                resData[names[index]] = file
             }
-        })
+        }
         return resData
     }
 
