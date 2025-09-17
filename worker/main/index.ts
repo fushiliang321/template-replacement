@@ -48,7 +48,7 @@ export default class WorkerReplace implements ReplaceInterface {
           if (!allowCallMethodNames[method]) {
             return
           }
-          const fun = this[method]
+          const fun = this[method] as Function | undefined
           if (!fun) {
             return
           }
