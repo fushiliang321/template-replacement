@@ -54,7 +54,7 @@ export default class implements ReplaceInterface {
     const text: textData = {}
     for (const key in params.textData) {
       const value = params.textData[key] as Record<keyof image, any>
-      if (value.file && value.file instanceof Blob) {
+      if (value && value.file instanceof Blob) {
         text[key] = new image(value.file)
         delete value.file
         text[key].setPropertys(value)
@@ -66,13 +66,48 @@ export default class implements ReplaceInterface {
     const media: mediaData = {}
     for (const key in params.mediaData) {
       const value = params.mediaData[key] as Record<keyof image, any>
-      if (value.file && value.file instanceof Blob) {
+      if (value && value.file instanceof Blob) {
         media[key] = new image(value.file)
         delete value.file
         media[key].setPropertys(value)
       }
     }
     return this.replace.execute(new paramsData(text, media), files)
+  }
+
+  //执行替换任务（多套参数）
+  executeMultipleParams(paramsMultiple: paramsData[], files: Temp[] | undefined): Promise<Record<string, Uint8Array>[]> {
+    if (files) {
+      for (const i in files) {
+        files[i] = transmitFileInfoToTemp(files[i] as transmitFileInfo)
+      }
+    }
+    const paramsList= []
+    for (const params of paramsMultiple) {
+      const text: textData = {}
+      for (const key in params.textData) {
+        const value = params.textData[key] as Record<keyof image, any>
+        if (value && value.file instanceof Blob) {
+          text[key] = new image(value.file)
+          delete value.file
+          text[key].setPropertys(value)
+        }else {
+          text[key] = value
+        }
+      }
+
+      const media: mediaData = {}
+      for (const key in params.mediaData) {
+        const value = params.mediaData[key] as Record<keyof image, any>
+        if (value && value.file instanceof Blob) {
+          media[key] = new image(value.file)
+          delete value.file
+          media[key].setPropertys(value)
+        }
+      }
+      paramsList.push(new paramsData(text, media))
+    }
+    return this.replace.executeMultipleParams(paramsList, files)
   }
 
   //文件加密

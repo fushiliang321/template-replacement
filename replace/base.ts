@@ -72,6 +72,9 @@ export default class Base implements Interface{
     async handle(paramsData: paramsData, files: Uint8Array[], isDecode: boolean = false): Promise<Uint8Array[]> {
         return []
     }
+    async handleMultipleParams(paramsData: paramsData[], files: Uint8Array[], isDecode: boolean = false): Promise<Uint8Array[]> {
+        return []
+    }
 
     async sign(data: any): Promise<string> {
         return ""
@@ -139,6 +142,79 @@ export default class Base implements Interface{
             }
         })
         return resData
+    }
+
+    async executeMultipleParams(paramsList: paramsData[], files: Temp[] | undefined): Promise<Record<string, Uint8Array>[]> {
+        if (!files) {
+            files = this.#files
+        }
+
+        //等待文件加载完成
+        const tasks = []
+        for (const file of files) {
+            tasks.push(file.getBuffer())
+        }
+        await Promise.all(tasks)
+
+        const fileMap: { decode: { names: string[], uint8Arrays: Uint8Array[] }, noDecode: { names: string[], uint8Arrays: Uint8Array[] }} = {
+            //需要解密的文件
+            decode: {
+                names: [],
+                uint8Arrays: [],
+            },
+            //不需要解密的文件
+            noDecode: {
+                names: [],
+                uint8Arrays: [],
+            }
+        };
+
+        //整理出需要解密和不需要解密的文件
+        for (const file of files) {
+            if (!file.uint8Array) {
+                continue;
+            }
+            if (file.isDecode) {
+                fileMap.decode.names.push(file.name)
+                fileMap.decode.uint8Arrays.push(file.uint8Array)
+            } else {
+                fileMap.noDecode.names.push(file.name)
+                fileMap.noDecode.uint8Arrays.push(file.uint8Array)
+            }
+        }
+        //分别处理需要解密和不需要解密的文件
+        const res = await Promise.all([
+            this._executeMultipleParams(paramsList, fileMap.noDecode.names, fileMap.noDecode.uint8Arrays, false),
+            this._executeMultipleParams(paramsList, fileMap.decode.names, fileMap.decode.uint8Arrays, true),
+        ])
+
+        const result = []
+        for (let i = 0; i < res[0].length; i++) {
+            result.push({...res[0][i], ...res[1][i]})
+        }
+        return result
+    }
+
+
+    async _executeMultipleParams(paramsList: paramsData[], names: string[], uint8Arrays: Uint8Array[], isDecode: boolean = false): Promise<Record<string, Uint8Array>[]> {
+        const result: Record<string, Uint8Array>[] = Array(paramsList.length) //整理出每一套参数的替换结果文件
+        if (!uint8Arrays.length) {
+            return result
+        }
+        const resFileList = await this.handleMultipleParams(paramsList, uint8Arrays, isDecode)
+
+        let resFileIndex = 0
+        for (let index = 0; index < paramsList.length; index++) {
+            const resultItem: Record<string, Uint8Array> = {}
+            for (const name of names) {
+                const file = resFileList[resFileIndex++]
+                if (file.length) {
+                    resultItem[name] = file
+                }
+            }
+            result[index] = resultItem
+        }
+        return result
     }
 
     async fileEncrypt(file: Uint8Array): Promise<Uint8Array> {

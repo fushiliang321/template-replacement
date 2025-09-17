@@ -14,6 +14,7 @@ const allowCallMethodNames: Partial<Record<methodKeys<ReplaceInterface>, boolean
   execute: true,
   filesEncrypt: true,
   fileEncrypt: true,
+  executeMultipleParams: true,
 }
 
 const tasks: Record<string, Function> = {} = {}
@@ -66,6 +67,14 @@ addEventListener('message', async event => {
                   value.buffer && transfer.push(value.buffer)
                 }
                 break;
+              case 'executeMultipleParams':
+                for (const map of (res as Record<string, Uint8Array>[])) {
+                  for (const key in map) {
+                    const value: Uint8Array = map[key]
+                    value.buffer && transfer.push(value.buffer)
+                  }
+                }
+                break;
               case 'extractMedias':
                 for (const key in (res as Record<string, Uint8Array>)) {
                   const medias: media[] = res[key]
@@ -74,14 +83,14 @@ addEventListener('message', async event => {
                   })
                 }
                 break;
-                case 'fileEncrypt':
-                  (res as Uint8Array).length && transfer.push((res as Uint8Array).buffer)
-                  break;
-                case 'filesEncrypt':
-                  for (const item of (res as Uint8Array[])) {
-                    transfer.push(item.buffer)
-                  }
-                  break;
+              case 'fileEncrypt':
+                (res as Uint8Array).length && transfer.push((res as Uint8Array).buffer)
+                break;
+              case 'filesEncrypt':
+                for (const item of (res as Uint8Array[])) {
+                  transfer.push(item.buffer)
+                }
+                break;
             }
           }
           postMessage({

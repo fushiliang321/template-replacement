@@ -1,9 +1,9 @@
-var m = (n) => {
-  throw TypeError(n);
+var w = (r) => {
+  throw TypeError(r);
 };
-var f = (n, e, t) => e.has(n) || m("Cannot " + t);
-var c = (n, e, t) => (f(n, e, "read from private field"), t ? t.call(n) : e.get(n)), _ = (n, e, t) => e.has(n) ? m("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(n) : e.set(n, t), y = (n, e, t, s) => (f(n, e, "write to private field"), s ? s.call(n, t) : e.set(n, t), t);
-class p {
+var y = (r, e, t) => e.has(r) || w("Cannot " + t);
+var o = (r, e, t) => (y(r, e, "read from private field"), t ? t.call(r) : e.get(r)), f = (r, e, t) => e.has(r) ? w("Cannot add the same private member more than once") : e instanceof WeakSet ? e.add(r) : e.set(r, t), p = (r, e, t, s) => (y(r, e, "write to private field"), s ? s.call(r, t) : e.set(r, t), t);
+class b {
   //表配置
   // 构造函数
   constructor() {
@@ -95,39 +95,39 @@ class p {
     });
   }
 }
-new p();
-var w = /* @__PURE__ */ ((n) => (n.word = "word", n.excel = "excel", n.unknown = "unknown", n))(w || {}), h, u;
-class D {
+new b();
+var m = /* @__PURE__ */ ((r) => (r.word = "word", r.excel = "excel", r.unknown = "unknown", r))(m || {}), l, h;
+class P {
   constructor(e) {
-    _(this, h, []);
-    _(this, u);
-    y(this, u, e);
+    f(this, l, []);
+    f(this, h);
+    p(this, h, e);
   }
   addTempFile(e) {
-    c(this, h).push(e);
+    o(this, l).push(e);
   }
   clear() {
-    c(this, h).length = 0;
+    o(this, l).length = 0;
   }
   async extractVariables(e) {
-    e || (e = c(this, h));
+    e || (e = o(this, l));
     const t = {}, s = [];
     for (const a of e)
-      s.push(new Promise(async (i, r) => {
-        const o = await a.getBuffer();
-        o && (a.isDecode || await a.type() !== w.unknown) && (t[a.name] = await c(this, u).extract_one_file_variable_names(o, a.isDecode)), i();
+      s.push(new Promise(async (i, c) => {
+        const n = await a.getBuffer();
+        n && (a.isDecode || await a.type() !== m.unknown) && (t[a.name] = await o(this, h).extract_one_file_variable_names(n, a.isDecode)), i();
       }));
     return await Promise.all(s), t;
   }
   async extractMedias(e) {
-    e || (e = c(this, h));
+    e || (e = o(this, l));
     const t = {}, s = [];
     for (const a of e)
-      s.push(new Promise(async (i, r) => {
-        const o = await a.getBuffer();
-        if (o && (a.isDecode || await a.type() !== w.unknown)) {
-          let l = await c(this, u).extract_one_file_medias(o, a.isDecode);
-          t[a.name] = [], l && Array.isArray(l) && l.forEach((d) => {
+      s.push(new Promise(async (i, c) => {
+        const n = await a.getBuffer();
+        if (n && (a.isDecode || await a.type() !== m.unknown)) {
+          let u = await o(this, h).extract_one_file_medias(n, a.isDecode);
+          t[a.name] = [], u && Array.isArray(u) && u.forEach((d) => {
             d.id && d.data && t[a.name].push({
               id: d.id,
               data: new Uint8Array(d.data)
@@ -141,14 +141,17 @@ class D {
   async handle(e, t, s = !1) {
     return [];
   }
+  async handleMultipleParams(e, t, s = !1) {
+    return [];
+  }
   async sign(e) {
     return "";
   }
   async execute(e, t) {
-    t || (t = c(this, h));
+    t || (t = o(this, l));
     const s = [];
-    for (const r of t)
-      s.push(r.getBuffer());
+    for (const c of t)
+      s.push(c.getBuffer());
     await Promise.all(s);
     const a = {
       //需要解密的文件
@@ -162,8 +165,8 @@ class D {
         uint8Arrays: []
       }
     };
-    for (const r of t)
-      r.uint8Array && (r.isDecode ? (a.decode.names.push(r.name), a.decode.uint8Arrays.push(r.uint8Array)) : (a.noDecode.names.push(r.name), a.noDecode.uint8Arrays.push(r.uint8Array)));
+    for (const c of t)
+      c.uint8Array && (c.isDecode ? (a.decode.names.push(c.name), a.decode.uint8Arrays.push(c.uint8Array)) : (a.noDecode.names.push(c.name), a.noDecode.uint8Arrays.push(c.uint8Array)));
     const i = await Promise.all([
       this._execute(e, a.noDecode.names, a.noDecode.uint8Arrays, !1),
       this._execute(e, a.decode.names, a.decode.uint8Arrays, !0)
@@ -175,19 +178,63 @@ class D {
   }
   async _execute(e, t, s, a = !1) {
     const i = {};
-    return s.length && (await this.handle(e, s, a)).forEach((o, l) => {
-      o.length && (i[t[l]] = o);
+    return s.length && (await this.handle(e, s, a)).forEach((n, u) => {
+      n.length && (i[t[u]] = n);
     }), i;
   }
+  async executeMultipleParams(e, t) {
+    t || (t = o(this, l));
+    const s = [];
+    for (const n of t)
+      s.push(n.getBuffer());
+    await Promise.all(s);
+    const a = {
+      //需要解密的文件
+      decode: {
+        names: [],
+        uint8Arrays: []
+      },
+      //不需要解密的文件
+      noDecode: {
+        names: [],
+        uint8Arrays: []
+      }
+    };
+    for (const n of t)
+      n.uint8Array && (n.isDecode ? (a.decode.names.push(n.name), a.decode.uint8Arrays.push(n.uint8Array)) : (a.noDecode.names.push(n.name), a.noDecode.uint8Arrays.push(n.uint8Array)));
+    const i = await Promise.all([
+      this._executeMultipleParams(e, a.noDecode.names, a.noDecode.uint8Arrays, !1),
+      this._executeMultipleParams(e, a.decode.names, a.decode.uint8Arrays, !0)
+    ]), c = [];
+    for (let n = 0; n < i[0].length; n++)
+      c.push({ ...i[0][n], ...i[1][n] });
+    return c;
+  }
+  async _executeMultipleParams(e, t, s, a = !1) {
+    const i = Array(e.length);
+    if (!s.length)
+      return i;
+    const c = await this.handleMultipleParams(e, s, a);
+    let n = 0;
+    for (let u = 0; u < e.length; u++) {
+      const d = {};
+      for (const D of t) {
+        const _ = c[n++];
+        _.length && (d[D] = _);
+      }
+      i[u] = d;
+    }
+    return i;
+  }
   async fileEncrypt(e) {
-    return await c(this, u).file_encrypt(e);
+    return await o(this, h).file_encrypt(e);
   }
   async filesEncrypt(e) {
-    return await c(this, u).files_encrypt(e);
+    return await o(this, h).files_encrypt(e);
   }
 }
-h = new WeakMap(), u = new WeakMap();
-class x {
+l = new WeakMap(), h = new WeakMap();
+class A {
   constructor(e, t) {
     this.awaitInit = e, this.module = t;
   }
@@ -220,6 +267,6 @@ class x {
   }
 }
 export {
-  D as B,
-  x as b
+  P as B,
+  A as b
 };

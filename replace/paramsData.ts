@@ -36,11 +36,10 @@ export default class paramsData {
     }
 
     //转为替换参数
-    async toReplaceParams(): Promise<[replaceParams, Uint8Array[]]>  {
+    async toReplaceParams(mediaBuffers: Uint8Array[] = []): Promise<[replaceParams, Uint8Array[]]>  {
         const text: Record<string, value> = {}
         const media: Record<string, value> = {}
         const tasks = []
-        const mediaBuffers: Uint8Array[] = []
         for (const key in this.textData) {
             tasks.push(new Promise<void>(async resolve => {
                 const value = this.textData[key]

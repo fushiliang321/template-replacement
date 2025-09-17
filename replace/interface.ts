@@ -26,6 +26,9 @@ export default interface ReplaceInterface {
     //执行替换任务
     execute(params: paramsData, files: Temp[] | undefined): Promise<Record<string, Uint8Array>>
 
+    //执行替换任务（多套参数）
+    executeMultipleParams(params: paramsData[], files: Temp[] | undefined): Promise<Record<string, Uint8Array>[]>
+
     //文件加密
     fileEncrypt(file: Uint8Array): Promise<Uint8Array>
 
