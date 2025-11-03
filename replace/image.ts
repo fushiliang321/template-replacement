@@ -76,11 +76,19 @@ export default class image {
 
     async getExtent(): Promise<extent> {
         if (!this.wpExtent) {
-            const bitmap = await createImageBitmap(this.file)
-            !this.wpExtent && this.setPxExtent(bitmap.width, bitmap.height)
-            bitmap.close()
+            if (this.file.size) {
+                try {
+                    const bitmap = await createImageBitmap(this.file)
+                    !this.wpExtent && this.setPxExtent(bitmap.width, bitmap.height)
+                    bitmap.close()
+                    return this.wpExtent!
+                } catch (error) {
+                    console.error(error)
+                }
+            }
+            !this.wpExtent && this.setPxExtent(0, 0)
         }
-        return this.wpExtent as extent
+        return this.wpExtent!
     }
 
     //设置图片范围（像素）
