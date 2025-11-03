@@ -4587,8 +4587,14 @@ class gA {
   }
   async getExtent() {
     if (!this.wpExtent) {
-      const A = await createImageBitmap(this.file);
-      !this.wpExtent && this.setPxExtent(A.width, A.height), A.close();
+      if (this.file.size)
+        try {
+          const A = await createImageBitmap(this.file);
+          return !this.wpExtent && this.setPxExtent(A.width, A.height), A.close(), this.wpExtent;
+        } catch (A) {
+          console.error(A);
+        }
+      !this.wpExtent && this.setPxExtent(0, 0);
     }
     return this.wpExtent;
   }
