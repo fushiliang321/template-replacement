@@ -1,4 +1,4 @@
-import { b, B as T } from "../base-ByF_YUTt.js";
+import { b, B as T } from "../base-BuKBOMgk.js";
 let C, c = null;
 function Y() {
   return (c === null || c.byteLength === 0) && (c = new Uint8Array(C.memory.buffer)), c;
