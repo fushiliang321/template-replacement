@@ -79,14 +79,18 @@ export default class image {
             if (this.file.size) {
                 try {
                     const bitmap = await createImageBitmap(this.file)
-                    !this.wpExtent && this.setPxExtent(bitmap.width, bitmap.height)
+                    if (this.wpExtent) {
+                        this.setPxExtent(bitmap.width, bitmap.height)
+                    }
                     bitmap.close()
                     return this.wpExtent!
                 } catch (error) {
                     console.error(error)
                 }
             }
-            !this.wpExtent && this.setPxExtent(0, 0)
+            if (!this.wpExtent) {
+                this.setPxExtent(0, 0)
+            }
         }
         return this.wpExtent!
     }

@@ -27,7 +27,7 @@ export default class Zip {
                 const blob = this.getFileBlob()
                 if (blob) {
                     const arrayBuffer = await blob.arrayBuffer()
-                    this._unzipData = await new Promise(async (resolve, reject) => {
+                    this._unzipData = await new Promise((resolve, reject) => {
                         unzip(new Uint8Array(arrayBuffer), (err: FlateError | null, data: Unzipped) => {
                             if (err) {
                                 return reject(err)
@@ -72,12 +72,12 @@ export default class Zip {
         if (!Object.keys(data).length) {
             return undefined
         }
-        return await new Promise(async (resolve, reject) => {
+        return await new Promise((resolve, reject) => {
             zip(data, options,  (err: FlateError | null, data: Uint8Array) => {
                 if (err) {
                     return reject(err)
                 }
-                resolve(new Blob([data]))
+                resolve(new Blob([data as BlobPart]))
             })
         })
     }

@@ -1,7 +1,8 @@
+import _init from '../../worker/child/base';
 
 type templateData<T> = {
-    url: string
-    data: T
+    key: string  // 主键
+    data: T // 文件数据
 }
 
 export default class indexedDBCache {
@@ -9,10 +10,12 @@ export default class indexedDBCache {
     _isInitFinish: boolean = false  //是否初始化完成
 
     _db?: IDBDatabase //数据库
-    _dbName: string = 'template_replacement' //数据库名
+    _dbName: string = 'template_replacement_db' //数据库名
     _dbversion: number  = 1 //数据库版本
-    _cacheTableName: string = 'templates' //表名
-    _tableMap: any = {} //表配置
+    _cacheTableName: string = 'template_files' //表名
+    _tableMap: unknown = {} //表配置
+
+    _init: Promise<unknown> | undefined
 
 
     // 构造函数
@@ -21,7 +24,10 @@ export default class indexedDBCache {
     }
 
     initDB(): Promise<any> {
-        return new Promise((resolve, reject) => {
+        if (this._init) {
+            return this._init
+        }
+        this._init = new Promise((resolve, reject) => {
             const request = indexedDB.open(this._dbName, this._dbversion) // 打开数据库
             // 数据库初始化成功
             request.onsuccess = (event) => {
@@ -48,12 +54,14 @@ export default class indexedDBCache {
                 let db = request.result
                 if (!db.objectStoreNames.contains(this._cacheTableName)) {
                     db.createObjectStore(this._cacheTableName, {
-                        keyPath: 'url', // 设置主键
+                        keyPath: 'key', // 设置主键
                     })
                 }
                 resolve(event)
             }
         })
+
+        return this._init
     }
 
     async awaitInit(): Promise<void> {
@@ -78,67 +86,75 @@ export default class indexedDBCache {
 
     /**
      * @description : 更新数据
-     * @param        {Object} params 添加到数据库中的数据 { url: 文件地址, data: 文件blob }
+     * @param        {templateData} params 添加到数据库中的数据 { key: 文件key, data: 文件blob }
      * @return       {*}
      */
     putData<T>(params: templateData<T>): Promise<any> {
-        return new Promise(async (resolve, reject) => {
-            const response = (await this.store('readwrite')).put(params)
-            // 操作成功
-            response.onsuccess = (event) => {
-                resolve(event)
-            }
-            // 操作失败
-            response.onerror = (event) => {
-                reject(event)
-            }
+        return new Promise((resolve, reject) => {
+            this.store('readwrite').then(store => {
+                const response = store.put(params)
+                // 操作成功
+                response.onsuccess = (event) => {
+                    resolve(event)
+                }
+                // 操作失败
+                response.onerror = (event) => {
+                    reject(event)
+                }
+            }).catch(reject)
         })
     }
 
     // 通过主键读取数据
     getDataByKey<T>(key: string): Promise<templateData<T>> {
-        return new Promise(async (resolve, reject) => {
-            // 通过主键读取数据
-            const request = (await this.store()).get(key)
-            // 操作成功
-            request.onsuccess = () => {
-                resolve(request.result)
-            }
-            // 操作失败
-            request.onerror = (event) => {
-                reject(event)
-            }
+        return new Promise((resolve, reject) => {
+             this.store().then(store => {
+                // 通过主键读取数据
+                const request = store.get(key)
+                // 操作成功
+                request.onsuccess = () => {
+                    resolve(request.result)
+                }
+                // 操作失败
+                request.onerror = (event) => {
+                    reject(event)
+                }
+             }).catch(reject)
         })
     }
 
     // 通过主键移除数据
-    deleteDataByKey<T>(key: string): Promise<void> {
-        return new Promise(async (resolve, reject) => {
-            // 通过主键读取数据
-            const request = (await this.store()).delete(key)
-            // 操作成功
-            request.onsuccess = () => {
-                resolve()
-            }
-            // 操作失败
-            request.onerror = (event) => {
-                reject(event)
-            }
+    deleteDataByKey(key: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.store().then(store => {
+                // 通过主键读取数据
+                const request = store.delete(key)
+                // 操作成功
+                request.onsuccess = () => {
+                    resolve(request.result)
+                }
+                // 操作失败
+                request.onerror = (event) => {
+                    reject(event)
+                }
+             }).catch(reject)
         })
     }
 
     // 清空数据库数据
     clearDB(): Promise<any> {
-        return new Promise(async (resolve, reject) => {
-            const response = (await this.store('readwrite')).clear()
-            // 操作成功
-            response.onsuccess = (event) => {
-                resolve(event)
-            }
-            // 操作失败
-            response.onerror = (event) => {
-                reject(event)
-            }
+        return new Promise((resolve, reject) => {
+            this.store('readwrite').then(store => {
+                const response = store.clear()
+                // 操作成功
+                response.onsuccess = (event) => {
+                    resolve(event)
+                }
+                // 操作失败
+                response.onerror = (event) => {
+                    reject(event)
+                }
+            }).catch(reject)
         })
     }
 

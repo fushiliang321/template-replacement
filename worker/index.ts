@@ -28,13 +28,15 @@ export default class worker implements DispatcherInterface {
     #addOneWorker(webworker: webworker) {
         const worker: Worker = new webworker()
         worker.onmessage = async (event: MessageEvent) => {
-            const tasks = []
+            const tasks: unknown[] = []
             for (const fun of this.#listenerList) {
                 tasks.push(fun(event))
             }
             const res = await Promise.all(tasks)
             for (const reply of res) {
-                reply as any && worker.postMessage(reply)
+                if (reply) {
+                    worker.postMessage(reply)
+                }
             }
         }
         this.#workers.push(worker)

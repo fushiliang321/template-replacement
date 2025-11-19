@@ -16,6 +16,7 @@ application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 - ✅ 变量提取
 - ✅ 媒体文件提取
 - ✅ 模板文件加密/替换加密模板（确保文件无法被第三方使用）
+- ✅ 多套变量同时替换
 ##### 待实现功能：
 - 支持PPTX文件进行替换
 - 更多媒体类型替换
@@ -33,7 +34,7 @@ const replaceInstance = tr()
 需要同时替换大量文件时使用
 ``` javascript
 import tr from 'template-replacement'
-const worker = 4 //线程数量
+const worker = 4 //线程数量，建议<=CPU核心数
 const replaceInstance = tr(worker)
 ```
 3、模板替换并校验签名：
@@ -43,7 +44,11 @@ import tr from 'template-replacement'
 
 //  获取函数签名
 async function getSignature(data) {
-  /** 对data数据进行签名处理，可以请求后端获取签名或者通过其他方式生成签名，不要前端直接生成 */
+  /**
+   * 对data数据进行签名处理，
+   * 可以请求后端获取签名或者通过其他方式生成签名，
+   * 不要前端直接生成，避免暴露签名方法
+   */
 }
 
 const replaceInstance = tr(0, getSignature)
@@ -51,7 +56,7 @@ const replaceInstance = tr(0, getSignature)
 4、多线程模板替换并校验签名：
 ``` javascript
 import tr from 'template-replacement'
-const worker = 4 //线程数量
+const worker = 4 //线程数量，建议<=CPU核心数
 const replaceInstance = tr(worker, getSignature)
 ```
 
@@ -73,7 +78,7 @@ type fileName = string
  */
 const tempFile = new temp(file, url, uint8Array, name)
 
-// 2、标记出加密的模板文件，未加密的文件跳过这一步
+// 2、标记出需要解密的模板文件（通过filesEncrypt方法加密后的文件），未加密的文件跳过这一步
 tempFile.isDecode = true
 
 // 3、把模板文件加入到替换任务中
@@ -83,6 +88,7 @@ replaceInstance.addTempFile(tempFile)
 // 4、清除所有模板文件
 replaceInstance.clear()
 ```
+
 ##### 三、批量提取模板中的媒体文件数据（不需要提取媒体文件数据时跳过这一步）
 ``` typescript
 //媒体文件id，同一个媒体文件在一个模板中多次使用或在不同模板中的id相同
@@ -109,6 +115,8 @@ const result: extractVariablesResult = await replaceInstance.extractVariables()
 ```
 
 ##### 五、执行变量替换
+支持单套变量替换和多套变量替换，执行替换前需确保模板文件已经完成添加。
+1、单套变量替换：一套模板文件根据一套变量的数据生成一套文件数据
 ``` typescript
 import paramsData, { textData, mediaData } from 'template-replacement/replace/paramsData'
 import image from 'template-replacement/replace/image'
@@ -128,6 +136,29 @@ const params = new paramsData(texts, medias)
 const result: executeResult = await replaceInstance.execute(params)
 ```
 
+2、多套变量替换：一套模板文件根据多套变量的数据生成多套文件数据
+``` typescript
+import paramsData, { textData, mediaData } from 'template-replacement/replace/paramsData'
+import image from 'template-replacement/replace/image'
+
+//变量值
+type variableValue = string
+type textData = Record<variableName, variableValue|image>
+type mediaData = Record<mediaID, image>
+type executeResult = Record<fileName, Uint8Array>
+
+/**
+ * 替换的变量数据
+ * texts: textData 文本变量数据，将模板中的文本变量替换为指定文本或者媒体数据
+ * medias: mediaData 媒体变量数据，将模板中的媒体文件替换为指定媒体数据
+ */
+const paramsList = [
+  new paramsData(texts, medias),
+  new paramsData(texts1, medias1),
+  new paramsData(texts2, medias2),
+]
+const result: executeResult[] = await replaceInstance.executeMultipleParams(paramsList)
+```
 
 ##### 其他说明
 1、媒体文件替换，目前仅支持图片替换，其他文件类型暂不支持
@@ -150,9 +181,8 @@ media.setPxExtent(width: number, height: number)
 media.setCmExtent(width: number, height: number)
 ```
 
-2、文件加密，需要防止被第三方获取到模板文件的场景可以使用。
+2、文件加密，需要防止被第三方获取到模板文件的场景可以使用（配合class Temp中的isDecode属性进行解码使用）
 ``` typescript
-
 // 加密后的文件数据，按照传入的文件顺序返回
 type filesEncryptResult = Uint8Array[]
 
@@ -165,14 +195,14 @@ const result: filesEncryptResult = await replaceInstance.filesEncrypt(buffers)
 
 3、模板对象部分属性说明
 ``` typescript
-//template-replacement/temp
-class temp {
+//template-replacement/temp/index.ts
+class Temp {
     name: string = '' //文件名
     blob?: File|Blob //文件数据
     uint8Array?: Uint8Array //文件数据
     url?: string //文件下载地址
     status = status.waitLoad // 文件状态 0文件待加载,1文件已加载,2完成替换,3替换失败
-    isDecode: boolean = false //文件是否被加密
+    isDecode: boolean = false //文件是否需要解密
 }
 
 ```
