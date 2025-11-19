@@ -46,9 +46,13 @@ export function fileTypeByName(name: string): fileTypes {
 
 export async function fileTypeByBuffer(buffer: Uint8Array|ArrayBuffer|Blob): Promise<fileTypes> {
     if (buffer instanceof Blob) {
+        if (buffer.type && officeMIMETypes[buffer.type]) {
+            return officeMIMETypes[buffer.type]
+        }
         buffer = await buffer.arrayBuffer()
     }
     const type = await fileTypeFromBuffer(buffer)
+
     if (type && officeMIMETypes[type.mime]) {
         return officeMIMETypes[type.mime]
     }
@@ -64,21 +68,23 @@ export type fileArrayBufferData = {
     buffer: ArrayBuffer
 }
 
-export async function filesReaderArrayBuffer(files: File[]): Promise<fileArrayBufferData[]> {
-    const awaits = []
+export function filesReaderArrayBuffer(files: File[]): Promise<fileArrayBufferData[]> {
+    const awaits: Promise<fileArrayBufferData>[] = []
     for (const file of files) {
-        awaits.push(new Promise(async (resolve, reject) => {
+        awaits.push(new Promise((resolve, reject) => {
             try {
-                resolve({
-                    name: file.name,
-                    buffer: await file.arrayBuffer()
-                } as fileArrayBufferData)
+                file.arrayBuffer().then(buffer => {
+                    resolve({
+                        name: file.name,
+                        buffer
+                    })
+                }).catch(reject)
             } catch (error) {
                 reject(error)
             }
         }))
     }
-    return (await Promise.all(awaits)) as fileArrayBufferData[]
+    return Promise.all(awaits)
 }
 
 
@@ -87,8 +93,8 @@ export type fileBase64Data = {
     base64: string
 }
 
-export async function filesReaderBase64(files: File[]): Promise<fileBase64Data[]> {
-    const awaits = []
+export function filesReaderBase64(files: File[]): Promise<fileBase64Data[]> {
+    const awaits: Promise<fileBase64Data>[] = []
     for (const file of files) {
         awaits.push(new Promise((resolve, reject) => {
             const fileReader = new FileReader()
@@ -116,7 +122,7 @@ export async function filesReaderBase64(files: File[]): Promise<fileBase64Data[]
             fileReader.readAsDataURL(file)
         }))
     }
-    return await Promise.all(awaits) as fileBase64Data[]
+    return Promise.all(awaits)
 }
 
 export function base64ToBlob(base64: string): Blob {
@@ -157,4 +163,15 @@ export function splitArrayIntoChunks<T>(array: T[], chunkSize: number): T[][] {
         result.push(chunk)
     }
     return result
-  }
+}
+
+// 字符串SHA-1哈希值
+export async function hashString(str: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    const hashBuffer = await window.crypto.subtle.digest("SHA-1", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+}

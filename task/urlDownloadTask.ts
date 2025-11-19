@@ -1,16 +1,6 @@
 import axios, { AxiosProgressEvent } from "axios"
 import file from "../fileSystem"
-
-async function hashString(str: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(str);
-    const hashBuffer = await window.crypto.subtle.digest("SHA-1", data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
-    return hashHex;
-}
+import { hashString } from "../helper"
 
 export default class urlDownloadTask {
     urls: string[]
@@ -23,7 +13,7 @@ export default class urlDownloadTask {
         this.urls = urls
     }
 
-    async start(): Promise<(Blob|undefined)[]> {
+    start(): Promise<(Blob|undefined)[]> {
         const tasks = []
         for (const url of this.urls) {
             tasks.push(this.getUrlData(url))
@@ -47,9 +37,7 @@ export default class urlDownloadTask {
     }
 
     async download(url: string): Promise<Blob> {
-        const response = await axios({
-            url: url,
-            method: 'get',
+        const response = await axios.get(url, {
             responseType: 'blob',
             onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
                 for (const fun of this.downloadProgressListener) {
@@ -64,8 +52,13 @@ export default class urlDownloadTask {
             const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition)
             if (matches != null && matches[1]) {
                 const filename = matches[1].replace(/['"]/g, '')
-                const contentType = response.headers['content-type'] ?? 'application/octet-stream'
-                return new File([response.data], filename, { type: contentType })
+                return new File(
+                    [response.data],
+                    filename,
+                    {
+                        type: response.headers['content-type'] ?? 'application/octet-stream'
+                    }
+                )
             }
         }
         return response.data

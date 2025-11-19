@@ -4,21 +4,13 @@ import workerGeneral from './dispatcher/workerGeneral'
 import workerSign from './dispatcher/workerSign'
 import ReplaceInterface from './replace/interface'
 
-export function General(): ReplaceInterface {
-  return general()
-}
+export const General = general
 
-export function Sign(): ReplaceInterface {
-  return sign()
-}
+export const  Sign = sign
 
-export function WorkerGeneral(concurrency?: number): ReplaceInterface {
-  return workerGeneral(concurrency)
-}
+export const WorkerGeneral = workerGeneral
 
-export function WorkerSign(concurrency?: number): ReplaceInterface {
-  return workerSign(concurrency)
-}
+export const WorkerSign = workerSign
 
 type signFun = (data: any) => Promise<string>;
 

@@ -16,7 +16,7 @@ type value = {
     Text?: string
 }
 
-type replaceParams = {
+export type replaceParams = {
     text: Record<string, value>
     media: Record<string, value>
 }

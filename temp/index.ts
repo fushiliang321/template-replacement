@@ -81,15 +81,11 @@ export default class Temp implements TempInterface{
         if (this._type) {
             return this._type
         }
-        if (this.uint8Array) {
-            this._type = await fileTypeByBuffer(this.uint8Array)
+        const buffer = await this.getBuffer()
+        if (buffer) {
+            this._type = await fileTypeByBuffer(buffer)
         }else{
-            const file = await this.getBlob()
-            if (file) {
-                this._type = await fileTypeByBuffer(file)
-            }else{
-                this._type = fileTypes.unknown
-            }
+            this._type = fileTypes.unknown
         }
         return this._type
     }
@@ -146,17 +142,14 @@ export default class Temp implements TempInterface{
     }
 
     async getTransmitFileInfo(): Promise<transmitFileInfo|undefined> {
-        let uint8Array = this.uint8Array
-        this.uint8Array = undefined
-        if (!uint8Array) {
-            uint8Array = await this.getBuffer()
-        }
+        const uint8Array = this.uint8Array ? this.uint8Array : await this.getBuffer()
         if (!uint8Array) {
             return undefined
         }
+        this.uint8Array = undefined
         return {
             name: this.getName(),
-            uint8Array: new Uint8Array(uint8Array.buffer.slice(0)),
+            uint8Array,
             isDecode: this.isDecode,
         }
     }

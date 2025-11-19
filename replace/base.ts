@@ -27,12 +27,16 @@ export default class Base implements Interface{
         const data: Record<string, string[]> = {}
         const tasks = []
         for (const file of files) {
-            tasks.push(new Promise<void>(async (resolve, reject) => {
-                const buffer = await file.getBuffer()
-                if (buffer && (file.isDecode || (await file.type()) !== fileTypes.unknown)) {
-                    data[file.name] = await this.#core.extract_one_file_variable_names(buffer, file.isDecode)
+            tasks.push(new Promise<void>(async resolve => {
+                try {
+                    const buffer = await file.getBuffer()
+                    if (buffer && (file.isDecode || (await file.type()) !== fileTypes.unknown)) {
+                        data[file.name] = await this.#core.extract_one_file_variable_names(buffer, file.isDecode)
+                    }
+                    resolve()
+                } catch (error) {
+                    console.error(error)
                 }
-                resolve()
             }))
         }
         await Promise.all(tasks)
@@ -46,23 +50,27 @@ export default class Base implements Interface{
         const data: Record<string, media[]> = {}
         const tasks = []
         for (const file of files) {
-            tasks.push(new Promise<void>(async (resolve, reject) => {
-                const buffer = await file.getBuffer()
-                if (buffer && (file.isDecode || (await file.type()) !== fileTypes.unknown)) {
-                    let medias = await this.#core.extract_one_file_medias(buffer, file.isDecode)
-                    data[file.name] = []
-                    if (medias && Array.isArray(medias)) {
-                        for (const m of medias) {
-                            if (m.id && m.data) {
-                                data[file.name].push({
-                                    id: m.id,
-                                    data: new Uint8Array(m.data)
-                                })
+            tasks.push(new Promise<void>(async resolve => {
+                try {
+                    const buffer = await file.getBuffer()
+                    if (buffer && (file.isDecode || (await file.type()) !== fileTypes.unknown)) {
+                        let medias = await this.#core.extract_one_file_medias(buffer, file.isDecode)
+                        data[file.name] = []
+                        if (medias && Array.isArray(medias)) {
+                            for (const m of medias) {
+                                if (m.id && m.data) {
+                                    data[file.name].push({
+                                        id: m.id,
+                                        data: new Uint8Array(m.data)
+                                    })
+                                }
                             }
                         }
                     }
+                    resolve()
+                } catch (error) {
+                    console.error(error)
                 }
-                resolve()
             }))
         }
         await Promise.all(tasks)
@@ -218,11 +226,11 @@ export default class Base implements Interface{
         return result
     }
 
-    async fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
-        return await this.#core.file_encrypt(file)
+    fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
+        return this.#core.file_encrypt(file)
     }
 
-    async filesEncrypt(files: (Uint8Array)[]): Promise<(Uint8Array)[]> {
-        return await this.#core.files_encrypt(files)
+    filesEncrypt(files: (Uint8Array)[]): Promise<(Uint8Array)[]> {
+        return this.#core.files_encrypt(files)
     }
 }

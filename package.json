@@ -1,7 +1,7 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "author": "fushiliang <994301536@qq.com>",
   "type": "module",
   "main": "index.ts",
@@ -10,20 +10,20 @@
     "build": "npx vite build --config vite.config.ts"
   },
   "dependencies": {
-    "@types/streamsaver": "^2.0.5",
-    "axios": "^1.13.1",
+    "axios": "^1.13.2",
     "fflate": "^0.8.2",
     "file-type": "^19.6.0",
     "streamsaver": "^2.0.6",
     "template-replacement-core-wasm": "^1.4.0",
-    "template-replacement-sign-core-wasm": "^1.4.0",
-    "vite-plugin-wasm-pack": "^0.1.12"
+    "template-replacement-sign-core-wasm": "^1.4.0"
   },
   "devDependencies": {
-    "terser": "^5.44.0",
+    "@types/streamsaver": "^2.0.5",
+    "terser": "^5.44.1",
     "typescript": "^5.9.3",
-    "vite": "^7.1.12",
-    "vite-plugin-dts": "^4.5.4"
+    "vite": "^7.2.2",
+    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-wasm-pack": "^0.1.12"
   },
   "keywords": [
     "template-replacement"

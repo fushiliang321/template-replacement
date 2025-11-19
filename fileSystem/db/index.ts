@@ -13,7 +13,7 @@ export default class DbFile implements FileSystem {
     async write(data: fileDataType): Promise<boolean> {
         try {
             await db.putData<File>({
-                url: this.#name,
+                key: this.#name,
                 data: new File([data], this.#name),
             })
             return true
