@@ -1,4 +1,4 @@
-import { b as n, B as j } from "../base-CJv023nf.js";
+import { b as n, B as j } from "../base-Cut_yahw.js";
 let C, R = null;
 function c() {
   return (R === null || R.byteLength === 0) && (R = new Uint8Array(C.memory.buffer)), R;
@@ -463,11 +463,13 @@ class oA extends j {
   async handleMultipleParams(A, g, Q = !1) {
     let B = [];
     for (const J of A)
-      J.add_media = q, B.push(new Promise((T, X) => {
-        J.toReplaceParams().then(([P]) => {
-          T(P);
-        }).catch(X);
-      }));
+      J.add_media = q, B.push(
+        new Promise((T, X) => {
+          J.toReplaceParams().then(([P]) => {
+            T(P);
+          }).catch(X);
+        })
+      );
     const D = [];
     for (const J of g)
       D.push(H(J, Q));
@@ -478,7 +480,10 @@ class oA extends j {
       files: E,
       variables: w
     }), U = await this.sign(Y);
-    return V(String(U), Y.data);
+    return V(
+      String(U),
+      Y.data
+    );
   }
 }
 export {

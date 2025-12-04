@@ -6,13 +6,13 @@ import ReplaceInterface from './replace/interface'
 
 export const General = general
 
-export const  Sign = sign
+export const Sign = sign
 
 export const WorkerGeneral = workerGeneral
 
 export const WorkerSign = workerSign
 
-type signFun = (data: any) => Promise<string>;
+type signFun = (data: any) => Promise<string>
 
 export default (concurrency?: number, signFn?: signFun): ReplaceInterface => {
   let res = undefined
@@ -20,14 +20,14 @@ export default (concurrency?: number, signFn?: signFun): ReplaceInterface => {
     if (signFn) {
       res = workerSign(concurrency)
       res.sign = signFn
-    }else{
+    } else {
       res = workerGeneral(concurrency)
     }
-  }else {
+  } else {
     if (signFn) {
       res = sign()
       res.sign = signFn
-    }else{
+    } else {
       res = general()
     }
   }

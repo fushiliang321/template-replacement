@@ -1,11 +1,14 @@
-import { messageData, methodCall } from "./type";
+import { messageData, methodCall } from './type'
 
 export default interface DispatcherInterface {
-    concurrency(): number
+  concurrency(): number
 
-    postMessage(message: messageData|methodCall, options?: StructuredSerializeOptions): void
+  postMessage(
+    message: messageData | methodCall,
+    options?: StructuredSerializeOptions,
+  ): void
 
-    addListener(fun: (event: MessageEvent) => void): void
+  addListener(fun: (event: MessageEvent) => void): void
 
-    removeListener(fun: (event: MessageEvent) => void): void
+  removeListener(fun: (event: MessageEvent) => void): void
 }

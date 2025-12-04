@@ -1,5 +1,5 @@
-import Replace from '../../replace/sign';
-import init, { call } from './base';
+import Replace from '../../replace/sign'
+import init, { call } from './base'
 
 const replace = new Replace()
 init(replace)

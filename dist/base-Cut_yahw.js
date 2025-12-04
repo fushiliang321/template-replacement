@@ -113,37 +113,47 @@ class m {
     e || (e = this.#e);
     const a = {}, i = [];
     for (const t of e)
-      i.push(new Promise(async (s) => {
-        try {
-          const n = await t.getBuffer();
-          n && (t.isDecode || await t.type() !== l.unknown) && (a[t.name] = await this.#t.extract_one_file_variable_names(n, t.isDecode)), s();
-        } catch (n) {
-          console.error(n);
-        }
-      }));
+      i.push(
+        new Promise(async (s) => {
+          try {
+            const n = await t.getBuffer();
+            n && (t.isDecode || await t.type() !== l.unknown) && (a[t.name] = await this.#t.extract_one_file_variable_names(
+              n,
+              t.isDecode
+            )), s();
+          } catch (n) {
+            console.error(n);
+          }
+        })
+      );
     return await Promise.all(i), a;
   }
   async extractMedias(e) {
     e || (e = this.#e);
     const a = {}, i = [];
     for (const t of e)
-      i.push(new Promise(async (s) => {
-        try {
-          const n = await t.getBuffer();
-          if (n && (t.isDecode || await t.type() !== l.unknown)) {
-            let r = await this.#t.extract_one_file_medias(n, t.isDecode);
-            if (a[t.name] = [], r && Array.isArray(r))
-              for (const o of r)
-                o.id && o.data && a[t.name].push({
-                  id: o.id,
-                  data: new Uint8Array(o.data)
-                });
+      i.push(
+        new Promise(async (s) => {
+          try {
+            const n = await t.getBuffer();
+            if (n && (t.isDecode || await t.type() !== l.unknown)) {
+              let r = await this.#t.extract_one_file_medias(
+                n,
+                t.isDecode
+              );
+              if (a[t.name] = [], r && Array.isArray(r))
+                for (const o of r)
+                  o.id && o.data && a[t.name].push({
+                    id: o.id,
+                    data: new Uint8Array(o.data)
+                  });
+            }
+            s();
+          } catch (n) {
+            console.error(n);
           }
-          s();
-        } catch (n) {
-          console.error(n);
-        }
-      }));
+        })
+      );
     return await Promise.all(i), a;
   }
   async handle(e, a, i = !1) {
@@ -176,8 +186,18 @@ class m {
     for (const n of a)
       n.uint8Array && (n.isDecode ? (t.decode.names.push(n.name), t.decode.uint8Arrays.push(n.uint8Array)) : (t.noDecode.names.push(n.name), t.noDecode.uint8Arrays.push(n.uint8Array)));
     const s = await Promise.all([
-      this._execute(e, t.noDecode.names, t.noDecode.uint8Arrays, !1),
-      this._execute(e, t.decode.names, t.decode.uint8Arrays, !0)
+      this._execute(
+        e,
+        t.noDecode.names,
+        t.noDecode.uint8Arrays,
+        !1
+      ),
+      this._execute(
+        e,
+        t.decode.names,
+        t.decode.uint8Arrays,
+        !0
+      )
     ]);
     return {
       ...s[0],
@@ -216,8 +236,18 @@ class m {
     for (const r of a)
       r.uint8Array && (r.isDecode ? (t.decode.names.push(r.name), t.decode.uint8Arrays.push(r.uint8Array)) : (t.noDecode.names.push(r.name), t.noDecode.uint8Arrays.push(r.uint8Array)));
     const s = await Promise.all([
-      this._executeMultipleParams(e, t.noDecode.names, t.noDecode.uint8Arrays, !1),
-      this._executeMultipleParams(e, t.decode.names, t.decode.uint8Arrays, !0)
+      this._executeMultipleParams(
+        e,
+        t.noDecode.names,
+        t.noDecode.uint8Arrays,
+        !1
+      ),
+      this._executeMultipleParams(
+        e,
+        t.decode.names,
+        t.decode.uint8Arrays,
+        !0
+      )
     ]), n = [];
     for (let r = 0; r < s[0].length; r++)
       n.push({ ...s[0][r], ...s[1][r] });
@@ -227,7 +257,11 @@ class m {
     const s = Array(e.length);
     if (!i.length)
       return s;
-    const n = await this.handleMultipleParams(e, i, t);
+    const n = await this.handleMultipleParams(
+      e,
+      i,
+      t
+    );
     let r = 0;
     for (let o = 0; o < e.length; o++) {
       const u = {};

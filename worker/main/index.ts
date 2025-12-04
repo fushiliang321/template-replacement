@@ -1,15 +1,17 @@
-import { messageData, messageTypes, methodCall, methodCallReply } from '../type';
-import DispatcherInterface from '../interface';
-import { generateId, splitArrayIntoChunks } from '../../helper';
-import ReplaceInterface, { media } from '../../replace/interface';
-import paramsData from '../../replace/paramsData';
-import Temp, { transmitFileInfo } from '../../temp';
+import { messageData, messageTypes, methodCall, methodCallReply } from '../type'
+import DispatcherInterface from '../interface'
+import { generateId, splitArrayIntoChunks } from '../../helper'
+import ReplaceInterface, { media } from '../../replace/interface'
+import paramsData from '../../replace/paramsData'
+import Temp, { transmitFileInfo } from '../../temp'
 
 type methodKeys<T> = {
-  [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never;
-}[keyof T];
+  [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never
+}[keyof T]
 
-const allowCallMethodNames: Partial<Record<methodKeys<ReplaceInterface>, boolean>> = {
+const allowCallMethodNames: Partial<
+  Record<methodKeys<ReplaceInterface>, boolean>
+> = {
   sign: true,
 }
 
@@ -28,7 +30,7 @@ export default class WorkerReplace implements ReplaceInterface {
   }
 
   setDispatcher(dispatcher: DispatcherInterface) {
-    dispatcher.addListener(event => {
+    dispatcher.addListener((event) => {
       const data = event.data as messageData
       switch (data.type) {
         case messageTypes.methodCallReply:
@@ -41,7 +43,7 @@ export default class WorkerReplace implements ReplaceInterface {
             fn(replyData.result)
             this.#tasks.delete(replyData.replyId)
           }
-          break;
+          break
         case messageTypes.methodCall:
           const callData = data.data as methodCall
           const method = callData.method as methodKeys<ReplaceInterface>
@@ -61,8 +63,8 @@ export default class WorkerReplace implements ReplaceInterface {
               type: messageTypes.methodCallReply,
               data: {
                 replyId: callData.replyId,
-                result: await Promise.resolve(callRes)
-              }
+                result: await Promise.resolve(callRes),
+              },
             })
           })
       }
@@ -86,24 +88,32 @@ export default class WorkerReplace implements ReplaceInterface {
     }
 
     const replyId = generateId()
-    this.#dispatcher.postMessage({
-      type: messageTypes.methodCall,
-      data: {
-        replyId,
-        method,
-        params
-      }
-    }, transfer.length ? { transfer } :  undefined)
+    this.#dispatcher.postMessage(
+      {
+        type: messageTypes.methodCall,
+        data: {
+          replyId,
+          method,
+          params,
+        },
+      },
+      transfer.length ? { transfer } : undefined,
+    )
     return new Promise((resolve, reject) => {
       this.#tasks.set(replyId, resolve)
     })
   }
 
   //分片
-  #chunk<T>(data: T[], chunkPackage?: (chunkData: T[]) => any): (T[] | ((chunkData: T[]) => any))[] {
+  #chunk<T>(
+    data: T[],
+    chunkPackage?: (chunkData: T[]) => any,
+  ): (T[] | ((chunkData: T[]) => any))[] {
     let chunks
     if (this.#concurrency > 1 && data.length > chunkMinNum) {
-      const chunkSize = Math.ceil(data.length / (Math.round(data.length / chunkMinNum)))
+      const chunkSize = Math.ceil(
+        data.length / Math.round(data.length / chunkMinNum),
+      )
       chunks = splitArrayIntoChunks<T>(data, chunkSize)
     } else {
       chunks = [data]
@@ -116,7 +126,9 @@ export default class WorkerReplace implements ReplaceInterface {
     return chunks
   }
 
-  async #getTempFileData(files: Temp[] | undefined): Promise<transmitFileInfo[]> {
+  async #getTempFileData(
+    files: Temp[] | undefined,
+  ): Promise<transmitFileInfo[]> {
     if (!files) {
       files = this.#files
     }
@@ -125,15 +137,17 @@ export default class WorkerReplace implements ReplaceInterface {
       tasks.push(file.getTransmitFileInfo())
     }
     const res = await Promise.all(tasks)
-    return res.filter(item => !!item)
+    return res.filter((item) => !!item)
   }
-
 
   clear(): void {
     this.#files.length = 0
   }
 
-  async #chunkCall(method: string, paramChunks: any[]): Promise<Record<string, any>> {
+  async #chunkCall(
+    method: string,
+    paramChunks: any[],
+  ): Promise<Record<string, any>> {
     const tasks: Promise<Record<string, any>>[] = []
     for (const chunk of paramChunks) {
       tasks.push(this.#call(method, chunk))
@@ -148,17 +162,21 @@ export default class WorkerReplace implements ReplaceInterface {
     this.#files.push(tempFile)
   }
 
-  async extractVariables(files: Temp[] | undefined): Promise<Record<string, string[]>> {
+  async extractVariables(
+    files: Temp[] | undefined,
+  ): Promise<Record<string, string[]>> {
     const fileData = await this.#getTempFileData(files)
-    const chunks = this.#chunk(fileData, chunkData => {
+    const chunks = this.#chunk(fileData, (chunkData) => {
       return [chunkData]
     })
     return this.#chunkCall('extractVariables', chunks)
   }
 
-  async extractMedias(files: Temp[] | undefined): Promise<Record<string, media[]>> {
+  async extractMedias(
+    files: Temp[] | undefined,
+  ): Promise<Record<string, media[]>> {
     const fileData = await this.#getTempFileData(files)
-    const chunks = this.#chunk(fileData, chunkData => {
+    const chunks = this.#chunk(fileData, (chunkData) => {
       return [chunkData]
     })
     return this.#chunkCall('extractMedias', chunks)
@@ -168,25 +186,36 @@ export default class WorkerReplace implements ReplaceInterface {
     return ''
   }
 
-  async execute(params: paramsData, files: Temp[] | undefined): Promise<Record<string, Uint8Array>> {
+  async execute(
+    params: paramsData,
+    files: Temp[] | undefined,
+  ): Promise<Record<string, Uint8Array>> {
     const fileData = await this.#getTempFileData(files)
-    const chunks = this.#chunk(fileData, chunkData => {
+    const chunks = this.#chunk(fileData, (chunkData) => {
       return [params, chunkData]
     })
     return this.#chunkCall('execute', chunks)
   }
 
-  async executeMultipleParams(params: paramsData[], files: Temp[] | undefined): Promise<Record<string, Uint8Array>[]> {
+  async executeMultipleParams(
+    params: paramsData[],
+    files: Temp[] | undefined,
+  ): Promise<Record<string, Uint8Array>[]> {
     const fileData = await this.#getTempFileData(files)
     const tasks: Promise<Record<string, any>[]>[] = []
-    this.#chunk(fileData, chunkData => {
-      tasks.push(this.#call('executeMultipleParams', [params, chunkData] as any))
+    this.#chunk(fileData, (chunkData) => {
+      tasks.push(
+        this.#call('executeMultipleParams', [params, chunkData] as any),
+      )
     })
-    const tasksRes = (await Promise.all(tasks)) as Record<string, Uint8Array>[][]
+    const tasksRes = (await Promise.all(tasks)) as Record<
+      string,
+      Uint8Array
+    >[][]
     const res = new Array(params.length)
     for (const item of tasksRes) {
       for (let index = 0; index < item.length; index++) {
-        res[index] = {...item[index], ...res[index]}
+        res[index] = { ...item[index], ...res[index] }
       }
     }
     return res
@@ -197,7 +226,7 @@ export default class WorkerReplace implements ReplaceInterface {
   }
 
   async filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
-    const chunks = this.#chunk<Uint8Array>(files) as (Uint8Array[])[]
+    const chunks = this.#chunk<Uint8Array>(files) as Uint8Array[][]
 
     const tasks: Promise<Uint8Array[]>[] = []
     for (const chunk of chunks) {

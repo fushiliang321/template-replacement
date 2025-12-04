@@ -1959,16 +1959,14 @@ class lB {
       }
     }), B = g.headers["content-disposition"];
     if (B) {
-      const Q = /filename[^;=\\n]*=((['"]).*?\\2|[^;\\n]*)/.exec(B);
+      const Q = /filename[^;=\\n]*=((['"]).*?\\2|[^;\\n]*)/.exec(
+        B
+      );
       if (Q != null && Q[1]) {
         const C = Q[1].replace(/['"]/g, "");
-        return new File(
-          [g.data],
-          C,
-          {
-            type: g.headers["content-type"] ?? "application/octet-stream"
-          }
-        );
+        return new File([g.data], C, {
+          type: g.headers["content-type"] ?? "application/octet-stream"
+        });
       }
     }
     return g.data;
@@ -3935,37 +3933,47 @@ class RQ {
     A || (A = this.#A);
     const g = {}, B = [];
     for (const Q of A)
-      B.push(new Promise(async (C) => {
-        try {
-          const E = await Q.getBuffer();
-          E && (Q.isDecode || await Q.type() !== LA.unknown) && (g[Q.name] = await this.#I.extract_one_file_variable_names(E, Q.isDecode)), C();
-        } catch (E) {
-          console.error(E);
-        }
-      }));
+      B.push(
+        new Promise(async (C) => {
+          try {
+            const E = await Q.getBuffer();
+            E && (Q.isDecode || await Q.type() !== LA.unknown) && (g[Q.name] = await this.#I.extract_one_file_variable_names(
+              E,
+              Q.isDecode
+            )), C();
+          } catch (E) {
+            console.error(E);
+          }
+        })
+      );
     return await Promise.all(B), g;
   }
   async extractMedias(A) {
     A || (A = this.#A);
     const g = {}, B = [];
     for (const Q of A)
-      B.push(new Promise(async (C) => {
-        try {
-          const E = await Q.getBuffer();
-          if (E && (Q.isDecode || await Q.type() !== LA.unknown)) {
-            let D = await this.#I.extract_one_file_medias(E, Q.isDecode);
-            if (g[Q.name] = [], D && Array.isArray(D))
-              for (const w of D)
-                w.id && w.data && g[Q.name].push({
-                  id: w.id,
-                  data: new Uint8Array(w.data)
-                });
+      B.push(
+        new Promise(async (C) => {
+          try {
+            const E = await Q.getBuffer();
+            if (E && (Q.isDecode || await Q.type() !== LA.unknown)) {
+              let D = await this.#I.extract_one_file_medias(
+                E,
+                Q.isDecode
+              );
+              if (g[Q.name] = [], D && Array.isArray(D))
+                for (const w of D)
+                  w.id && w.data && g[Q.name].push({
+                    id: w.id,
+                    data: new Uint8Array(w.data)
+                  });
+            }
+            C();
+          } catch (E) {
+            console.error(E);
           }
-          C();
-        } catch (E) {
-          console.error(E);
-        }
-      }));
+        })
+      );
     return await Promise.all(B), g;
   }
   async handle(A, g, B = !1) {
@@ -3998,8 +4006,18 @@ class RQ {
     for (const E of g)
       E.uint8Array && (E.isDecode ? (Q.decode.names.push(E.name), Q.decode.uint8Arrays.push(E.uint8Array)) : (Q.noDecode.names.push(E.name), Q.noDecode.uint8Arrays.push(E.uint8Array)));
     const C = await Promise.all([
-      this._execute(A, Q.noDecode.names, Q.noDecode.uint8Arrays, !1),
-      this._execute(A, Q.decode.names, Q.decode.uint8Arrays, !0)
+      this._execute(
+        A,
+        Q.noDecode.names,
+        Q.noDecode.uint8Arrays,
+        !1
+      ),
+      this._execute(
+        A,
+        Q.decode.names,
+        Q.decode.uint8Arrays,
+        !0
+      )
     ]);
     return {
       ...C[0],
@@ -4038,8 +4056,18 @@ class RQ {
     for (const D of g)
       D.uint8Array && (D.isDecode ? (Q.decode.names.push(D.name), Q.decode.uint8Arrays.push(D.uint8Array)) : (Q.noDecode.names.push(D.name), Q.noDecode.uint8Arrays.push(D.uint8Array)));
     const C = await Promise.all([
-      this._executeMultipleParams(A, Q.noDecode.names, Q.noDecode.uint8Arrays, !1),
-      this._executeMultipleParams(A, Q.decode.names, Q.decode.uint8Arrays, !0)
+      this._executeMultipleParams(
+        A,
+        Q.noDecode.names,
+        Q.noDecode.uint8Arrays,
+        !1
+      ),
+      this._executeMultipleParams(
+        A,
+        Q.decode.names,
+        Q.decode.uint8Arrays,
+        !0
+      )
     ]), E = [];
     for (let D = 0; D < C[0].length; D++)
       E.push({ ...C[0][D], ...C[1][D] });
@@ -4049,7 +4077,11 @@ class RQ {
     const C = Array(A.length);
     if (!B.length)
       return C;
-    const E = await this.handleMultipleParams(A, B, Q);
+    const E = await this.handleMultipleParams(
+      A,
+      B,
+      Q
+    );
     let D = 0;
     for (let w = 0; w < A.length; w++) {
       const G = {};
@@ -4561,13 +4593,20 @@ class jQ extends RQ {
   async handleMultipleParams(A, g, B = !1) {
     const Q = [], C = [];
     for (const D of A)
-      C.push(new Promise((w, G) => {
-        D.toReplaceParams(Q).then(([o]) => {
-          w(o);
-        }).catch(G);
-      }));
+      C.push(
+        new Promise((w, G) => {
+          D.toReplaceParams(Q).then(([o]) => {
+            w(o);
+          }).catch(G);
+        })
+      );
     const E = await Promise.all(C);
-    return Cg(E, Q, g, B);
+    return Cg(
+      E,
+      Q,
+      g,
+      B
+    );
   }
 }
 function SI(I) {
@@ -4645,54 +4684,61 @@ class tI {
   async toReplaceParams(A = []) {
     const g = {}, B = {}, Q = [];
     for (const C in this.textData)
-      Q.push(new Promise(async (E) => {
-        const D = this.textData[C];
-        if (D instanceof v) {
-          let w = D.id ?? "", G = 0;
-          if (!w) {
-            const o = await D.file.arrayBuffer(), M = new Uint8Array(o);
-            this.add_media ? w = await this.add_media(M) : G = A.push(M) - 1;
-          }
-          g[C] = {
-            Image: {
-              index: G,
-              id: w,
-              suffix: "",
-              wp_extent: D.wpExtent ?? { cx: 0, cy: 0 },
-              text_wrap: D.textWrap
+      Q.push(
+        new Promise(async (E) => {
+          const D = this.textData[C];
+          if (D instanceof v) {
+            let w = D.id ?? "", G = 0;
+            if (!w) {
+              const o = await D.file.arrayBuffer(), M = new Uint8Array(o);
+              this.add_media ? w = await this.add_media(M) : G = A.push(M) - 1;
             }
-          };
-        } else
-          g[C] = {
-            Text: String(D)
-          };
-        E();
-      }));
+            g[C] = {
+              Image: {
+                index: G,
+                id: w,
+                suffix: "",
+                wp_extent: D.wpExtent ?? { cx: 0, cy: 0 },
+                text_wrap: D.textWrap
+              }
+            };
+          } else
+            g[C] = {
+              Text: String(D)
+            };
+          E();
+        })
+      );
     for (const C in this.mediaData)
-      Q.push(new Promise(async (E) => {
-        const D = this.mediaData[C];
-        if (D instanceof v) {
-          let w = D.id ?? "", G = 0;
-          if (!w) {
-            const o = await D.file.arrayBuffer(), M = new Uint8Array(o);
-            this.add_media ? w = await this.add_media(M) : G = A.push(M) - 1;
-          }
-          B[C] = {
-            Image: {
-              index: G,
-              id: w,
-              suffix: "",
-              wp_extent: D.wpExtent ?? { cx: 0, cy: 0 },
-              text_wrap: D.textWrap
+      Q.push(
+        new Promise(async (E) => {
+          const D = this.mediaData[C];
+          if (D instanceof v) {
+            let w = D.id ?? "", G = 0;
+            if (!w) {
+              const o = await D.file.arrayBuffer(), M = new Uint8Array(o);
+              this.add_media ? w = await this.add_media(M) : G = A.push(M) - 1;
             }
-          };
-        }
-        E();
-      }));
-    return await Promise.all(Q), [{
-      text: g,
-      media: B
-    }, A];
+            B[C] = {
+              Image: {
+                index: G,
+                id: w,
+                suffix: "",
+                wp_extent: D.wpExtent ?? { cx: 0, cy: 0 },
+                text_wrap: D.textWrap
+              }
+            };
+          }
+          E();
+        })
+      );
+    return await Promise.all(Q), [
+      {
+        text: g,
+        media: B
+      },
+      A
+    ];
   }
   isEmpty() {
     return Object.keys(this.textData).length === 0 && Object.keys(this.mediaData).length === 0;
@@ -4903,13 +4949,16 @@ addEventListener("message", async (I) => {
                 D.push(w.buffer);
               break;
           }
-        postMessage({
-          type: YA.methodCallReply,
-          data: {
-            replyId: g.replyId,
-            result: C
-          }
-        }, D.length ? { transfer: D } : void 0);
+        postMessage(
+          {
+            type: YA.methodCallReply,
+            data: {
+              replyId: g.replyId,
+              result: C
+            }
+          },
+          D.length ? { transfer: D } : void 0
+        );
       }
       break;
     case YA.methodCallReply:

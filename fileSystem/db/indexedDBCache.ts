@@ -1,161 +1,166 @@
-import _init from '../../worker/child/base';
+import _init from '../../worker/child/base'
 
 type templateData<T> = {
-    key: string  // 主键
-    data: T // 文件数据
+  key: string // 主键
+  data: T // 文件数据
 }
 
 export default class indexedDBCache {
-    _initFinishCallBackFuns?: Function[] = [] //初始化完成回调
-    _isInitFinish: boolean = false  //是否初始化完成
+  _initFinishCallBackFuns?: Function[] = [] //初始化完成回调
+  _isInitFinish: boolean = false //是否初始化完成
 
-    _db?: IDBDatabase //数据库
-    _dbName: string = 'template_replacement_db' //数据库名
-    _dbversion: number  = 1 //数据库版本
-    _cacheTableName: string = 'template_files' //表名
-    _tableMap: unknown = {} //表配置
+  _db?: IDBDatabase //数据库
+  _dbName: string = 'template_replacement_db' //数据库名
+  _dbversion: number = 1 //数据库版本
+  _cacheTableName: string = 'template_files' //表名
+  _tableMap: unknown = {} //表配置
 
-    _init: Promise<unknown> | undefined
+  _init: Promise<unknown> | undefined
 
+  // 构造函数
+  constructor() {
+    this.initDB()
+  }
 
-    // 构造函数
-    constructor() {
-        this.initDB()
+  initDB(): Promise<any> {
+    if (this._init) {
+      return this._init
     }
-
-    initDB(): Promise<any> {
-        if (this._init) {
-            return this._init
+    this._init = new Promise((resolve, reject) => {
+      const request = indexedDB.open(this._dbName, this._dbversion) // 打开数据库
+      // 数据库初始化成功
+      request.onsuccess = (event) => {
+        this._db = request.result
+        this._isInitFinish = true
+        if (this._initFinishCallBackFuns) {
+          try {
+            for (const fun of this._initFinishCallBackFuns) {
+              fun()
+            }
+          } catch (error) {}
+          this._initFinishCallBackFuns = undefined
         }
-        this._init = new Promise((resolve, reject) => {
-            const request = indexedDB.open(this._dbName, this._dbversion) // 打开数据库
-            // 数据库初始化成功
-            request.onsuccess = (event) => {
-                this._db = request.result
-                this._isInitFinish = true
-                if (this._initFinishCallBackFuns) {
-                    try {
-                        for (const fun of this._initFinishCallBackFuns) {
-                            fun()
-                        }
-                    } catch (error) {
-                    }
-                    this._initFinishCallBackFuns = undefined
-                }
-                resolve(event)
-            }
-            // 数据库初始化失败
-            request.onerror = (event) => {
-                console.error(event)
-                reject(event)
-            }
-            // 数据库初次创建或更新时会触发
-            request.onupgradeneeded = (event) => {
-                let db = request.result
-                if (!db.objectStoreNames.contains(this._cacheTableName)) {
-                    db.createObjectStore(this._cacheTableName, {
-                        keyPath: 'key', // 设置主键
-                    })
-                }
-                resolve(event)
-            }
-        })
-
-        return this._init
-    }
-
-    async awaitInit(): Promise<void> {
-        if(this._isInitFinish || !this._initFinishCallBackFuns) {
-            return
+        resolve(event)
+      }
+      // 数据库初始化失败
+      request.onerror = (event) => {
+        console.error(event)
+        reject(event)
+      }
+      // 数据库初次创建或更新时会触发
+      request.onupgradeneeded = (event) => {
+        let db = request.result
+        if (!db.objectStoreNames.contains(this._cacheTableName)) {
+          db.createObjectStore(this._cacheTableName, {
+            keyPath: 'key', // 设置主键
+          })
         }
-        await new Promise((resolve, reject) => {
-            this._initFinishCallBackFuns?.push(resolve)
+        resolve(event)
+      }
+    })
+
+    return this._init
+  }
+
+  async awaitInit(): Promise<void> {
+    if (this._isInitFinish || !this._initFinishCallBackFuns) {
+      return
+    }
+    await new Promise((resolve, reject) => {
+      this._initFinishCallBackFuns?.push(resolve)
+    })
+  }
+
+  closeDB(): void {
+    this._db?.close()
+  }
+
+  async store(mode?: IDBTransactionMode): Promise<IDBObjectStore> {
+    await this.awaitInit()
+    const db = this._db as IDBDatabase
+    const transaction = db.transaction(this._cacheTableName, mode)
+    return transaction.objectStore(this._cacheTableName)
+  }
+
+  /**
+   * @description : 更新数据
+   * @param        {templateData} params 添加到数据库中的数据 { key: 文件key, data: 文件blob }
+   * @return       {*}
+   */
+  putData<T>(params: templateData<T>): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.store('readwrite')
+        .then((store) => {
+          const response = store.put(params)
+          // 操作成功
+          response.onsuccess = (event) => {
+            resolve(event)
+          }
+          // 操作失败
+          response.onerror = (event) => {
+            reject(event)
+          }
         })
-    }
+        .catch(reject)
+    })
+  }
 
-    closeDB(): void {
-        this._db?.close()
-    }
-
-    async store(mode?: IDBTransactionMode): Promise<IDBObjectStore> {
-        await this.awaitInit()
-        const db = this._db as IDBDatabase
-        const transaction = db.transaction(this._cacheTableName, mode)
-        return transaction.objectStore(this._cacheTableName)
-    }
-
-    /**
-     * @description : 更新数据
-     * @param        {templateData} params 添加到数据库中的数据 { key: 文件key, data: 文件blob }
-     * @return       {*}
-     */
-    putData<T>(params: templateData<T>): Promise<any> {
-        return new Promise((resolve, reject) => {
-            this.store('readwrite').then(store => {
-                const response = store.put(params)
-                // 操作成功
-                response.onsuccess = (event) => {
-                    resolve(event)
-                }
-                // 操作失败
-                response.onerror = (event) => {
-                    reject(event)
-                }
-            }).catch(reject)
+  // 通过主键读取数据
+  getDataByKey<T>(key: string): Promise<templateData<T>> {
+    return new Promise((resolve, reject) => {
+      this.store()
+        .then((store) => {
+          // 通过主键读取数据
+          const request = store.get(key)
+          // 操作成功
+          request.onsuccess = () => {
+            resolve(request.result)
+          }
+          // 操作失败
+          request.onerror = (event) => {
+            reject(event)
+          }
         })
-    }
+        .catch(reject)
+    })
+  }
 
-    // 通过主键读取数据
-    getDataByKey<T>(key: string): Promise<templateData<T>> {
-        return new Promise((resolve, reject) => {
-             this.store().then(store => {
-                // 通过主键读取数据
-                const request = store.get(key)
-                // 操作成功
-                request.onsuccess = () => {
-                    resolve(request.result)
-                }
-                // 操作失败
-                request.onerror = (event) => {
-                    reject(event)
-                }
-             }).catch(reject)
+  // 通过主键移除数据
+  deleteDataByKey(key: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.store()
+        .then((store) => {
+          // 通过主键读取数据
+          const request = store.delete(key)
+          // 操作成功
+          request.onsuccess = () => {
+            resolve(request.result)
+          }
+          // 操作失败
+          request.onerror = (event) => {
+            reject(event)
+          }
         })
-    }
+        .catch(reject)
+    })
+  }
 
-    // 通过主键移除数据
-    deleteDataByKey(key: string): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.store().then(store => {
-                // 通过主键读取数据
-                const request = store.delete(key)
-                // 操作成功
-                request.onsuccess = () => {
-                    resolve(request.result)
-                }
-                // 操作失败
-                request.onerror = (event) => {
-                    reject(event)
-                }
-             }).catch(reject)
+  // 清空数据库数据
+  clearDB(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.store('readwrite')
+        .then((store) => {
+          const response = store.clear()
+          // 操作成功
+          response.onsuccess = (event) => {
+            resolve(event)
+          }
+          // 操作失败
+          response.onerror = (event) => {
+            reject(event)
+          }
         })
-    }
-
-    // 清空数据库数据
-    clearDB(): Promise<any> {
-        return new Promise((resolve, reject) => {
-            this.store('readwrite').then(store => {
-                const response = store.clear()
-                // 操作成功
-                response.onsuccess = (event) => {
-                    resolve(event)
-                }
-                // 操作失败
-                response.onerror = (event) => {
-                    reject(event)
-                }
-            }).catch(reject)
-        })
-    }
-
+        .catch(reject)
+    })
+  }
 }

@@ -1,4 +1,4 @@
-import { b as V, B as Z } from "../base-CJv023nf.js";
+import { b as V, B as Z } from "../base-Cut_yahw.js";
 let C, U = null;
 function J() {
   return (U === null || U.byteLength === 0) && (U = new Uint8Array(C.memory.buffer)), U;
@@ -460,13 +460,20 @@ class wA extends Z {
   async handleMultipleParams(A, g, B = !1) {
     const Q = [], D = [];
     for (const w of A)
-      D.push(new Promise((o, t) => {
-        w.toReplaceParams(Q).then(([x]) => {
-          o(x);
-        }).catch(t);
-      }));
+      D.push(
+        new Promise((o, t) => {
+          w.toReplaceParams(Q).then(([x]) => {
+            o(x);
+          }).catch(t);
+        })
+      );
     const E = await Promise.all(D);
-    return q(E, Q, g, B);
+    return q(
+      E,
+      Q,
+      g,
+      B
+    );
   }
 }
 export {

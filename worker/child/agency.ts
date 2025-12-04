@@ -1,7 +1,7 @@
-import image from "../../replace/image";
-import ReplaceInterface, { media } from "../../replace/interface";
-import paramsData, { mediaData, textData } from "../../replace/paramsData";
-import Temp, { transmitFileInfo, transmitFileInfoToTemp } from "../../temp";
+import image from '../../replace/image'
+import ReplaceInterface, { media } from '../../replace/interface'
+import paramsData, { mediaData, textData } from '../../replace/paramsData'
+import Temp, { transmitFileInfo, transmitFileInfoToTemp } from '../../temp'
 
 export default class implements ReplaceInterface {
   replace: ReplaceInterface
@@ -20,7 +20,9 @@ export default class implements ReplaceInterface {
   }
 
   //提取变量
-  extractVariables(files: Temp[] | undefined): Promise<Record<string, string[]>> {
+  extractVariables(
+    files: Temp[] | undefined,
+  ): Promise<Record<string, string[]>> {
     if (files) {
       for (const i in files) {
         files[i] = transmitFileInfoToTemp(files[i] as transmitFileInfo)
@@ -45,7 +47,10 @@ export default class implements ReplaceInterface {
   }
 
   //执行替换任务
-  execute(params: paramsData, files: Temp[] | undefined): Promise<Record<string, Uint8Array>> {
+  execute(
+    params: paramsData,
+    files: Temp[] | undefined,
+  ): Promise<Record<string, Uint8Array>> {
     if (files) {
       for (const i in files) {
         files[i] = transmitFileInfoToTemp(files[i] as transmitFileInfo)
@@ -58,7 +63,7 @@ export default class implements ReplaceInterface {
         text[key] = new image(value.file)
         delete value.file
         text[key].setPropertys(value)
-      }else {
+      } else {
         text[key] = value
       }
     }
@@ -76,13 +81,16 @@ export default class implements ReplaceInterface {
   }
 
   //执行替换任务（多套参数）
-  executeMultipleParams(paramsMultiple: paramsData[], files: Temp[] | undefined): Promise<Record<string, Uint8Array>[]> {
+  executeMultipleParams(
+    paramsMultiple: paramsData[],
+    files: Temp[] | undefined,
+  ): Promise<Record<string, Uint8Array>[]> {
     if (files) {
       for (const i in files) {
         files[i] = transmitFileInfoToTemp(files[i] as transmitFileInfo)
       }
     }
-    const paramsList= []
+    const paramsList = []
     for (const params of paramsMultiple) {
       const text: textData = {}
       for (const key in params.textData) {
@@ -91,7 +99,7 @@ export default class implements ReplaceInterface {
           text[key] = new image(value.file)
           delete value.file
           text[key].setPropertys(value)
-        }else {
+        } else {
           text[key] = value
         }
       }
@@ -116,7 +124,7 @@ export default class implements ReplaceInterface {
   }
 
   //文件批量加密
-  filesEncrypt(files: (Uint8Array)[]): Promise<(Uint8Array)[]> {
+  filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
     return this.replace.filesEncrypt(files)
   }
 }
