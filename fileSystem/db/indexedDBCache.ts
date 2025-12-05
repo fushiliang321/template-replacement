@@ -6,7 +6,7 @@ type templateData<T> = {
 }
 
 export default class indexedDBCache {
-  _initFinishCallBackFuns?: Function[] = [] //初始化完成回调
+  _initFinishCallBackFuns?: ((value: void) => void)[] = [] //初始化完成回调
   _isInitFinish: boolean = false //是否初始化完成
 
   _db?: IDBDatabase //数据库
@@ -22,7 +22,7 @@ export default class indexedDBCache {
     this.initDB()
   }
 
-  initDB(): Promise<any> {
+  initDB(): Promise<unknown> {
     if (this._init) {
       return this._init
     }
@@ -37,7 +37,7 @@ export default class indexedDBCache {
             for (const fun of this._initFinishCallBackFuns) {
               fun()
             }
-          } catch (error) {}
+          } catch (error) { }
           this._initFinishCallBackFuns = undefined
         }
         resolve(event)
@@ -87,7 +87,7 @@ export default class indexedDBCache {
    * @param        {templateData} params 添加到数据库中的数据 { key: 文件key, data: 文件blob }
    * @return       {*}
    */
-  putData<T>(params: templateData<T>): Promise<any> {
+  putData<T>(params: templateData<T>): Promise<unknown> {
     return new Promise((resolve, reject) => {
       this.store('readwrite')
         .then((store) => {
@@ -146,7 +146,7 @@ export default class indexedDBCache {
   }
 
   // 清空数据库数据
-  clearDB(): Promise<any> {
+  clearDB(): Promise<unknown> {
     return new Promise((resolve, reject) => {
       this.store('readwrite')
         .then((store) => {

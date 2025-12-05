@@ -12,7 +12,7 @@ export const WorkerGeneral = workerGeneral
 
 export const WorkerSign = workerSign
 
-type signFun = (data: any) => Promise<string>
+type signFun = (data: unknown) => Promise<string>
 
 export default (concurrency?: number, signFn?: signFun): ReplaceInterface => {
   let res = undefined

@@ -5,8 +5,8 @@ export function setMitm(mitm: string) {
 }
 
 export default class Stream {
-  tasks: Promise<any>[] = []
-  writer: WritableStreamDefaultWriter<any>
+  tasks: Promise<unknown>[] = []
+  writer: WritableStreamDefaultWriter<unknown>
   fileStream: WritableStream
 
   constructor(fileName: string, size?: number) {
@@ -16,7 +16,7 @@ export default class Stream {
     this.writer = this.fileStream.getWriter()
   }
 
-  async write(chunk: any): Promise<void> {
+  async write(chunk: unknown): Promise<void> {
     const a = this.writer.write(chunk)
     this.tasks.push(a)
     const res = await a
@@ -32,7 +32,7 @@ export default class Stream {
     return res
   }
 
-  async abort(reason?: any): Promise<void> {
+  async abort(reason?: unknown): Promise<void> {
     return await this.fileStream.abort(reason)
   }
 }

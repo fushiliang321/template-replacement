@@ -41,7 +41,7 @@ export default class image {
   wpExtent?: extent //图片宽高
   textWrap = textWrapTypes.embed //文字环绕
 
-  awaitInitQueue?: Function[] = []
+  awaitInitQueue?: ((value: unknown) => void)[] = []
 
   constructor(file: Blob) {
     if (file instanceof Blob) {
@@ -111,18 +111,18 @@ export default class image {
     }
   }
 
-  async outJson(): Promise<Record<string, any>> {
+  async outJson(): Promise<Record<string, unknown>> {
     await this.awaitInit()
-    const data: Record<string, any> = {}
+    const data: Record<string, unknown> = {}
     for (const key in this) {
       data[key] = this[key]
     }
     return data
   }
 
-  setPropertys(data: Record<string, any>) {
+  setProperties(data: Record<string, unknown>) {
     for (const key in data) {
-      this[key as keyof image] = data[key]
+      this[key as keyof image] = data[key] as never;
     }
   }
 }

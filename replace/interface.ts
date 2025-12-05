@@ -20,7 +20,7 @@ export default interface ReplaceInterface {
   extractMedias(files: Temp[] | undefined): Promise<Record<string, media[]>>
 
   //签名方法
-  sign(data: any): Promise<string>
+  sign(data: unknown): Promise<string>
 
   //执行替换任务
   execute(

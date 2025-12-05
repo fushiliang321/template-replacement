@@ -9,16 +9,16 @@ export enum messageTypes {
 
 export type messageData = {
   type: messageTypes
-  data: any | methodCall | methodCallReply
+  data: unknown | methodCall | methodCallReply
 }
 
 export type methodCall = {
   replyId?: string
   method: string
-  params: any[]
+  params: unknown[]
 }
 
 export type methodCallReply = {
   replyId: string
-  result: any
+  result: unknown
 }

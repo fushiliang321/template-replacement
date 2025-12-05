@@ -10,17 +10,17 @@ export interface Interface {
     files: Uint8Array[],
     is_decode: boolean,
   ): Promise<string[]>
-  extract_one_file_medias(data: Uint8Array, is_decode: boolean): Promise<any>
-  extract_medias(files: Uint8Array[], is_decode: boolean): Promise<any>
+  extract_one_file_medias(data: Uint8Array, is_decode: boolean): Promise<unknown>
+  extract_medias(files: Uint8Array[], is_decode: boolean): Promise<unknown>
   file_encrypt(file: Uint8Array): Promise<Uint8Array>
   files_encrypt(files: Uint8Array[]): Promise<Uint8Array[]>
 }
 
 export default class implements Interface {
-  module: any
-  awaitInit: Promise<void>
+  module: Interface
+  awaitInit: Promise<Interface>
 
-  constructor(init: Promise<any>, module: any) {
+  constructor(init: Promise<Interface>, module: Interface) {
     this.awaitInit = init
     this.module = module
   }
@@ -59,12 +59,12 @@ export default class implements Interface {
   async extract_one_file_medias(
     data: Uint8Array,
     is_decode: boolean,
-  ): Promise<any> {
+  ): Promise<unknown> {
     await this.awaitInit
     return this.module.extract_one_file_medias(data, is_decode)
   }
 
-  async extract_medias(files: Uint8Array[], is_decode: boolean): Promise<any> {
+  async extract_medias(files: Uint8Array[], is_decode: boolean): Promise<unknown> {
     await this.awaitInit
     return this.module.extract_medias(files, is_decode)
   }
@@ -76,7 +76,6 @@ export default class implements Interface {
 
   async files_encrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
     await this.awaitInit
-    const res = this.module.files_encrypt(files)
-    return res
+    return this.module.files_encrypt(files)
   }
 }

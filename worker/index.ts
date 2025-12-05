@@ -13,9 +13,10 @@ export default class worker implements DispatcherInterface {
     this.#concurrency = Number(concurrency)
     if (!this.#concurrency || this.#concurrency < 1) {
       try {
+
         this.#concurrency =
           navigator.hardwareConcurrency < 8 ? navigator.hardwareConcurrency : 8
-      } catch (error) {}
+      } catch (error) { }
     }
     if (!this.#concurrency || this.#concurrency < 1) {
       this.#concurrency = 1

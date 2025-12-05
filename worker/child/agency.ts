@@ -10,8 +10,8 @@ export default class implements ReplaceInterface {
     this.replace = replace
   }
 
-  addTempFile(tempFile: any) {
-    tempFile = transmitFileInfoToTemp(tempFile)
+  addTempFile(tempFile: transmitFileInfo | Temp): void {
+    tempFile = transmitFileInfoToTemp(tempFile as transmitFileInfo)
     return this.replace.addTempFile(tempFile)
   }
 
@@ -21,35 +21,35 @@ export default class implements ReplaceInterface {
 
   //提取变量
   extractVariables(
-    files: Temp[] | undefined,
+    files: Temp[] | transmitFileInfo[] | undefined,
   ): Promise<Record<string, string[]>> {
     if (files) {
       for (const i in files) {
         files[i] = transmitFileInfoToTemp(files[i] as transmitFileInfo)
       }
     }
-    return this.replace.extractVariables(files)
+    return this.replace.extractVariables(files as Temp[])
   }
 
   //提取媒体
-  extractMedias(files: Temp[] | undefined): Promise<Record<string, media[]>> {
+  extractMedias(files: Temp[] | transmitFileInfo[] | undefined): Promise<Record<string, media[]>> {
     if (files) {
       for (const i in files) {
         files[i] = transmitFileInfoToTemp(files[i] as transmitFileInfo)
       }
     }
-    return this.replace.extractMedias(files)
+    return this.replace.extractMedias(files as Temp[])
   }
 
   //签名方法
-  sign(data: any): Promise<string> {
+  sign(data: unknown): Promise<string> {
     return this.replace.sign(data)
   }
 
   //执行替换任务
   execute(
     params: paramsData,
-    files: Temp[] | undefined,
+    files: Temp[] | transmitFileInfo[] | undefined,
   ): Promise<Record<string, Uint8Array>> {
     if (files) {
       for (const i in files) {
@@ -58,11 +58,11 @@ export default class implements ReplaceInterface {
     }
     const text: textData = {}
     for (const key in params.textData) {
-      const value = params.textData[key] as Record<keyof image, any>
-      if (value && value.file instanceof Blob) {
-        text[key] = new image(value.file)
-        delete value.file
-        text[key].setPropertys(value)
+      const value = params.textData[key]
+      if (value && (value as image).file instanceof Blob) {
+        text[key] = new image((value as image).file)
+        delete (value as Record<keyof image, unknown>).file
+        text[key].setProperties((value as Record<keyof image, unknown>))
       } else {
         text[key] = value
       }
@@ -70,14 +70,14 @@ export default class implements ReplaceInterface {
 
     const media: mediaData = {}
     for (const key in params.mediaData) {
-      const value = params.mediaData[key] as Record<keyof image, any>
+      const value = params.mediaData[key] as Record<keyof image, unknown>
       if (value && value.file instanceof Blob) {
         media[key] = new image(value.file)
         delete value.file
-        media[key].setPropertys(value)
+        media[key].setProperties(value)
       }
     }
-    return this.replace.execute(new paramsData(text, media), files)
+    return this.replace.execute(new paramsData(text, media), files as Temp[])
   }
 
   //执行替换任务（多套参数）
@@ -94,11 +94,11 @@ export default class implements ReplaceInterface {
     for (const params of paramsMultiple) {
       const text: textData = {}
       for (const key in params.textData) {
-        const value = params.textData[key] as Record<keyof image, any>
-        if (value && value.file instanceof Blob) {
-          text[key] = new image(value.file)
-          delete value.file
-          text[key].setPropertys(value)
+        const value = params.textData[key]
+        if (value && (value as image).file instanceof Blob) {
+          text[key] = new image((value as image).file)
+          delete (value as Record<keyof image, unknown>).file
+          text[key].setProperties((value as Record<keyof image, unknown>))
         } else {
           text[key] = value
         }
@@ -106,11 +106,11 @@ export default class implements ReplaceInterface {
 
       const media: mediaData = {}
       for (const key in params.mediaData) {
-        const value = params.mediaData[key] as Record<keyof image, any>
+        const value = params.mediaData[key] as Record<keyof image, unknown>
         if (value && value.file instanceof Blob) {
           media[key] = new image(value.file)
           delete value.file
-          media[key].setPropertys(value)
+          media[key].setProperties(value)
         }
       }
       paramsList.push(new paramsData(text, media))

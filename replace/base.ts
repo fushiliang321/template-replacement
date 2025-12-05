@@ -113,7 +113,7 @@ export default class Base implements Interface {
     return []
   }
 
-  async sign(data: any): Promise<string> {
+  async sign(data: unknown): Promise<string> {
     return ''
   }
 

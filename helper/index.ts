@@ -163,7 +163,7 @@ export function base64ToBlob(base64: string): Blob {
 //urls提取为文件二进制数据
 export async function urlsToFileBlobs(
   urls: string[],
-  onDownloadProgress?: (progressEvent: any) => void,
+  onDownloadProgress?: (progressEvent: unknown) => void,
 ): Promise<(Blob | undefined)[]> {
   const task = new urlDownloadTask(urls)
   if (onDownloadProgress) {

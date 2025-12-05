@@ -28,7 +28,7 @@ export type transmitFileInfo = {
 }
 
 //将传递的文件信息转为模板对象
-export function transmitFileInfoToTemp(data: transmitFileInfo) {
+export function transmitFileInfoToTemp(data: transmitFileInfo): Temp {
   if (!data.uint8Array || !data.name) {
     throw new Error('模板文件信息错误')
   }
