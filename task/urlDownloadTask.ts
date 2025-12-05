@@ -1,6 +1,6 @@
-import axios, { AxiosProgressEvent } from 'axios'
-import file from '../fileSystem'
-import { hashString } from '../helper'
+import axios, { AxiosProgressEvent } from "axios"
+import file from "../fileSystem"
+import { hashString } from "../helper"
 
 export default class urlDownloadTask {
   urls: string[]

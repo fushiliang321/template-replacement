@@ -1,4 +1,4 @@
-import { w as C } from "../index-tFDVIkZX.js";
+import { w as C } from "../index-oILo_kXG.js";
 const B = `function nI(I, A) {
   return function() {
     return I.apply(A, arguments);

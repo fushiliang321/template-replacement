@@ -11,14 +11,13 @@ export default class worker implements DispatcherInterface {
 
   constructor(webworker: webworker, concurrency?: number) {
     this.#concurrency = Number(concurrency)
-    if (!this.#concurrency || this.#concurrency < 1) {
+    if (this.#concurrency < 1) {
       try {
-
         this.#concurrency =
           navigator.hardwareConcurrency < 8 ? navigator.hardwareConcurrency : 8
       } catch (error) { }
     }
-    if (!this.#concurrency || this.#concurrency < 1) {
+    if (this.#concurrency < 1) {
       this.#concurrency = 1
     }
     for (let index = 0; index < this.#concurrency; index++) {
