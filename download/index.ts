@@ -1,4 +1,4 @@
-import streamClass from './stream'
+import Stream from './stream'
 
 function download(fileName: string, blob: Blob): void {
   const href = window.URL.createObjectURL(blob)
@@ -17,6 +17,6 @@ export default (fileName: string, blob: Blob): void => {
 }
 
 //流式下载
-export function stream(fileName: string, size?: number): streamClass {
-  return new streamClass(fileName, size)
+export function stream(fileName: string, size?: number): Stream {
+  return new Stream(fileName, size)
 }

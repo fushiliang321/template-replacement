@@ -5,34 +5,33 @@ export function setMitm(mitm: string) {
 }
 
 export default class Stream {
-  tasks: Promise<unknown>[] = []
-  writer: WritableStreamDefaultWriter<unknown>
-  fileStream: WritableStream
+  #tasks: Promise<unknown>[] = []
+  #writer: WritableStreamDefaultWriter<unknown>
+  #fileStream: WritableStream
 
   constructor(fileName: string, size?: number) {
-    this.fileStream = streamSaver.createWriteStream(fileName, {
+    this.#fileStream = streamSaver.createWriteStream(fileName, {
       size,
     })
-    this.writer = this.fileStream.getWriter()
+    this.#writer = this.#fileStream.getWriter()
   }
 
-  async write(chunk: unknown): Promise<void> {
-    const a = this.writer.write(chunk)
-    this.tasks.push(a)
-    const res = await a
+  write(chunk: unknown): Promise<void> {
+    const res = this.#writer.write(chunk)
+    this.#tasks.push(res)
     return res
   }
 
   async close(): Promise<void> {
-    if (this.tasks.length) {
-      await Promise.all(this.tasks)
+    if (this.#tasks.length) {
+      await Promise.all(this.#tasks)
     }
-    const res = await this.writer.close()
-    this.writer.releaseLock()
+    const res = await this.#writer.close()
+    this.#writer.releaseLock()
     return res
   }
 
-  async abort(reason?: unknown): Promise<void> {
-    return await this.fileStream.abort(reason)
+  abort(reason?: unknown): Promise<void> {
+    return this.#fileStream.abort(reason)
   }
 }

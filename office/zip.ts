@@ -15,8 +15,8 @@ type InputType = string | Uint8Array | ArrayBuffer | Blob
 export default class Zip {
   name: string = ''
   fileBlob?: Blob
-  _unzipData?: Unzipped
-  _lastUpdateTime: number = 0
+  #unzipData?: Unzipped
+  #lastUpdateTime: number = 0
 
   constructor(file?: Blob) {
     if (!file) {
@@ -31,12 +31,12 @@ export default class Zip {
   }
 
   async fileZip(): Promise<Unzipped> {
-    if (!this._unzipData) {
+    if (!this.#unzipData) {
       try {
         const blob = this.getFileBlob()
         if (blob) {
           const arrayBuffer = await blob.arrayBuffer()
-          this._unzipData = await new Promise((resolve, reject) => {
+          this.#unzipData = await new Promise((resolve, reject) => {
             unzip(
               new Uint8Array(arrayBuffer),
               (err: FlateError | null, data: Unzipped) => {
@@ -52,10 +52,10 @@ export default class Zip {
         console.warn(e)
       }
     }
-    if (!this._unzipData) {
-      this._unzipData = {}
+    if (!this.#unzipData) {
+      this.#unzipData = {}
     }
-    return this._unzipData
+    return this.#unzipData
   }
 
   async setZipData(path: string, data: InputType): Promise<void> {
@@ -76,7 +76,7 @@ export default class Zip {
         throw new Error('Invalid data type')
     }
     fileZip[path] = data as Uint8Array
-    this._lastUpdateTime = new Date().getTime()
+    this.#lastUpdateTime = new Date().getTime()
   }
 
   async generate(options: AsyncZipOptions): Promise<Blob | undefined> {

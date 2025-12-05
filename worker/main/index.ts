@@ -6,14 +6,11 @@ import paramsData from '../../replace/paramsData'
 import Temp, { transmitFileInfo } from '../../temp'
 
 type methodKeys<T> = {
-  [K in keyof T]: T[K] extends (...args: unknown[]) => unknown ? K : never
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  [K in keyof T]: T[K] extends Function ? K : never
 }[keyof T]
 
-const allowCallMethodNames: Partial<
-  Record<methodKeys<ReplaceInterface>, boolean>
-> = {
-  sign: true,
-}
+const allowCallMethodNames: Set<methodKeys<ReplaceInterface>> = new Set(["sign"])
 
 // 分片最小任务数量
 const chunkMinNum = 20
@@ -47,7 +44,7 @@ export default class WorkerReplace implements ReplaceInterface {
         case messageTypes.methodCall:
           const callData = data.data as methodCall
           const method = callData.method as methodKeys<ReplaceInterface>
-          if (!allowCallMethodNames[method]) {
+          if (!allowCallMethodNames.has(method)) {
             return
           }
           // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
@@ -226,8 +223,8 @@ export default class WorkerReplace implements ReplaceInterface {
     return res
   }
 
-  async fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
-    return await this.#call('fileEncrypt', [file])
+  fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
+    return this.#call('fileEncrypt', [file])
   }
 
   async filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {

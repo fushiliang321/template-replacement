@@ -4,7 +4,7 @@ import { hashString } from "../helper"
 
 export default class urlDownloadTask {
   urls: string[]
-  downloadProgressListener: ((progressEvent: AxiosProgressEvent) => void)[] = []
+  #downloadProgressListener: ((progressEvent: AxiosProgressEvent) => void)[] = []
 
   constructor(urls: string[]) {
     if (urls.constructor !== Array) {
@@ -40,7 +40,7 @@ export default class urlDownloadTask {
     const response = await axios.get(url, {
       responseType: 'blob',
       onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
-        for (const fun of this.downloadProgressListener) {
+        for (const fun of this.#downloadProgressListener) {
           fun(progressEvent)
         }
       },
@@ -63,6 +63,6 @@ export default class urlDownloadTask {
   }
 
   onDownloadProgress(listen: (progressEvent: AxiosProgressEvent) => void) {
-    this.downloadProgressListener.push(listen)
+    this.#downloadProgressListener.push(listen)
   }
 }

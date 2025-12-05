@@ -45,10 +45,10 @@ export default class Temp implements TempInterface {
   status = status.waitLoad // 0文件待加载,1文件已加载,2完成替换,3替换失败
   isDecode: boolean = false //文件是否需要解密
 
-  _output?: File | Blob
-  _type?: fileTypes
-
   tempImages: Record<string, TempImageInfo> = {}
+
+  #output?: File | Blob
+  #type?: fileTypes
 
   constructor(
     file?: File | Blob,
@@ -88,16 +88,16 @@ export default class Temp implements TempInterface {
   }
 
   async type(): Promise<fileTypes> {
-    if (this._type) {
-      return this._type
+    if (this.#type) {
+      return this.#type
     }
     const buffer = await this.getBuffer()
     if (buffer) {
-      this._type = await fileTypeByBuffer(buffer)
+      this.#type = await fileTypeByBuffer(buffer)
     } else {
-      this._type = fileTypes.unknown
+      this.#type = fileTypes.unknown
     }
-    return this._type
+    return this.#type
   }
 
   async getBuffer(): Promise<Uint8Array | undefined> {
@@ -143,7 +143,7 @@ export default class Temp implements TempInterface {
   }
 
   setOutputFile(file: File | Blob): void {
-    this._output = file
+    this.#output = file
   }
 
   setTempImages(images: Record<string, TempImageInfo>): void {
@@ -151,7 +151,7 @@ export default class Temp implements TempInterface {
   }
 
   outputFile(): File | Blob | undefined {
-    return this._output ?? this.blob
+    return this.#output ?? this.blob
   }
 
   async getTransmitFileInfo(): Promise<transmitFileInfo | undefined> {

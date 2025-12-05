@@ -1,5 +1,3 @@
-// import { add_media } from "template-replacement-core-wasm"
-
 export function pxToEMU(px: number): number {
   return px * (914400 / 96)
 }
@@ -41,7 +39,7 @@ export default class image {
   wpExtent?: extent //图片宽高
   textWrap = textWrapTypes.embed //文字环绕
 
-  awaitInitQueue?: ((value: unknown) => void)[] = []
+  #awaitInitQueue?: ((value?: unknown) => void)[] = []
 
   constructor(file: Blob) {
     if (file instanceof Blob) {
@@ -53,12 +51,12 @@ export default class image {
   }
 
   async init(): Promise<void> {
-    this.awaitInitQueue = []
+    this.#awaitInitQueue = []
     await this.getExtent()
-    for (const resolve of this.awaitInitQueue) {
+    for (const resolve of this.#awaitInitQueue) {
       resolve()
     }
-    delete this.awaitInitQueue
+    this.#awaitInitQueue = undefined
   }
 
   // async generateId(): Promise<string> {
@@ -67,9 +65,9 @@ export default class image {
   // }
 
   async awaitInit(): Promise<void> {
-    if (this.awaitInitQueue) {
+    if (this.#awaitInitQueue) {
       await new Promise((resolve) => {
-        this.awaitInitQueue?.push(resolve)
+        this.#awaitInitQueue?.push(resolve)
       })
     }
   }

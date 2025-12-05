@@ -23,14 +23,11 @@ export const enum fileTypes {
 
 export const officeMIMETypes: Record<string, fileTypes> = {
   //docx
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-    fileTypes.word,
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': fileTypes.word,
   //dotx
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.template':
-    fileTypes.word,
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.template': fileTypes.word,
   //xlsx
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-    fileTypes.excel,
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': fileTypes.excel,
 }
 
 export const officeSuffixTypes: Record<string, fileTypes> = {
@@ -161,7 +158,7 @@ export function base64ToBlob(base64: string): Blob {
 }
 
 //urls提取为文件二进制数据
-export async function urlsToFileBlobs(
+export function urlsToFileBlobs(
   urls: string[],
   onDownloadProgress?: (progressEvent: unknown) => void,
 ): Promise<(Blob | undefined)[]> {
@@ -169,7 +166,7 @@ export async function urlsToFileBlobs(
   if (onDownloadProgress) {
     task.onDownloadProgress(onDownloadProgress)
   }
-  return await task.start()
+  return task.start()
 }
 
 export function splitArrayIntoChunks<T>(array: T[], chunkSize: number): T[][] {

@@ -18,7 +18,7 @@ export default function _init(replace: ReplaceInterface) {
   dispatch = new agency(replace)
 }
 
-export async function call<T>(method: string, ...params: unknown[]): Promise<T> {
+export function call<T>(method: string, ...params: unknown[]): Promise<T> {
   const replyId = generateId()
   postMessage({
     type: messageTypes.methodCall,

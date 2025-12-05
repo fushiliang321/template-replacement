@@ -4,19 +4,19 @@ import paramsData, { mediaData, textData } from '../../replace/paramsData'
 import Temp, { transmitFileInfo, transmitFileInfoToTemp } from '../../temp'
 
 export default class implements ReplaceInterface {
-  replace: ReplaceInterface
+  #replace: ReplaceInterface
 
   constructor(replace: ReplaceInterface) {
-    this.replace = replace
+    this.#replace = replace
   }
 
   addTempFile(tempFile: transmitFileInfo | Temp): void {
     tempFile = transmitFileInfoToTemp(tempFile as transmitFileInfo)
-    return this.replace.addTempFile(tempFile)
+    return this.#replace.addTempFile(tempFile)
   }
 
   clear() {
-    return this.replace.clear()
+    return this.#replace.clear()
   }
 
   //提取变量
@@ -28,7 +28,7 @@ export default class implements ReplaceInterface {
         files[i] = transmitFileInfoToTemp(files[i] as transmitFileInfo)
       }
     }
-    return this.replace.extractVariables(files as Temp[])
+    return this.#replace.extractVariables(files as Temp[])
   }
 
   //提取媒体
@@ -38,12 +38,12 @@ export default class implements ReplaceInterface {
         files[i] = transmitFileInfoToTemp(files[i] as transmitFileInfo)
       }
     }
-    return this.replace.extractMedias(files as Temp[])
+    return this.#replace.extractMedias(files as Temp[])
   }
 
   //签名方法
   sign(data: unknown): Promise<string> {
-    return this.replace.sign(data)
+    return this.#replace.sign(data)
   }
 
   //执行替换任务
@@ -77,7 +77,7 @@ export default class implements ReplaceInterface {
         media[key].setProperties(value)
       }
     }
-    return this.replace.execute(new paramsData(text, media), files as Temp[])
+    return this.#replace.execute(new paramsData(text, media), files as Temp[])
   }
 
   //执行替换任务（多套参数）
@@ -115,16 +115,16 @@ export default class implements ReplaceInterface {
       }
       paramsList.push(new paramsData(text, media))
     }
-    return this.replace.executeMultipleParams(paramsList, files)
+    return this.#replace.executeMultipleParams(paramsList, files)
   }
 
   //文件加密
   fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
-    return this.replace.fileEncrypt(file)
+    return this.#replace.fileEncrypt(file)
   }
 
   //文件批量加密
   filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
-    return this.replace.filesEncrypt(files)
+    return this.#replace.filesEncrypt(files)
   }
 }

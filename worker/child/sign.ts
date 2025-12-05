@@ -4,6 +4,6 @@ import init, { call } from './base'
 const replace = new Replace()
 init(replace)
 
-replace.sign = async (data: unknown): Promise<string> => {
-  return await call<string>('sign', data)
+replace.sign = (data: unknown): Promise<string> => {
+  return call<string>('sign', data)
 }

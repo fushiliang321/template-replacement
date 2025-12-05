@@ -1,44 +1,41 @@
-import _init from '../../worker/child/base'
-
 type templateData<T> = {
   key: string // 主键
   data: T // 文件数据
 }
 
 export default class indexedDBCache {
-  _initFinishCallBackFuns?: ((value: void) => void)[] = [] //初始化完成回调
-  _isInitFinish: boolean = false //是否初始化完成
+  #initFinishCallBackFuns?: ((value: void) => void)[] = [] //初始化完成回调
+  #isInitFinish: boolean = false //是否初始化完成
 
-  _db?: IDBDatabase //数据库
-  _dbName: string = 'template_replacement_db' //数据库名
-  _dbversion: number = 1 //数据库版本
-  _cacheTableName: string = 'template_files' //表名
-  _tableMap: unknown = {} //表配置
+  #db?: IDBDatabase //数据库
+  #dbName: string = 'template_replacement_db' //数据库名
+  #dbversion: number = 1 //数据库版本
+  #cacheTableName: string = 'template_files' //表名
 
-  _init: Promise<unknown> | undefined
+  #init: Promise<unknown> | undefined
 
   // 构造函数
   constructor() {
-    this.initDB()
+    this.#initDB()
   }
 
-  initDB(): Promise<unknown> {
-    if (this._init) {
-      return this._init
+  #initDB(): Promise<unknown> {
+    if (this.#init) {
+      return this.#init
     }
-    this._init = new Promise((resolve, reject) => {
-      const request = indexedDB.open(this._dbName, this._dbversion) // 打开数据库
+    this.#init = new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.#dbName, this.#dbversion) // 打开数据库
       // 数据库初始化成功
       request.onsuccess = (event) => {
-        this._db = request.result
-        this._isInitFinish = true
-        if (this._initFinishCallBackFuns) {
+        this.#db = request.result
+        this.#isInitFinish = true
+        if (this.#initFinishCallBackFuns) {
           try {
-            for (const fun of this._initFinishCallBackFuns) {
+            for (const fun of this.#initFinishCallBackFuns) {
               fun()
             }
           } catch (error) { }
-          this._initFinishCallBackFuns = undefined
+          this.#initFinishCallBackFuns = undefined
         }
         resolve(event)
       }
@@ -50,8 +47,8 @@ export default class indexedDBCache {
       // 数据库初次创建或更新时会触发
       request.onupgradeneeded = (event) => {
         let db = request.result
-        if (!db.objectStoreNames.contains(this._cacheTableName)) {
-          db.createObjectStore(this._cacheTableName, {
+        if (!db.objectStoreNames.contains(this.#cacheTableName)) {
+          db.createObjectStore(this.#cacheTableName, {
             keyPath: 'key', // 设置主键
           })
         }
@@ -59,27 +56,27 @@ export default class indexedDBCache {
       }
     })
 
-    return this._init
+    return this.#init
   }
 
   async awaitInit(): Promise<void> {
-    if (this._isInitFinish || !this._initFinishCallBackFuns) {
+    if (this.#isInitFinish || !this.#initFinishCallBackFuns) {
       return
     }
     await new Promise((resolve, reject) => {
-      this._initFinishCallBackFuns?.push(resolve)
+      this.#initFinishCallBackFuns?.push(resolve)
     })
   }
 
   closeDB(): void {
-    this._db?.close()
+    this.#db?.close()
   }
 
   async store(mode?: IDBTransactionMode): Promise<IDBObjectStore> {
     await this.awaitInit()
-    const db = this._db as IDBDatabase
-    const transaction = db.transaction(this._cacheTableName, mode)
-    return transaction.objectStore(this._cacheTableName)
+    const db = this.#db as IDBDatabase
+    const transaction = db.transaction(this.#cacheTableName, mode)
+    return transaction.objectStore(this.#cacheTableName)
   }
 
   /**
