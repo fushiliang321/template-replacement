@@ -28,7 +28,7 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
-        entryFileNames: (info: { facadeModuleId: string }) => {
+        entryFileNames: (info) => {
           const modules = info.facadeModuleId?.split('/')
           if (!modules?.length || modules?.length < 2) {
             return '[name].js'
