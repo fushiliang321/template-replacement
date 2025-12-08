@@ -1786,12 +1786,11 @@ async function hI() {
 }
 class xB {
   #A = "";
-  #I;
   constructor(A) {
     this.#A = A;
   }
   async getHandle() {
-    return this.#I || (this.#I = await (await hI()).getFileHandle(this.#A, { create: !0 })), this.#I;
+    return this._handle || (this._handle = await (await hI()).getFileHandle(this.#A, { create: !0 })), this._handle;
   }
   async write(A) {
     try {
@@ -1809,34 +1808,25 @@ class xB {
   }
 }
 class eB {
-  #A = [];
-  //初始化完成回调
-  #I = !1;
-  //是否初始化完成
-  #Q;
-  //数据库
-  #C = "template_replacement_db";
-  //数据库名
-  #E = 1;
-  //数据库版本
-  #g = "template_files";
-  //表名
-  #B;
   // 构造函数
   constructor() {
-    this.#D();
+    this._initFinishCallBackFuns = [], this.#A = !1, this.#I = "template_replacement_db", this.#B = 1, this.#g = "template_files", this.#Q();
   }
-  #D() {
-    return this.#B ? this.#B : (this.#B = new Promise((A, g) => {
-      const B = indexedDB.open(this.#C, this.#E);
+  #A;
+  #I;
+  #B;
+  #g;
+  #Q() {
+    return this._init ? this._init : (this._init = new Promise((A, g) => {
+      const B = indexedDB.open(this.#I, this.#B);
       B.onsuccess = (Q) => {
-        if (this.#Q = B.result, this.#I = !0, this.#A) {
+        if (this._db = B.result, this.#A = !0, this._initFinishCallBackFuns) {
           try {
-            for (const C of this.#A)
+            for (const C of this._initFinishCallBackFuns)
               C();
           } catch {
           }
-          this.#A = void 0;
+          this._initFinishCallBackFuns = void 0;
         }
         A(Q);
       }, B.onerror = (Q) => {
@@ -1848,18 +1838,18 @@ class eB {
           // 设置主键
         }), A(Q);
       };
-    }), this.#B);
+    }), this._init);
   }
   async awaitInit() {
-    this.#I || !this.#A || await new Promise((A, g) => {
-      this.#A?.push(A);
+    this.#A || !this._initFinishCallBackFuns || await new Promise((A, g) => {
+      this._initFinishCallBackFuns?.push(A);
     });
   }
   closeDB() {
-    this.#Q?.close();
+    this._db?.close();
   }
   async store(A) {
-    return await this.awaitInit(), this.#Q.transaction(this.#g, A).objectStore(this.#g);
+    return await this.awaitInit(), this._db.transaction(this.#g, A).objectStore(this.#g);
   }
   /**
    * @description : 更新数据
@@ -1920,8 +1910,8 @@ class eB {
 }
 const rA = new eB();
 class VB {
-  #A = "";
-  constructor(A) {
+  #A;
+  constructor(A = "") {
     this.#A = A;
   }
   async write(A) {
@@ -4554,25 +4544,24 @@ function SI(I) {
 }
 class u {
   constructor(A) {
-    if (this.relationship = "image", this.textWrap = "Embed", this.#A = [], A instanceof Blob)
+    if (this.relationship = "image", this.textWrap = "Embed", this._awaitInitQueue = [], A instanceof Blob)
       this.file = A, this.init();
     else
       throw new Error("不支持的数据类型");
   }
-  #A;
   async init() {
-    this.#A = [], await this.getExtent();
-    for (const A of this.#A)
+    this._awaitInitQueue = [], await this.getExtent();
+    for (const A of this._awaitInitQueue)
       A();
-    this.#A = void 0;
+    this._awaitInitQueue = void 0;
   }
   // async generateId(): Promise<string> {
   //     this.id = await generateId(this.file)
   //     return this.id
   // }
   async awaitInit() {
-    this.#A && await new Promise((A) => {
-      this.#A?.push(A);
+    this._awaitInitQueue && await new Promise((A) => {
+      this._awaitInitQueue?.push(A);
     });
   }
   async getExtent() {
@@ -4690,7 +4679,7 @@ function BA(I) {
 }
 class xQ {
   constructor(A, g, B, Q) {
-    if (this.name = "", this.status = 0, this.isDecode = !1, this.tempImages = {}, B ? (this.uint8Array = B, this.setStatus(
+    if (this.name = "", this.status = 0, this.isDecode = !1, this.tempImages = {}, this._output = void 0, this._type = void 0, B ? (this.uint8Array = B, this.setStatus(
       1
       /* loaded */
     )) : A ? (this.blob = A, this.setStatus(
@@ -4699,16 +4688,14 @@ class xQ {
     )) : g && (this.url = g), Q ? this.name = Q : this.name = A?.name ?? "", !g && !A && !B)
       throw new Error("缺少文件数据或文件链接");
   }
-  #A;
-  #I;
   getName() {
     return this.name ? this.name : this.blob?.name ? (this.name = this.blob.name, this.name) : this.url ? MQ(this.url) : "";
   }
   async type() {
-    if (this.#I)
-      return this.#I;
+    if (this._type)
+      return this._type;
     const A = await this.getBuffer();
-    return A ? this.#I = await FQ(A) : this.#I = aA.unknown, this.#I;
+    return A ? this._type = await FQ(A) : this._type = aA.unknown, this._type;
   }
   async getBuffer() {
     if (this.uint8Array)
@@ -4739,13 +4726,13 @@ class xQ {
     this.status = A;
   }
   setOutputFile(A) {
-    this.#A = A;
+    this._output = A;
   }
   setTempImages(A) {
     this.tempImages = A;
   }
   outputFile() {
-    return this.#A ?? this.blob;
+    return this._output ?? this.blob;
   }
   async getTransmitFileInfo() {
     const A = this.uint8Array ? this.uint8Array : await this.getBuffer();

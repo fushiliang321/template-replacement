@@ -1,4 +1,4 @@
-import { b as d, B as p } from "../base-D8S8lX-V.js";
+import { b as d, B as p } from "../base-BS4hmHmd.js";
 let C, y = null;
 function U() {
   return (y === null || y.byteLength === 0) && (y = new Uint8Array(C.memory.buffer)), y;

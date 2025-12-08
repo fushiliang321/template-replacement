@@ -4,9 +4,9 @@ import FileSystem, { fileDataType } from '../interface'
 const db = new indexedDBCache()
 
 export default class DbFile implements FileSystem {
-  #name: string = ''
+  #name: string
 
-  constructor(name: string) {
+  constructor(name: string = '') {
     this.#name = name
   }
 

@@ -1,32 +1,23 @@
 class f {
-  #e = [];
-  //初始化完成回调
-  #t = !1;
-  //是否初始化完成
-  #n;
-  //数据库
-  #r = "template_replacement_db";
-  //数据库名
-  #i = 1;
-  //数据库版本
-  #a = "template_files";
-  //表名
-  #s;
   // 构造函数
   constructor() {
-    this.#o();
+    this._initFinishCallBackFuns = [], this.#e = !1, this.#t = "template_replacement_db", this.#s = 1, this.#a = "template_files", this.#n();
   }
-  #o() {
-    return this.#s ? this.#s : (this.#s = new Promise((e, a) => {
-      const n = indexedDB.open(this.#r, this.#i);
+  #e;
+  #t;
+  #s;
+  #a;
+  #n() {
+    return this._init ? this._init : (this._init = new Promise((e, a) => {
+      const n = indexedDB.open(this.#t, this.#s);
       n.onsuccess = (t) => {
-        if (this.#n = n.result, this.#t = !0, this.#e) {
+        if (this._db = n.result, this.#e = !0, this._initFinishCallBackFuns) {
           try {
-            for (const s of this.#e)
+            for (const s of this._initFinishCallBackFuns)
               s();
           } catch {
           }
-          this.#e = void 0;
+          this._initFinishCallBackFuns = void 0;
         }
         e(t);
       }, n.onerror = (t) => {
@@ -38,18 +29,18 @@ class f {
           // 设置主键
         }), e(t);
       };
-    }), this.#s);
+    }), this._init);
   }
   async awaitInit() {
-    this.#t || !this.#e || await new Promise((e, a) => {
-      this.#e?.push(e);
+    this.#e || !this._initFinishCallBackFuns || await new Promise((e, a) => {
+      this._initFinishCallBackFuns?.push(e);
     });
   }
   closeDB() {
-    this.#n?.close();
+    this._db?.close();
   }
   async store(e) {
-    return await this.awaitInit(), this.#n.transaction(this.#a, e).objectStore(this.#a);
+    return await this.awaitInit(), this._db.transaction(this.#a, e).objectStore(this.#a);
   }
   /**
    * @description : 更新数据
@@ -60,10 +51,10 @@ class f {
     return new Promise((a, n) => {
       this.store("readwrite").then((t) => {
         const s = t.put(e);
-        s.onsuccess = (r) => {
-          a(r);
-        }, s.onerror = (r) => {
-          n(r);
+        s.onsuccess = (i) => {
+          a(i);
+        }, s.onerror = (i) => {
+          n(i);
         };
       }).catch(n);
     });
@@ -75,8 +66,8 @@ class f {
         const s = t.get(e);
         s.onsuccess = () => {
           a(s.result);
-        }, s.onerror = (r) => {
-          n(r);
+        }, s.onerror = (i) => {
+          n(i);
         };
       }).catch(n);
     });
@@ -88,8 +79,8 @@ class f {
         const s = t.delete(e);
         s.onsuccess = () => {
           a(s.result);
-        }, s.onerror = (r) => {
-          n(r);
+        }, s.onerror = (i) => {
+          n(i);
         };
       }).catch(n);
     });
@@ -129,13 +120,13 @@ class m {
       n.push(
         new Promise(async (s) => {
           try {
-            const r = await t.getBuffer();
-            r && (t.isDecode || await t.type() !== u.unknown) && (a[t.name] = await this.#t.extract_one_file_variable_names(
-              r,
+            const i = await t.getBuffer();
+            i && (t.isDecode || await t.type() !== u.unknown) && (a[t.name] = await this.#t.extract_one_file_variable_names(
+              i,
               t.isDecode
             )), s();
-          } catch (r) {
-            console.error(r);
+          } catch (i) {
+            console.error(i);
           }
         })
       );
@@ -148,22 +139,22 @@ class m {
       n.push(
         new Promise(async (s) => {
           try {
-            const r = await t.getBuffer();
-            if (r && (t.isDecode || await t.type() !== u.unknown)) {
-              let i = await this.#t.extract_one_file_medias(
-                r,
+            const i = await t.getBuffer();
+            if (i && (t.isDecode || await t.type() !== u.unknown)) {
+              let r = await this.#t.extract_one_file_medias(
+                i,
                 t.isDecode
               );
-              if (a[t.name] = [], i && Array.isArray(i))
-                for (const o of i)
+              if (a[t.name] = [], r && Array.isArray(r))
+                for (const o of r)
                   o.id && o.data && a[t.name].push({
                     id: o.id,
                     data: new Uint8Array(o.data)
                   });
             }
             s();
-          } catch (r) {
-            console.error(r);
+          } catch (i) {
+            console.error(i);
           }
         })
       );
@@ -181,8 +172,8 @@ class m {
   async execute(e, a) {
     a || (a = this.#e);
     const n = [];
-    for (const r of a)
-      n.push(r.getBuffer());
+    for (const i of a)
+      n.push(i.getBuffer());
     await Promise.all(n);
     const t = {
       //需要解密的文件
@@ -196,8 +187,8 @@ class m {
         uint8Arrays: []
       }
     };
-    for (const r of a)
-      r.uint8Array && (r.isDecode ? (t.decode.names.push(r.name), t.decode.uint8Arrays.push(r.uint8Array)) : (t.noDecode.names.push(r.name), t.noDecode.uint8Arrays.push(r.uint8Array)));
+    for (const i of a)
+      i.uint8Array && (i.isDecode ? (t.decode.names.push(i.name), t.decode.uint8Arrays.push(i.uint8Array)) : (t.noDecode.names.push(i.name), t.noDecode.uint8Arrays.push(i.uint8Array)));
     const s = await Promise.all([
       this._execute(
         e,
@@ -221,18 +212,18 @@ class m {
     const s = {};
     if (!n.length)
       return s;
-    const r = await this.handle(e, n, t);
-    for (let i = 0; i < r.length; i++) {
-      const o = r[i];
-      o.length && (s[a[i]] = o);
+    const i = await this.handle(e, n, t);
+    for (let r = 0; r < i.length; r++) {
+      const o = i[r];
+      o.length && (s[a[r]] = o);
     }
     return s;
   }
   async executeMultipleParams(e, a) {
     a || (a = this.#e);
     const n = [];
-    for (const i of a)
-      n.push(i.getBuffer());
+    for (const r of a)
+      n.push(r.getBuffer());
     await Promise.all(n);
     const t = {
       //需要解密的文件
@@ -246,8 +237,8 @@ class m {
         uint8Arrays: []
       }
     };
-    for (const i of a)
-      i.uint8Array && (i.isDecode ? (t.decode.names.push(i.name), t.decode.uint8Arrays.push(i.uint8Array)) : (t.noDecode.names.push(i.name), t.noDecode.uint8Arrays.push(i.uint8Array)));
+    for (const r of a)
+      r.uint8Array && (r.isDecode ? (t.decode.names.push(r.name), t.decode.uint8Arrays.push(r.uint8Array)) : (t.noDecode.names.push(r.name), t.noDecode.uint8Arrays.push(r.uint8Array)));
     const s = await Promise.all([
       this._executeMultipleParams(
         e,
@@ -261,25 +252,25 @@ class m {
         t.decode.uint8Arrays,
         !0
       )
-    ]), r = [];
-    for (let i = 0; i < s[0].length; i++)
-      r.push({ ...s[0][i], ...s[1][i] });
-    return r;
+    ]), i = [];
+    for (let r = 0; r < s[0].length; r++)
+      i.push({ ...s[0][r], ...s[1][r] });
+    return i;
   }
   async _executeMultipleParams(e, a, n, t = !1) {
     const s = Array(e.length);
     if (!n.length)
       return s;
-    const r = await this.handleMultipleParams(
+    const i = await this.handleMultipleParams(
       e,
       n,
       t
     );
-    let i = 0;
+    let r = 0;
     for (let o = 0; o < e.length; o++) {
       const l = {};
       for (const d of a) {
-        const h = r[i++];
+        const h = i[r++];
         h.length && (l[d] = h);
       }
       s[o] = l;

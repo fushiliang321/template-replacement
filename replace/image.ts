@@ -39,7 +39,7 @@ export default class image {
   wpExtent?: extent //图片宽高
   textWrap = textWrapTypes.embed //文字环绕
 
-  #awaitInitQueue?: ((value?: unknown) => void)[] = []
+  private _awaitInitQueue?: ((value?: unknown) => void)[] = []
 
   constructor(file: Blob) {
     if (file instanceof Blob) {
@@ -51,12 +51,12 @@ export default class image {
   }
 
   async init(): Promise<void> {
-    this.#awaitInitQueue = []
+    this._awaitInitQueue = []
     await this.getExtent()
-    for (const resolve of this.#awaitInitQueue) {
+    for (const resolve of this._awaitInitQueue) {
       resolve()
     }
-    this.#awaitInitQueue = undefined
+    this._awaitInitQueue = undefined
   }
 
   // async generateId(): Promise<string> {
@@ -65,9 +65,9 @@ export default class image {
   // }
 
   async awaitInit(): Promise<void> {
-    if (this.#awaitInitQueue) {
+    if (this._awaitInitQueue) {
       await new Promise((resolve) => {
-        this.#awaitInitQueue?.push(resolve)
+        this._awaitInitQueue?.push(resolve)
       })
     }
   }

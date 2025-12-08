@@ -15,19 +15,19 @@ async function getOpfsRoot(): Promise<FileSystemDirectoryHandle> {
 
 export default class OpfsFile implements FileSystem {
   #name: string = ''
-  #handle: FileSystemFileHandle | undefined
+  private _handle: FileSystemFileHandle | undefined
 
   constructor(name: string) {
     this.#name = name
   }
 
   async getHandle(): Promise<FileSystemFileHandle> {
-    if (!this.#handle) {
-      this.#handle = await (
+    if (!this._handle) {
+      this._handle = await (
         await getOpfsRoot()
       ).getFileHandle(this.#name, { create: true })
     }
-    return this.#handle
+    return this._handle
   }
 
   async write(data: fileDataType): Promise<boolean> {

@@ -4,15 +4,15 @@ type templateData<T> = {
 }
 
 export default class indexedDBCache {
-  #initFinishCallBackFuns?: ((value: void) => void)[] = [] //初始化完成回调
+  private _initFinishCallBackFuns?: ((value: void) => void)[] = [] //初始化完成回调
   #isInitFinish: boolean = false //是否初始化完成
 
-  #db?: IDBDatabase //数据库
+  private _db?: IDBDatabase //数据库
   #dbName: string = 'template_replacement_db' //数据库名
   #dbversion: number = 1 //数据库版本
   #cacheTableName: string = 'template_files' //表名
 
-  #init: Promise<unknown> | undefined
+  private _init: Promise<unknown> | undefined
 
   // 构造函数
   constructor() {
@@ -20,22 +20,22 @@ export default class indexedDBCache {
   }
 
   #initDB(): Promise<unknown> {
-    if (this.#init) {
-      return this.#init
+    if (this._init) {
+      return this._init
     }
-    this.#init = new Promise((resolve, reject) => {
+    this._init = new Promise((resolve, reject) => {
       const request = indexedDB.open(this.#dbName, this.#dbversion) // 打开数据库
       // 数据库初始化成功
       request.onsuccess = (event) => {
-        this.#db = request.result
+        this._db = request.result
         this.#isInitFinish = true
-        if (this.#initFinishCallBackFuns) {
+        if (this._initFinishCallBackFuns) {
           try {
-            for (const fun of this.#initFinishCallBackFuns) {
+            for (const fun of this._initFinishCallBackFuns) {
               fun()
             }
           } catch (error) { }
-          this.#initFinishCallBackFuns = undefined
+          this._initFinishCallBackFuns = undefined
         }
         resolve(event)
       }
@@ -56,25 +56,25 @@ export default class indexedDBCache {
       }
     })
 
-    return this.#init
+    return this._init
   }
 
   async awaitInit(): Promise<void> {
-    if (this.#isInitFinish || !this.#initFinishCallBackFuns) {
+    if (this.#isInitFinish || !this._initFinishCallBackFuns) {
       return
     }
     await new Promise((resolve, reject) => {
-      this.#initFinishCallBackFuns?.push(resolve)
+      this._initFinishCallBackFuns?.push(resolve)
     })
   }
 
   closeDB(): void {
-    this.#db?.close()
+    this._db?.close()
   }
 
   async store(mode?: IDBTransactionMode): Promise<IDBObjectStore> {
     await this.awaitInit()
-    const db = this.#db as IDBDatabase
+    const db = this._db as IDBDatabase
     const transaction = db.transaction(this.#cacheTableName, mode)
     return transaction.objectStore(this.#cacheTableName)
   }

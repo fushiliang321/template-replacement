@@ -47,8 +47,8 @@ export default class Temp implements TempInterface {
 
   tempImages: Record<string, TempImageInfo> = {}
 
-  #output?: File | Blob
-  #type?: fileTypes
+  private _output?: File | Blob = undefined
+  private _type?: fileTypes = undefined
 
   constructor(
     file?: File | Blob,
@@ -88,16 +88,16 @@ export default class Temp implements TempInterface {
   }
 
   async type(): Promise<fileTypes> {
-    if (this.#type) {
-      return this.#type
+    if (this._type) {
+      return this._type
     }
     const buffer = await this.getBuffer()
     if (buffer) {
-      this.#type = await fileTypeByBuffer(buffer)
+      this._type = await fileTypeByBuffer(buffer)
     } else {
-      this.#type = fileTypes.unknown
+      this._type = fileTypes.unknown
     }
-    return this.#type
+    return this._type
   }
 
   async getBuffer(): Promise<Uint8Array | undefined> {
@@ -143,7 +143,7 @@ export default class Temp implements TempInterface {
   }
 
   setOutputFile(file: File | Blob): void {
-    this.#output = file
+    this._output = file
   }
 
   setTempImages(images: Record<string, TempImageInfo>): void {
@@ -151,7 +151,7 @@ export default class Temp implements TempInterface {
   }
 
   outputFile(): File | Blob | undefined {
-    return this.#output ?? this.blob
+    return this._output ?? this.blob
   }
 
   async getTransmitFileInfo(): Promise<transmitFileInfo | undefined> {
