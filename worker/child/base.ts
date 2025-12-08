@@ -8,7 +8,56 @@ type methodKeys<T> = {
   [K in keyof T]: T[K] extends Function ? K : never
 }[keyof T]
 
+//允许调用的方法
 const allowCallMethodNames: Set<methodKeys<ReplaceInterface>> = new Set(["addTempFile", "extractVariables", "extractMedias", "execute", "filesEncrypt", "fileEncrypt", "executeMultipleParams"])
+
+//处理方法调用的返回值
+const resultHandles = {
+  execute(result: Record<string, Uint8Array>, transfer: Transferable[] = []) {
+    for (const key in result) {
+      const value = result[key]
+      if (value?.length) {
+        transfer.push(value.buffer)
+      }
+    }
+    return transfer
+  },
+  executeMultipleParams(result: Record<string, Uint8Array>[], transfer: Transferable[] = []) {
+    for (const map of result) {
+      for (const key in map) {
+        const value = map[key]
+        if (value?.length) {
+          transfer.push(value.buffer)
+        }
+      }
+    }
+    return transfer
+  },
+  extractMedias(result: Record<string, media[]>, transfer: Transferable[] = []) {
+    for (const key in result) {
+      const medias = result[key]
+      for (const media of medias) {
+        if (media.data?.length) {
+          transfer.push(media.data.buffer)
+        }
+      }
+    }
+    return transfer
+  },
+  fileEncrypt(result: Uint8Array, transfer: Transferable[] = []) {
+    if (result?.length) {
+      transfer.push(result.buffer)
+    }
+    return transfer
+  },
+  filesEncrypt(result: Uint8Array[], transfer: Transferable[] = []) {
+    for (const item of result) {
+      if (item?.length) {
+        transfer.push(item.buffer)
+      }
+    }
+  }
+}
 
 const tasks = new Map<string, (value: unknown) => void>()
 
@@ -36,12 +85,16 @@ export function call<T>(method: string, ...params: unknown[]): Promise<T> {
 
 addEventListener('message', async (event) => {
   const data = event.data as messageData
+  if (!data?.data) {
+    return
+  }
   switch (data.type) {
     case messageTypes.methodCall:
       // 调用方法
-      const callData = data.data as methodCall
-      const method = callData.method as methodKeys<ReplaceInterface>
+      const callData = data.data as methodCall<methodKeys<ReplaceInterface>>
+      const method = callData.method
       if (!allowCallMethodNames.has(method)) {
+        //跳过不允许被调用的方法
         return
       }
       // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
@@ -55,43 +108,9 @@ addEventListener('message', async (event) => {
       }
       const transfer: Transferable[] = []
       if (res) {
-        switch (method) {
-          case 'execute':
-            for (const key in res as Record<string, Uint8Array>) {
-              const value: Uint8Array = res[key]
-              if (value?.length) {
-                transfer.push(value.buffer)
-              }
-            }
-            break
-          case 'executeMultipleParams':
-            for (const map of res as Record<string, Uint8Array>[]) {
-              for (const key in map) {
-                const value: Uint8Array = map[key]
-                if (value?.length) {
-                  transfer.push(value.buffer)
-                }
-              }
-            }
-            break
-          case 'extractMedias':
-            for (const key in res as Record<string, Uint8Array>) {
-              const medias: media[] = res[key]
-              for (const media of medias) {
-                transfer.push(media.data.buffer)
-              }
-            }
-            break
-          case 'fileEncrypt':
-            if ((res as Uint8Array).length) {
-              transfer.push((res as Uint8Array).buffer)
-            }
-            break
-          case 'filesEncrypt':
-            for (const item of res as Uint8Array[]) {
-              transfer.push(item.buffer)
-            }
-            break
+        const resultHandle = resultHandles[method as keyof typeof resultHandles] as (undefined | ((res: unknown, transfer: Transferable[]) => Transferable[]))
+        if (resultHandle) {
+          resultHandle(res, transfer)
         }
       }
       postMessage(
@@ -107,9 +126,6 @@ addEventListener('message', async (event) => {
       break
     case messageTypes.methodCallReply:
       // 方法调用的返回数据
-      if (!data?.data) {
-        return
-      }
       const replyId = (data.data as methodCallReply).replyId
       if (!replyId) {
         return

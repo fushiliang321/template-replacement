@@ -42,8 +42,8 @@ export default class WorkerReplace implements ReplaceInterface {
           }
           break
         case messageTypes.methodCall:
-          const callData = data.data as methodCall
-          const method = callData.method as methodKeys<ReplaceInterface>
+          const callData = data.data as methodCall<methodKeys<ReplaceInterface>>
+          const method = callData.method
           if (!allowCallMethodNames.has(method)) {
             return
           }

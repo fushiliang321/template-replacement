@@ -12,9 +12,9 @@ export type messageData = {
   data: unknown | methodCall | methodCallReply
 }
 
-export type methodCall = {
+export type methodCall<T = string> = {
   replyId?: string
-  method: string
+  method: T
   params: unknown[]
 }
 
