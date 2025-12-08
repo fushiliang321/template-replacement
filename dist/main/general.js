@@ -1761,22 +1761,22 @@ J.getAdapter = vI.getAdapter;
 J.HttpStatusCode = XA;
 J.default = J;
 const {
-  Axios: bQ,
-  AxiosError: fQ,
-  CanceledError: lQ,
-  isCancel: OQ,
-  CancelToken: mQ,
-  VERSION: PQ,
-  all: XQ,
-  Cancel: TQ,
-  isAxiosError: jQ,
-  spread: zQ,
-  toFormData: uQ,
-  AxiosHeaders: vQ,
-  HttpStatusCode: _Q,
-  formToJSON: $Q,
-  getAdapter: AC,
-  mergeConfig: IC
+  Axios: fQ,
+  AxiosError: lQ,
+  CanceledError: OQ,
+  isCancel: mQ,
+  CancelToken: PQ,
+  VERSION: XQ,
+  all: TQ,
+  Cancel: jQ,
+  isAxiosError: zQ,
+  spread: uQ,
+  toFormData: vQ,
+  AxiosHeaders: _Q,
+  HttpStatusCode: $Q,
+  formToJSON: AC,
+  getAdapter: IC,
+  mergeConfig: gC
 } = J;
 let VA;
 async function hI() {
@@ -4834,79 +4834,82 @@ class eQ {
   }
 }
 var hA = /* @__PURE__ */ ((I) => (I[I.replace = 0] = "replace", I[I.replaceProgress = 1] = "replaceProgress", I[I.sign = 2] = "sign", I[I.signReply = 3] = "signReply", I[I.methodCall = 4] = "methodCall", I[I.methodCallReply = 5] = "methodCallReply", I))(hA || {});
-const VQ = /* @__PURE__ */ new Set(["addTempFile", "extractVariables", "extractMedias", "execute", "filesEncrypt", "fileEncrypt", "executeMultipleParams"]), tI = /* @__PURE__ */ new Map();
+const VQ = /* @__PURE__ */ new Set(["addTempFile", "extractVariables", "extractMedias", "execute", "filesEncrypt", "fileEncrypt", "executeMultipleParams"]), rQ = /* @__PURE__ */ new Map([
+  ["execute", (I, A = []) => {
+    for (const g in I) {
+      const B = I[g];
+      B?.length && A.push(B.buffer);
+    }
+    return A;
+  }],
+  ["executeMultipleParams", (I, A = []) => {
+    for (const g of I)
+      for (const B in g) {
+        const Q = g[B];
+        Q?.length && A.push(Q.buffer);
+      }
+    return A;
+  }],
+  ["extractMedias", (I, A = []) => {
+    for (const g in I) {
+      const B = I[g];
+      for (const Q of B)
+        Q.data?.length && A.push(Q.data.buffer);
+    }
+    return A;
+  }],
+  ["fileEncrypt", (I, A = []) => (I?.length && A.push(I.buffer), A)],
+  ["filesEncrypt", (I, A = []) => {
+    for (const g of I)
+      g?.length && A.push(g.buffer);
+    return A;
+  }]
+]), tI = /* @__PURE__ */ new Map();
 let zA;
-function rQ(I) {
+function ZQ(I) {
   zA = new eQ(I);
 }
 addEventListener("message", async (I) => {
   const A = I.data;
-  switch (A.type) {
-    case hA.methodCall:
-      const g = A.data, B = g.method;
-      if (!VQ.has(B))
-        return;
-      const Q = zA[B];
-      if (!Q)
-        return;
-      const C = await Promise.resolve(Q.apply(zA, g.params));
-      if (!g.replyId)
-        return;
-      const E = [];
-      if (C)
-        switch (B) {
-          case "execute":
-            for (const G in C) {
-              const o = C[G];
-              o?.length && E.push(o.buffer);
-            }
-            break;
-          case "executeMultipleParams":
-            for (const G of C)
-              for (const o in G) {
-                const M = G[o];
-                M?.length && E.push(M.buffer);
-              }
-            break;
-          case "extractMedias":
-            for (const G in C) {
-              const o = C[G];
-              for (const M of o)
-                E.push(M.data.buffer);
-            }
-            break;
-          case "fileEncrypt":
-            C.length && E.push(C.buffer);
-            break;
-          case "filesEncrypt":
-            for (const G of C)
-              E.push(G.buffer);
-            break;
+  if (A?.data)
+    switch (A.type) {
+      case hA.methodCall:
+        const g = A.data, B = g.method;
+        if (!VQ.has(B))
+          return;
+        const Q = zA[B];
+        if (!Q)
+          return;
+        const C = await Promise.resolve(Q.apply(zA, g.params));
+        if (!g.replyId)
+          return;
+        const E = [];
+        if (C) {
+          const G = rQ.get(B);
+          G && G(C, E);
         }
-      postMessage(
-        {
-          type: hA.methodCallReply,
-          data: {
-            replyId: g.replyId,
-            result: C
-          }
-        },
-        E.length ? { transfer: E } : void 0
-      );
-      break;
-    case hA.methodCallReply:
-      if (!A?.data)
-        return;
-      const D = A.data.replyId;
-      if (!D)
-        return;
-      const i = tI.get(D);
-      if (!i)
-        return;
-      i(A.data.result), tI.delete(D);
-  }
+        postMessage(
+          {
+            type: hA.methodCallReply,
+            data: {
+              replyId: g.replyId,
+              result: C
+            }
+          },
+          E.length ? { transfer: E } : void 0
+        );
+        break;
+      case hA.methodCallReply:
+        const D = A.data.replyId;
+        if (!D)
+          return;
+        const i = tI.get(D);
+        if (!i)
+          return;
+        i(A.data.result), tI.delete(D);
+    }
 });
-rQ(new nQ());
+ZQ(new nQ());
 `, B = typeof self < "u" && self.Blob && new Blob(["URL.revokeObjectURL(import.meta.url);", Q], { type: "text/javascript;charset=utf-8" });
 function E(I) {
   let A;

@@ -12,8 +12,9 @@ type methodKeys<T> = {
 const allowCallMethodNames: Set<methodKeys<ReplaceInterface>> = new Set(["addTempFile", "extractVariables", "extractMedias", "execute", "filesEncrypt", "fileEncrypt", "executeMultipleParams"])
 
 //处理方法调用的返回值
-const resultHandles = {
-  execute(result: Record<string, Uint8Array>, transfer: Transferable[] = []) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const resultHandles = new Map<methodKeys<ReplaceInterface>, (result: any, transfer: Transferable[]) => Transferable[]>([
+  ['execute', (result: Record<string, Uint8Array>, transfer: Transferable[] = []) => {
     for (const key in result) {
       const value = result[key]
       if (value?.length) {
@@ -21,8 +22,8 @@ const resultHandles = {
       }
     }
     return transfer
-  },
-  executeMultipleParams(result: Record<string, Uint8Array>[], transfer: Transferable[] = []) {
+  }],
+  ['executeMultipleParams', (result: Record<string, Uint8Array>[], transfer: Transferable[] = []) => {
     for (const map of result) {
       for (const key in map) {
         const value = map[key]
@@ -32,8 +33,8 @@ const resultHandles = {
       }
     }
     return transfer
-  },
-  extractMedias(result: Record<string, media[]>, transfer: Transferable[] = []) {
+  }],
+  ['extractMedias', (result: Record<string, media[]>, transfer: Transferable[] = []) => {
     for (const key in result) {
       const medias = result[key]
       for (const media of medias) {
@@ -43,21 +44,22 @@ const resultHandles = {
       }
     }
     return transfer
-  },
-  fileEncrypt(result: Uint8Array, transfer: Transferable[] = []) {
+  }],
+  ['fileEncrypt', (result: Uint8Array, transfer: Transferable[] = []) => {
     if (result?.length) {
       transfer.push(result.buffer)
     }
     return transfer
-  },
-  filesEncrypt(result: Uint8Array[], transfer: Transferable[] = []) {
+  }],
+  ['filesEncrypt', (result: Uint8Array[], transfer: Transferable[] = []) => {
     for (const item of result) {
       if (item?.length) {
         transfer.push(item.buffer)
       }
     }
-  }
-}
+    return transfer
+  }],
+])
 
 const tasks = new Map<string, (value: unknown) => void>()
 
@@ -108,7 +110,7 @@ addEventListener('message', async (event) => {
       }
       const transfer: Transferable[] = []
       if (res) {
-        const resultHandle = resultHandles[method as keyof typeof resultHandles] as (undefined | ((res: unknown, transfer: Transferable[]) => Transferable[]))
+        const resultHandle = resultHandles.get(method)
         if (resultHandle) {
           resultHandle(res, transfer)
         }
