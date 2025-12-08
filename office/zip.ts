@@ -16,6 +16,7 @@ export default class Zip {
   name: string = ''
   fileBlob?: Blob
   private _unzipData?: Unzipped
+  private _lastUpdateTime: number = 0
 
   constructor(file?: Blob) {
     if (!file) {
