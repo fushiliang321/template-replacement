@@ -28,7 +28,7 @@
     "oxlint": "^1.31.0",
     "terser": "^5.44.1",
     "typescript": "^5.9.3",
-    "vite": "^7.2.2",
+    "vite": "^7.2.6",
     "vite-plugin-dts": "^4.5.4",
     "vite-plugin-wasm-pack": "^0.1.12"
   },
