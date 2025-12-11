@@ -1,5 +1,7 @@
 import streamSaver from 'streamsaver'
 
+streamSaver.mitm = 'https://unpkg.com/streamsaver/mitm.html'
+
 export function setMitm(mitm: string) {
   streamSaver.mitm = mitm
 }
