@@ -40,9 +40,6 @@ export default class Zip {
             unzip(
               new Uint8Array(arrayBuffer),
               (err: FlateError | null, data: Unzipped) => {
-                if (err) {
-                  return reject(err)
-                }
                 resolve(data)
               },
             )

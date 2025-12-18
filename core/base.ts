@@ -1,71 +1,66 @@
-export interface Interface {
-  await(): Promise<Interface>
-  add_template(file: Uint8Array, is_decode: boolean): Promise<number>
-  add_media(file: Uint8Array): Promise<string>
+export interface rawCoreInterface {
+  add_media(file: Uint8Array): string
+  add_template(file_data: Uint8Array, is_decode: boolean): Promise<number>
+  extract_medias(files: Uint8Array[], encode_files: Uint8Array[]): Promise<unknown>
+  extract_one_file_medias(data: Uint8Array, is_decode: boolean): Promise<unknown>
   extract_one_file_variable_names(
     data: Uint8Array,
     is_decode: boolean,
   ): Promise<string[]>
   extract_variable_names(
     files: Uint8Array[],
-    is_decode: boolean,
+    encode_files: Uint8Array[],
   ): Promise<string[]>
-  extract_one_file_medias(data: Uint8Array, is_decode: boolean): Promise<unknown>
-  extract_medias(files: Uint8Array[], is_decode: boolean): Promise<unknown>
-  file_encrypt(file: Uint8Array): Promise<Uint8Array>
-  files_encrypt(files: Uint8Array[]): Promise<Uint8Array[]>
+  file_encrypt(file: Uint8Array): Uint8Array
+  files_encrypt(files: Uint8Array[]): Uint8Array[]
 }
 
-export default class implements Interface {
-  awaitInit: Promise<Interface>
+type PromisifyAll<T> = {
+  [K in keyof T]: T[K] extends (...args: infer Args) => infer R
+  ? (...args: Args) => R extends Promise<unknown>
+    ? R
+    : Promise<R>
+  : never;
+};
 
-  constructor(init: Promise<Interface>) {
+export type AsyncCoreInterface = PromisifyAll<rawCoreInterface>;
+
+export default class implements AsyncCoreInterface {
+  awaitInit: Promise<rawCoreInterface>
+
+  constructor(init: Promise<rawCoreInterface>) {
     this.awaitInit = init
   }
 
-  async await(): Promise<Interface> {
-    await this.awaitInit
-    return this
-  }
-
-  async add_template(file: Uint8Array, is_decode: boolean): Promise<number> {
+  async add_template(file: Uint8Array, is_decode: boolean) {
     return (await this.awaitInit).add_template(file, is_decode)
   }
 
-  async add_media(file: Uint8Array): Promise<string> {
+  async add_media(file: Uint8Array) {
     return (await this.awaitInit).add_media(file)
   }
 
-  async extract_one_file_variable_names(
-    data: Uint8Array,
-    is_decode: boolean,
-  ): Promise<string[]> {
+  async extract_one_file_variable_names(data: Uint8Array, is_decode: boolean) {
     return (await this.awaitInit).extract_one_file_variable_names(data, is_decode)
   }
 
-  async extract_variable_names(
-    files: Uint8Array[],
-    is_decode: boolean,
-  ): Promise<string[]> {
-    return (await this.awaitInit).extract_variable_names(files, is_decode)
+  async extract_variable_names(files: Uint8Array[], encode_files: Uint8Array[]) {
+    return (await this.awaitInit).extract_variable_names(files, encode_files)
   }
 
-  async extract_one_file_medias(
-    data: Uint8Array,
-    is_decode: boolean,
-  ): Promise<unknown> {
+  async extract_one_file_medias(data: Uint8Array, is_decode: boolean) {
     return (await this.awaitInit).extract_one_file_medias(data, is_decode)
   }
 
-  async extract_medias(files: Uint8Array[], is_decode: boolean): Promise<unknown> {
-    return (await this.awaitInit).extract_medias(files, is_decode)
+  async extract_medias(files: Uint8Array[], encode_files: Uint8Array[]) {
+    return (await this.awaitInit).extract_medias(files, encode_files)
   }
 
-  async file_encrypt(file: Uint8Array): Promise<Uint8Array> {
+  async file_encrypt(file: Uint8Array) {
     return (await this.awaitInit).file_encrypt(file)
   }
 
-  async files_encrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
+  async files_encrypt(files: Uint8Array[]) {
     return (await this.awaitInit).files_encrypt(files)
   }
 }

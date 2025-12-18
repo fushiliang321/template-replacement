@@ -1,10 +1,10 @@
 import Base from './base'
 import core, {
-  add_template,
   add_media,
-  replace_batch_verify,
+  add_template,
+  replace_batch,
   replace_params_encode,
-  replace_batch_verify_multiple_params,
+  replace_batch_multiple_params,
   replace_params_encode_multiple_params,
 } from '../core/sign'
 import paramsData, { replaceParams } from './paramsData'
@@ -17,13 +17,15 @@ export default class Sign extends Base {
   async handle(
     paramsData: paramsData,
     files: Uint8Array[],
-    isDecode: boolean = false,
+    encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
     paramsData.add_media = add_media
-
     const addFileTasks: Promise<number>[] = []
     for (const file of files) {
-      addFileTasks.push(add_template(file, isDecode))
+      addFileTasks.push(add_template(file, false))
+    }
+    for (const file of encode_files) {
+      addFileTasks.push(add_template(file, true))
     }
     const [tempFiles, [variables]] = await Promise.all([
       Promise.all(addFileTasks),
@@ -33,16 +35,15 @@ export default class Sign extends Base {
       files: tempFiles,
       variables,
     }
-
     const paramsEncode = await replace_params_encode(encodeData)
     const verifyCode = await this.sign(paramsEncode)
-    return replace_batch_verify(String(verifyCode), paramsEncode.data)
+    return replace_batch(verifyCode, paramsEncode.data)
   }
 
   async handleMultipleParams(
     paramsList: paramsData[],
     files: Uint8Array[],
-    isDecode: boolean = false,
+    encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
     let variablesTasks: Promise<replaceParams>[] = []
     for (const paramsData of paramsList) {
@@ -61,7 +62,10 @@ export default class Sign extends Base {
 
     const addFileTasks: Promise<number>[] = []
     for (const file of files) {
-      addFileTasks.push(add_template(file, isDecode))
+      addFileTasks.push(add_template(file, false))
+    }
+    for (const file of encode_files) {
+      addFileTasks.push(add_template(file, true))
     }
 
     const [tempFiles, variables] = await Promise.all([
@@ -76,8 +80,8 @@ export default class Sign extends Base {
 
     const paramsEncode = await replace_params_encode_multiple_params(encodeData)
     const verifyCode = await this.sign(paramsEncode)
-    return replace_batch_verify_multiple_params(
-      String(verifyCode),
+    return replace_batch_multiple_params(
+      verifyCode,
       paramsEncode.data,
     )
   }

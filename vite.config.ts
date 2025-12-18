@@ -1,19 +1,8 @@
 import { defineConfig } from 'vite'
-import wasmPack from 'vite-plugin-wasm-pack'
-import dts from 'vite-plugin-dts'
 
 export default defineConfig({
-  plugins: [
-    wasmPack(
-      [],
-      ['template-replacement-sign-core-wasm', 'template-replacement-core-wasm'],
-    ),
-    dts({
-      entryRoot: './dist',
-      insertTypesEntry: true,
-    }),
-  ],
   build: {
+    target: 'esnext',
     outDir: './dist',
     lib: {
       entry: [

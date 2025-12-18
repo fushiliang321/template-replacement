@@ -1,14 +1,62 @@
 import Interface, { media } from './interface'
-import { Interface as CoreInterface } from '../core/base'
+import { AsyncCoreInterface } from '../core/base'
 import paramsData from './paramsData'
 import Temp from '../temp'
 import { fileTypes } from '../helper'
 
+export type filesTidyResultItem = {
+  names: string[]
+  uint8Arrays: Uint8Array[]
+}
+
+export type filesTidyResult = {
+  //需要解密的文件
+  decode: filesTidyResultItem,
+  //不需要解密的文件
+  noDecode: filesTidyResultItem
+}
+
+//整理模板文件
+async function tempFilesTidy(files: Temp[] = []): Promise<filesTidyResult> {
+  //等待文件加载完成
+  const tasks = []
+  for (const file of files) {
+    tasks.push(file.getBuffer())
+  }
+  await Promise.all(tasks)
+
+  const result: filesTidyResult = {
+    decode: {
+      names: [],
+      uint8Arrays: [],
+    },
+    noDecode: {
+      names: [],
+      uint8Arrays: [],
+    },
+  }
+
+  //整理出需要解密和不需要解密的文件
+  for (const file of files) {
+    if (!file.uint8Array) {
+      continue
+    }
+    if (file.isDecode) {
+      result.decode.names.push(file.name)
+      result.decode.uint8Arrays.push(file.uint8Array)
+    } else {
+      result.noDecode.names.push(file.name)
+      result.noDecode.uint8Arrays.push(file.uint8Array)
+    }
+  }
+  return result
+}
+
 export default class Base implements Interface {
   #files: Temp[] = []
-  #core: CoreInterface
+  #core: AsyncCoreInterface
 
-  constructor(core: CoreInterface) {
+  constructor(core: AsyncCoreInterface) {
     this.#core = core
   }
 
@@ -20,95 +68,92 @@ export default class Base implements Interface {
     this.#files.length = 0
   }
 
+  //提取单个文件内的所有变量
+  async extractOneFileVariables(variables: Record<string, string[]>, file: Temp): Promise<void> {
+    const buffer = await file.getBuffer()
+    if (!buffer) {
+      return
+    }
+    if ((await file.type()) === fileTypes.unknown && !file.isDecode) {
+      return
+    }
+    variables[file.name] = await this.#core.extract_one_file_variable_names(
+      buffer,
+      file.isDecode,
+    )
+  }
+
+  //提取多个文件内的所有变量
   async extractVariables(
     files: Temp[] | undefined,
   ): Promise<Record<string, string[]>> {
     if (!files) {
       files = this.#files
     }
-    const data: Record<string, string[]> = {}
+    const variables: Record<string, string[]> = {}
     const tasks = []
     for (const file of files) {
-      tasks.push(
-        new Promise<void>(async (resolve) => {
-          try {
-            const buffer = await file.getBuffer()
-            if (
-              buffer &&
-              (file.isDecode || (await file.type()) !== fileTypes.unknown)
-            ) {
-              data[file.name] =
-                await this.#core.extract_one_file_variable_names(
-                  buffer,
-                  file.isDecode,
-                )
-            }
-            resolve()
-          } catch (error) {
-            console.error(error)
-          }
-        }),
-      )
+      tasks.push(this.extractOneFileVariables(variables, file))
     }
-    await Promise.all(tasks)
-    return data
+    await Promise.allSettled(tasks)
+    return variables
   }
 
+  //提取单个文件内的所有媒体文件
+  async extractOneFileMedias(medias: Record<string, media[]>, file: Temp): Promise<void> {
+    const buffer = await file.getBuffer()
+    if (!buffer) {
+      return
+    }
+    if ((await file.type()) === fileTypes.unknown && !file.isDecode) {
+      return
+    }
+    const res = await this.#core.extract_one_file_medias(
+      buffer,
+      file.isDecode,
+    )
+    medias[file.name] = []
+    if (!Array.isArray(res)) {
+      return
+    }
+    for (const { id, data } of res) {
+      if (id && data) {
+        medias[file.name].push({
+          id: id,
+          data: new Uint8Array(data),
+        })
+      }
+    }
+  }
+
+  //提取多个文件内的所有媒体文件
   async extractMedias(
     files: Temp[] | undefined,
   ): Promise<Record<string, media[]>> {
     if (!files) {
       files = this.#files
     }
-    const data: Record<string, media[]> = {}
+    const medias: Record<string, media[]> = {}
     const tasks = []
     for (const file of files) {
-      tasks.push(
-        new Promise<void>(async (resolve) => {
-          try {
-            const buffer = await file.getBuffer()
-            if (
-              buffer &&
-              (file.isDecode || (await file.type()) !== fileTypes.unknown)
-            ) {
-              let medias = await this.#core.extract_one_file_medias(
-                buffer,
-                file.isDecode,
-              )
-              data[file.name] = []
-              if (medias && Array.isArray(medias)) {
-                for (const m of medias) {
-                  if (m.id && m.data) {
-                    data[file.name].push({
-                      id: m.id,
-                      data: new Uint8Array(m.data),
-                    })
-                  }
-                }
-              }
-            }
-            resolve()
-          } catch (error) {
-            console.error(error)
-          }
-        }),
-      )
+      tasks.push(this.extractOneFileMedias(medias, file))
     }
     await Promise.all(tasks)
-    return data
+    return medias
   }
 
   async handle(
     paramsData: paramsData,
     files: Uint8Array[],
-    isDecode: boolean = false,
+    encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
     return []
   }
+
   async handleMultipleParams(
     paramsData: paramsData[],
     files: Uint8Array[],
-    isDecode: boolean = false,
+    encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
     return []
   }
@@ -121,175 +166,37 @@ export default class Base implements Interface {
     params: paramsData,
     files: Temp[] | undefined,
   ): Promise<Record<string, Uint8Array>> {
-    if (!files) {
-      files = this.#files
+    const { noDecode, decode } = await tempFilesTidy(files ?? this.#files)
+    const res = await this.handle(params, noDecode.uint8Arrays, decode.uint8Arrays);
+    const result: Record<string, Uint8Array> = {}
+    let i = 0
+    for (const name of noDecode.names) {
+      result[name] = res[i++] ?? new Uint8Array()
     }
-
-    //等待文件加载完成
-    const tasks = []
-    for (const file of files) {
-      tasks.push(file.getBuffer())
+    for (const name of decode.names) {
+      result[name] = res[i++] ?? new Uint8Array()
     }
-    await Promise.all(tasks)
-
-    const fileMap: {
-      decode: { names: string[]; uint8Arrays: Uint8Array[] }
-      noDecode: { names: string[]; uint8Arrays: Uint8Array[] }
-    } = {
-      //需要解密的文件
-      decode: {
-        names: [],
-        uint8Arrays: [],
-      },
-      //不需要解密的文件
-      noDecode: {
-        names: [],
-        uint8Arrays: [],
-      },
-    }
-
-    //整理出需要解密和不需要解密的文件
-    for (const file of files) {
-      if (!file.uint8Array) {
-        continue
-      }
-      if (file.isDecode) {
-        fileMap.decode.names.push(file.name)
-        fileMap.decode.uint8Arrays.push(file.uint8Array)
-      } else {
-        fileMap.noDecode.names.push(file.name)
-        fileMap.noDecode.uint8Arrays.push(file.uint8Array)
-      }
-    }
-    //分别处理需要解密和不需要解密的文件
-    const res = await Promise.all([
-      this._execute(
-        params,
-        fileMap.noDecode.names,
-        fileMap.noDecode.uint8Arrays,
-        false,
-      ),
-      this._execute(
-        params,
-        fileMap.decode.names,
-        fileMap.decode.uint8Arrays,
-        true,
-      ),
-    ])
-
-    return {
-      ...res[0],
-      ...res[1],
-    }
-  }
-
-  async _execute(
-    params: paramsData,
-    names: string[],
-    uint8Arrays: Uint8Array[],
-    isDecode: boolean = false,
-  ): Promise<Record<string, Uint8Array>> {
-    const resData: Record<string, Uint8Array> = {}
-    if (!uint8Arrays.length) {
-      return resData
-    }
-    const res = await this.handle(params, uint8Arrays, isDecode)
-    for (let index = 0; index < res.length; index++) {
-      const file = res[index]
-      if (file.length) {
-        resData[names[index]] = file
-      }
-    }
-    return resData
+    return result
   }
 
   async executeMultipleParams(
     paramsList: paramsData[],
     files: Temp[] | undefined,
   ): Promise<Record<string, Uint8Array>[]> {
-    if (!files) {
-      files = this.#files
-    }
-
-    //等待文件加载完成
-    const tasks = []
-    for (const file of files) {
-      tasks.push(file.getBuffer())
-    }
-    await Promise.all(tasks)
-
-    const fileMap: {
-      decode: { names: string[]; uint8Arrays: Uint8Array[] }
-      noDecode: { names: string[]; uint8Arrays: Uint8Array[] }
-    } = {
-      //需要解密的文件
-      decode: {
-        names: [],
-        uint8Arrays: [],
-      },
-      //不需要解密的文件
-      noDecode: {
-        names: [],
-        uint8Arrays: [],
-      },
-    }
-
-    //整理出需要解密和不需要解密的文件
-    for (const file of files) {
-      if (!file.uint8Array) {
-        continue
-      }
-      if (file.isDecode) {
-        fileMap.decode.names.push(file.name)
-        fileMap.decode.uint8Arrays.push(file.uint8Array)
-      } else {
-        fileMap.noDecode.names.push(file.name)
-        fileMap.noDecode.uint8Arrays.push(file.uint8Array)
-      }
-    }
-    //分别处理需要解密和不需要解密的文件
-    const res = await Promise.all([
-      this._executeMultipleParams(
-        paramsList,
-        fileMap.noDecode.names,
-        fileMap.noDecode.uint8Arrays,
-        false,
-      ),
-      this._executeMultipleParams(
-        paramsList,
-        fileMap.decode.names,
-        fileMap.decode.uint8Arrays,
-        true,
-      ),
-    ])
-
-    const result = []
-    for (let i = 0; i < res[0].length; i++) {
-      result.push({ ...res[0][i], ...res[1][i] })
-    }
-    return result
-  }
-
-  async _executeMultipleParams(
-    paramsList: paramsData[],
-    names: string[],
-    uint8Arrays: Uint8Array[],
-    isDecode: boolean = false,
-  ): Promise<Record<string, Uint8Array>[]> {
-    const result: Record<string, Uint8Array>[] = Array(paramsList.length) //整理出每一套参数的替换结果文件
-    if (!uint8Arrays.length) {
-      return result
-    }
-    const resFileList = await this.handleMultipleParams(
-      paramsList,
-      uint8Arrays,
-      isDecode,
-    )
+    const { noDecode, decode } = await tempFilesTidy(files ?? this.#files)
+    const resFileList = await this.handleMultipleParams(paramsList, noDecode.uint8Arrays, decode.uint8Arrays);
+    const result: Record<string, Uint8Array>[] = Array(paramsList.length)
 
     let resFileIndex = 0
     for (let index = 0; index < paramsList.length; index++) {
       const resultItem: Record<string, Uint8Array> = {}
-      for (const name of names) {
+      for (const name of noDecode.names) {
+        const file = resFileList[resFileIndex++]
+        if (file.length) {
+          resultItem[name] = file
+        }
+      }
+      for (const name of decode.names) {
         const file = resFileList[resFileIndex++]
         if (file.length) {
           resultItem[name] = file
@@ -300,11 +207,11 @@ export default class Base implements Interface {
     return result
   }
 
-  fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
+  async fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
     return this.#core.file_encrypt(file)
   }
 
-  filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
+  async filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
     return this.#core.files_encrypt(files)
   }
 }

@@ -1,10 +1,9 @@
 import Base from './base'
 import core, {
   replace_batch,
-  replace_batch_multiple_params,
+  replace_batch_multiple_params
 } from '../core/general'
 import paramsData, { replaceParams } from './paramsData'
-
 export default class General extends Base {
   constructor() {
     super(core())
@@ -13,16 +12,16 @@ export default class General extends Base {
   async handle(
     paramsData: paramsData,
     files: Uint8Array[],
-    isDecode: boolean = false,
+    encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
     const [params, mediaBuffers] = await paramsData.toReplaceParams()
-    return replace_batch(params, mediaBuffers, files, isDecode)
+    return replace_batch(params, mediaBuffers, files, encode_files)
   }
 
   async handleMultipleParams(
     paramsList: paramsData[],
     files: Uint8Array[],
-    isDecode: boolean = false,
+    encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
     const mediaBuffers: Uint8Array[] = [],
       newParamsListTasks: Promise<replaceParams>[] = []
@@ -43,7 +42,7 @@ export default class General extends Base {
       newParamsList,
       mediaBuffers,
       files,
-      isDecode,
+      encode_files,
     )
   }
 }

@@ -8,7 +8,7 @@ export default interface DispatcherInterface {
     options?: StructuredSerializeOptions,
   ): void
 
-  addListener(fun: (event: MessageEvent) => void): void
+  addListener<T>(fun: (event: MessageEvent<T>) => void): void
 
-  removeListener(fun: (event: MessageEvent) => void): void
+  removeListener<T>(fun: (event: MessageEvent<T>) => void): void
 }

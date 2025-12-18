@@ -104,15 +104,22 @@ addEventListener('message', async (event) => {
       if (!fun) {
         return
       }
-      const res = await Promise.resolve(fun.apply(dispatch, callData.params))
+      let result: unknown
+      let error: unknown = undefined
+      try {
+        result = await Promise.resolve(fun.apply(dispatch, callData.params))
+      } catch (e) {
+        console.error(e)
+        error = (e as Error).message || ((e as Error).name || "error")
+      }
       if (!callData.replyId) {
         return
       }
       const transfer: Transferable[] = []
-      if (res) {
+      if (result) {
         const resultHandle = resultHandles.get(method)
         if (resultHandle) {
-          resultHandle(res, transfer)
+          resultHandle(result, transfer)
         }
       }
       postMessage(
@@ -120,7 +127,8 @@ addEventListener('message', async (event) => {
           type: messageTypes.methodCallReply,
           data: {
             replyId: callData.replyId,
-            result: res,
+            result,
+            error
           },
         },
         transfer.length ? { transfer } : undefined,

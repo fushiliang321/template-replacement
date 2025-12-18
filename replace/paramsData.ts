@@ -24,7 +24,7 @@ export type replaceParams = {
 export default class paramsData {
   textData: textData = {}
   mediaData: mediaData = {}
-  add_media?: (file: Uint8Array) => Promise<string>
+  add_media?: (file: Uint8Array) => string
 
   constructor(text?: textData, media?: mediaData) {
     if (text && text.constructor === Object) {
@@ -53,7 +53,7 @@ export default class paramsData {
               const buffer = await value.file.arrayBuffer()
               const uint8Array = new Uint8Array(buffer)
               if (this.add_media) {
-                id = await this.add_media(uint8Array)
+                id = this.add_media(uint8Array)
               } else {
                 index = mediaBuffers.push(uint8Array) - 1
               }
@@ -89,7 +89,7 @@ export default class paramsData {
               const uint8Array = new Uint8Array(buffer)
 
               if (this.add_media) {
-                id = await this.add_media(uint8Array)
+                id = this.add_media(uint8Array)
               } else {
                 index = mediaBuffers.push(uint8Array) - 1
               }

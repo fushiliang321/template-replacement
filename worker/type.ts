@@ -21,4 +21,5 @@ export type methodCall<T = string> = {
 export type methodCallReply = {
   replyId: string
   result: unknown
+  error?: string
 }
