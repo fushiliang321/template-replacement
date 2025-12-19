@@ -34,7 +34,7 @@ const replaceInstance = tr()
 需要同时替换大量文件时使用
 ``` javascript
 import tr from 'template-replacement'
-const worker = 4 //线程数量，建议<=CPU核心数
+const worker = navigator.hardwareConcurrency ?? 4 //线程数量，建议<=CPU核心数
 const replaceInstance = tr(worker)
 ```
 3、模板替换并校验签名：
@@ -56,7 +56,7 @@ const replaceInstance = tr(0, getSignature)
 4、多线程模板替换并校验签名：
 ``` javascript
 import tr from 'template-replacement'
-const worker = 4 //线程数量，建议<=CPU核心数
+const worker = navigator.hardwareConcurrency ?? 4 //线程数量，建议<=CPU核心数
 const replaceInstance = tr(worker, getSignature)
 ```
 
@@ -179,6 +179,12 @@ media.setPxExtent(width: number, height: number)
  * 设置图片的宽高（厘米）
  */
 media.setCmExtent(width: number, height: number)
+
+/**
+ * 等待媒体数据初始化完成
+ * 数据初始化完成后才能使用媒体数据进行替换（重要！！！）
+ */
+await media.awaitInit();
 ```
 
 2、文件加密，需要防止被第三方获取到模板文件的场景可以使用（配合class Temp中的isDecode属性进行解码使用）
