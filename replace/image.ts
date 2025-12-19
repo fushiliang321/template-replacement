@@ -30,6 +30,15 @@ export type extent = {
   cx: number
 }
 
+//允许设置的属性
+const allowSetPropertyKeys = new Set([
+  'file',
+  'id',
+  'wpExtent',
+  'textWrap',
+  'relationship',
+])
+
 //图片替换
 export default class image {
   file: Blob
@@ -53,16 +62,16 @@ export default class image {
   async init(): Promise<void> {
     this._awaitInitQueue = []
     await this.getExtent()
+    if (this._awaitInitQueue) {
+      console.log('this._awaitInitQueue', this._awaitInitQueue)
+    } else {
+      console.log('this._awaitInitQueue is undefined')
+    }
     for (const resolve of this._awaitInitQueue) {
       resolve()
     }
     this._awaitInitQueue = undefined
   }
-
-  // async generateId(): Promise<string> {
-  //     this.id = await generateId(this.file)
-  //     return this.id
-  // }
 
   async awaitInit(): Promise<void> {
     if (this._awaitInitQueue) {
@@ -77,7 +86,7 @@ export default class image {
       if (this.file.size) {
         try {
           const bitmap = await createImageBitmap(this.file)
-          if (this.wpExtent) {
+          if (!this.wpExtent) {
             this.setPxExtent(bitmap.width, bitmap.height)
           }
           bitmap.close()
@@ -113,6 +122,9 @@ export default class image {
     await this.awaitInit()
     const data: Record<string, unknown> = {}
     for (const key in this) {
+      if (!allowSetPropertyKeys.has(key)) {
+        continue
+      }
       data[key] = this[key]
     }
     return data
@@ -120,6 +132,9 @@ export default class image {
 
   setProperties(data: Record<string, unknown>) {
     for (const key in data) {
+      if (!allowSetPropertyKeys.has(key)) {
+        continue
+      }
       this[key as keyof image] = data[key] as never;
     }
   }
