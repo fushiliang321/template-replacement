@@ -92,7 +92,7 @@ export default class WorkerReplace implements ReplaceInterface {
 
   #call<T>(method: allMethodNames, params: unknown[]): Promise<T> {
     const transfer: Transferable[] = []
-
+    //TODO 处理params中的Transferable对象,但要考虑拆分多个worker处理之后Transferable对象所有权只会被一个worker获取
     for (const param of params) {
       if (param instanceof Array) {
         for (const item of param) {

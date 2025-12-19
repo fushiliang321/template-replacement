@@ -20,17 +20,14 @@ export default class Sign extends Base {
     encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
     paramsData.add_media = add_media
-    const addFileTasks: Promise<number>[] = []
+    const tempFiles = []
     for (const file of files) {
-      addFileTasks.push(add_template(file, false))
+      tempFiles.push(add_template(file, false))
     }
     for (const file of encode_files) {
-      addFileTasks.push(add_template(file, true))
+      tempFiles.push(add_template(file, true))
     }
-    const [tempFiles, [variables]] = await Promise.all([
-      Promise.all(addFileTasks),
-      paramsData.toReplaceParams(),
-    ])
+    const [variables] = await paramsData.toReplaceParams()
     const encodeData = {
       files: tempFiles,
       variables,
@@ -59,23 +56,17 @@ export default class Sign extends Base {
         }),
       )
     }
-
-    const addFileTasks: Promise<number>[] = []
+    const tempFiles = []
     for (const file of files) {
-      addFileTasks.push(add_template(file, false))
+      tempFiles.push(add_template(file, false))
     }
     for (const file of encode_files) {
-      addFileTasks.push(add_template(file, true))
+      tempFiles.push(add_template(file, true))
     }
-
-    const [tempFiles, variables] = await Promise.all([
-      Promise.all(addFileTasks),
-      Promise.all(variablesTasks),
-    ])
 
     const encodeData = {
       files: tempFiles,
-      variables,
+      variables: await Promise.all(variablesTasks),
     }
 
     const paramsEncode = await replace_params_encode_multiple_params(encodeData)

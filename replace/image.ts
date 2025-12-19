@@ -62,11 +62,6 @@ export default class image {
   async init(): Promise<void> {
     this._awaitInitQueue = []
     await this.getExtent()
-    if (this._awaitInitQueue) {
-      console.log('this._awaitInitQueue', this._awaitInitQueue)
-    } else {
-      console.log('this._awaitInitQueue is undefined')
-    }
     for (const resolve of this._awaitInitQueue) {
       resolve()
     }
