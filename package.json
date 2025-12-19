@@ -1,7 +1,7 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "author": "fushiliang <994301536@qq.com>",
   "type": "module",
   "main": "index.ts",
