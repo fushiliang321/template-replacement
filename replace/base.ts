@@ -3,6 +3,7 @@ import { AsyncCoreInterface } from '../core/base'
 import paramsData from './paramsData'
 import Temp from '../temp'
 import { fileTypes } from '../helper'
+import { Zip, ZipDeflate } from 'fflate'
 
 export type filesTidyResultItem = {
   names: string[]
@@ -158,10 +159,12 @@ export default class Base implements Interface {
     return []
   }
 
+  //签名方法
   async sign(data: unknown): Promise<string> {
     return ''
   }
 
+  //执行替换任务
   async execute(
     params: paramsData,
     files: Temp[] | undefined,
@@ -179,6 +182,47 @@ export default class Base implements Interface {
     return result
   }
 
+  //执行替换任务（返回zip压缩数据）
+  async executeToZip(
+    params: paramsData,
+    files: Temp[] | undefined,
+  ): Promise<Uint8Array> {
+    const { noDecode, decode } = await tempFilesTidy(files ?? this.#files)
+    const res = await this.handle(params, noDecode.uint8Arrays, decode.uint8Arrays);
+
+    return new Promise((resolve, reject) => {
+      const u8s: Uint8Array[] = [];
+      const _zip = new Zip((err, dat, final) => {
+        if (dat.length) {
+          u8s.push(dat)
+        }
+        if (final) {
+          const blob = new Blob(u8s as BlobPart[])
+          blob.arrayBuffer().then(res => {
+            resolve(new Uint8Array(res))
+          })
+        }
+      });
+      let i = 0
+      for (const name of noDecode.names) {
+        const helloTxt = new ZipDeflate(name, {
+          level: 9,
+        });
+        _zip.add(helloTxt)
+        helloTxt.push((res[i++] ?? new Uint8Array()) as Uint8Array, true);
+      }
+      for (const name of decode.names) {
+        const helloTxt = new ZipDeflate(name, {
+          level: 9,
+        });
+        _zip.add(helloTxt)
+        helloTxt.push((res[i++] ?? new Uint8Array()) as Uint8Array, true);
+      }
+      _zip.end()
+    })
+  }
+
+  //执行替换任务（多套参数）
   async executeMultipleParams(
     paramsList: paramsData[],
     files: Temp[] | undefined,
@@ -207,11 +251,61 @@ export default class Base implements Interface {
     return result
   }
 
-  async fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
+  //执行替换任务（多套参数，返回zip压缩数据）
+  async executeMultipleParamsToZip(
+    paramsList: paramsData[],
+    files: Temp[] | undefined,
+  ): Promise<Uint8Array> {
+    const { noDecode, decode } = await tempFilesTidy(files ?? this.#files)
+    const resFileList = await this.handleMultipleParams(paramsList, noDecode.uint8Arrays, decode.uint8Arrays);
+    return new Promise((resolve, reject) => {
+      const u8s: Uint8Array[] = [];
+      const _zip = new Zip((err, dat, final) => {
+        if (dat.length) {
+          u8s.push(dat)
+        }
+        if (final) {
+          const blob = new Blob(u8s as BlobPart[])
+          blob.arrayBuffer().then(res => {
+            resolve(new Uint8Array(res))
+          })
+        }
+      });
+
+      let resFileIndex = 0
+      for (let index = 0; index < paramsList.length; index++) {
+        for (const name of noDecode.names) {
+          const file = resFileList[resFileIndex++]
+          if (file.length) {
+            const helloTxt = new ZipDeflate(index + "/" + name, {
+              level: 9,
+            });
+            _zip.add(helloTxt)
+            helloTxt.push(file, true);
+          }
+        }
+        for (const name of decode.names) {
+          const file = resFileList[resFileIndex++]
+          if (file.length) {
+            const helloTxt = new ZipDeflate(index + "/" + name, {
+              level: 9,
+            });
+            _zip.add(helloTxt)
+            helloTxt.push(file, true);
+          }
+        }
+      }
+      _zip.end()
+    })
+  }
+
+  //文件加密
+  fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
     return this.#core.file_encrypt(file)
   }
 
-  async filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
+  //文件批量加密
+  filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
     return this.#core.files_encrypt(files)
   }
 }

@@ -28,11 +28,23 @@ export default interface ReplaceInterface {
     files: Temp[] | undefined,
   ): Promise<Record<string, Uint8Array>>
 
+  //执行替换任务（返回zip压缩数据）
+  executeToZip(
+    params: paramsData,
+    files: Temp[] | undefined,
+  ): Promise<Uint8Array>
+
   //执行替换任务（多套参数）
   executeMultipleParams(
     params: paramsData[],
     files: Temp[] | undefined,
   ): Promise<Record<string, Uint8Array>[]>
+
+  //执行替换任务（多套参数，返回zip压缩数据）
+  executeMultipleParamsToZip(
+    params: paramsData[],
+    files: Temp[] | undefined,
+  ): Promise<Uint8Array>
 
   //文件加密
   fileEncrypt(file: Uint8Array): Promise<Uint8Array>

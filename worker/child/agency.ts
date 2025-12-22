@@ -80,6 +80,14 @@ export default class implements ReplaceInterface {
     return this.#replace.execute(new paramsData(text, media), files as Temp[])
   }
 
+  //执行替换任务（返回zip压缩数据）
+  async executeToZip(
+    params: paramsData,
+    files: Temp[] | transmitFileInfo[] | undefined,
+  ): Promise<Uint8Array> {
+    return new Uint8Array()
+  }
+
   //执行替换任务（多套参数）
   executeMultipleParams(
     paramsMultiple: paramsData[],
@@ -116,6 +124,14 @@ export default class implements ReplaceInterface {
       paramsList.push(new paramsData(text, media))
     }
     return this.#replace.executeMultipleParams(paramsList, files)
+  }
+
+  //执行替换任务（多套参数，返回zip压缩数据）
+  async executeMultipleParamsToZip(
+    paramsMultiple: paramsData[],
+    files: Temp[] | undefined,
+  ): Promise<Uint8Array> {
+    return new Uint8Array()
   }
 
   //文件加密
