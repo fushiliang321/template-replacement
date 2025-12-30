@@ -12,6 +12,7 @@ export enum textWrapTypes {
   aboveText = 'AboveText', //嵌于文字上方
 }
 
+//获取文件扩展名
 function getFileExtension(filename: string): string {
   const ext = filename.split('.').pop()
   if (ext === undefined) {
@@ -30,10 +31,11 @@ export type extent = {
   cx: number
 }
 
-//允许设置的属性
+//允许导出和设置的属性
 const allowSetPropertyKeys = new Set([
   'file',
   'id',
+  'suffix',
   'wpExtent',
   'textWrap',
   'relationship',
@@ -44,6 +46,7 @@ export default class image {
   file: Blob
   relationship = 'image'
   id?: string
+  suffix?: string
 
   wpExtent?: extent //图片宽高
   textWrap = textWrapTypes.embed //文字环绕
@@ -51,7 +54,11 @@ export default class image {
   private _awaitInitQueue?: ((value?: unknown) => void)[] = []
 
   constructor(file: Blob) {
-    if (file instanceof Blob) {
+    if (file instanceof File) {
+      this.file = file
+      this.suffix = getFileExtension(file.name)
+      this.init()
+    } else if (file instanceof Blob) {
       this.file = file
       this.init()
     } else {

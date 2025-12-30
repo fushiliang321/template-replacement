@@ -1761,22 +1761,22 @@ x.getAdapter = fg.getAdapter;
 x.HttpStatusCode = hB;
 x.default = x;
 const {
-  Axios: AE,
-  AxiosError: BE,
-  CanceledError: gE,
-  isCancel: QE,
-  CancelToken: IE,
-  VERSION: CE,
-  all: EE,
-  Cancel: DE,
-  isAxiosError: wE,
-  spread: iE,
-  toFormData: oE,
-  AxiosHeaders: GE,
-  HttpStatusCode: NE,
-  formToJSON: ME,
-  getAdapter: FE,
-  mergeConfig: cE
+  Axios: BE,
+  AxiosError: gE,
+  CanceledError: QE,
+  isCancel: IE,
+  CancelToken: CE,
+  VERSION: EE,
+  all: DE,
+  Cancel: wE,
+  isAxiosError: iE,
+  spread: oE,
+  toFormData: GE,
+  AxiosHeaders: NE,
+  HttpStatusCode: ME,
+  formToJSON: FE,
+  getAdapter: cE,
+  mergeConfig: kE
 } = x;
 let DB;
 async function Ag() {
@@ -5015,16 +5015,23 @@ function Mg(B) {
 function Fg(B) {
   return B * 914400;
 }
+function jC(B) {
+  const A = B.split(".").pop();
+  return A === void 0 ? "" : "." + A;
+}
 const cg = /* @__PURE__ */ new Set([
   "file",
   "id",
+  "suffix",
   "wpExtent",
   "textWrap",
   "relationship"
 ]);
 class RA {
   constructor(A) {
-    if (this.relationship = "image", this.textWrap = "Embed", this._awaitInitQueue = [], A instanceof Blob)
+    if (this.relationship = "image", this.textWrap = "Embed", this._awaitInitQueue = [], A instanceof File)
+      this.file = A, this.suffix = jC(A.name), this.init();
+    else if (A instanceof Blob)
       this.file = A, this.init();
     else
       throw new Error("不支持的数据类型");
@@ -5100,7 +5107,7 @@ class kg {
               Image: {
                 index: o,
                 id: i,
-                suffix: "",
+                suffix: D.suffix ?? "",
                 wp_extent: D.wpExtent ?? { cx: 0, cy: 0 },
                 text_wrap: D.textWrap
               }
@@ -5126,7 +5133,7 @@ class kg {
               Image: {
                 index: o,
                 id: i,
-                suffix: "",
+                suffix: D.suffix ?? "",
                 wp_extent: D.wpExtent ?? { cx: 0, cy: 0 },
                 text_wrap: D.textWrap
               }
@@ -5150,10 +5157,10 @@ class kg {
 function JA(B) {
   if (!B.uint8Array || !B.name)
     throw new Error("模板文件信息错误");
-  const A = new jC(void 0, void 0, B.uint8Array, B.name);
+  const A = new VC(void 0, void 0, B.uint8Array, B.name);
   return A.isDecode = B.isDecode, A;
 }
-class jC {
+class VC {
   constructor(A, g, Q, I) {
     if (this.name = "", this.status = 0, this.isDecode = !1, this.tempImages = {}, this._output = void 0, this._type = void 0, Q ? (this.uint8Array = Q, this.setStatus(
       1
@@ -5220,7 +5227,7 @@ class jC {
       };
   }
 }
-class VC {
+class uC {
   #A;
   constructor(A) {
     this.#A = A;
@@ -5305,7 +5312,7 @@ class VC {
   }
 }
 var XA = /* @__PURE__ */ ((B) => (B[B.replace = 0] = "replace", B[B.replaceProgress = 1] = "replaceProgress", B[B.sign = 2] = "sign", B[B.signReply = 3] = "signReply", B[B.methodCall = 4] = "methodCall", B[B.methodCallReply = 5] = "methodCallReply", B))(XA || {});
-const uC = /* @__PURE__ */ new Set(["addTempFile", "extractVariables", "extractMedias", "execute", "filesEncrypt", "fileEncrypt", "executeMultipleParams"]), zC = /* @__PURE__ */ new Map([
+const zC = /* @__PURE__ */ new Set(["addTempFile", "extractVariables", "extractMedias", "execute", "filesEncrypt", "fileEncrypt", "executeMultipleParams"]), vC = /* @__PURE__ */ new Map([
   ["execute", (B, A = []) => {
     for (const g in B) {
       const Q = B[g];
@@ -5337,8 +5344,8 @@ const uC = /* @__PURE__ */ new Set(["addTempFile", "extractVariables", "extractM
   }]
 ]), Rg = /* @__PURE__ */ new Map();
 let UB;
-function vC(B) {
-  UB = new VC(B);
+function _C(B) {
+  UB = new uC(B);
 }
 addEventListener("message", async (B) => {
   const A = B.data;
@@ -5346,7 +5353,7 @@ addEventListener("message", async (B) => {
     switch (A.type) {
       case XA.methodCall:
         const g = A.data, Q = g.method;
-        if (!uC.has(Q))
+        if (!zC.has(Q))
           return;
         const I = UB[Q];
         if (!I)
@@ -5361,7 +5368,7 @@ addEventListener("message", async (B) => {
           return;
         const D = [];
         if (C) {
-          const w = zC.get(Q);
+          const w = vC.get(Q);
           w && w(C, D);
         }
         postMessage(
@@ -5386,7 +5393,7 @@ addEventListener("message", async (B) => {
         o(A.data.result), Rg.delete(i);
     }
 });
-vC(new XC());
+_C(new XC());
 `, Q = typeof self < "u" && self.Blob && new Blob(["URL.revokeObjectURL(import.meta.url);", I], { type: "text/javascript;charset=utf-8" });
 function E(B) {
   let A;

@@ -1761,22 +1761,22 @@ x.getAdapter = PI.getAdapter;
 x.HttpStatusCode = YB;
 x.default = x;
 const {
-  Axios: CE,
-  AxiosError: EE,
-  CanceledError: DE,
-  isCancel: wE,
-  CancelToken: iE,
-  VERSION: oE,
-  all: GE,
-  Cancel: NE,
-  isAxiosError: ME,
-  spread: FE,
-  toFormData: kE,
-  AxiosHeaders: cE,
-  HttpStatusCode: RE,
-  formToJSON: sE,
-  getAdapter: hE,
-  mergeConfig: YE
+  Axios: EE,
+  AxiosError: DE,
+  CanceledError: wE,
+  isCancel: iE,
+  CancelToken: oE,
+  VERSION: GE,
+  all: NE,
+  Cancel: ME,
+  isAxiosError: FE,
+  spread: kE,
+  toFormData: cE,
+  AxiosHeaders: RE,
+  HttpStatusCode: sE,
+  formToJSON: hE,
+  getAdapter: YE,
+  mergeConfig: yE
 } = x;
 let iB;
 async function gI() {
@@ -5039,16 +5039,23 @@ function cI(B) {
 function RI(B) {
   return B * 914400;
 }
+function vC(B) {
+  const A = B.split(".").pop();
+  return A === void 0 ? "" : "." + A;
+}
 const sI = /* @__PURE__ */ new Set([
   "file",
   "id",
+  "suffix",
   "wpExtent",
   "textWrap",
   "relationship"
 ]);
 class RA {
   constructor(A) {
-    if (this.relationship = "image", this.textWrap = "Embed", this._awaitInitQueue = [], A instanceof Blob)
+    if (this.relationship = "image", this.textWrap = "Embed", this._awaitInitQueue = [], A instanceof File)
+      this.file = A, this.suffix = vC(A.name), this.init();
+    else if (A instanceof Blob)
       this.file = A, this.init();
     else
       throw new Error("不支持的数据类型");
@@ -5124,7 +5131,7 @@ class hI {
               Image: {
                 index: o,
                 id: i,
-                suffix: "",
+                suffix: D.suffix ?? "",
                 wp_extent: D.wpExtent ?? { cx: 0, cy: 0 },
                 text_wrap: D.textWrap
               }
@@ -5150,7 +5157,7 @@ class hI {
               Image: {
                 index: o,
                 id: i,
-                suffix: "",
+                suffix: D.suffix ?? "",
                 wp_extent: D.wpExtent ?? { cx: 0, cy: 0 },
                 text_wrap: D.textWrap
               }
@@ -5174,10 +5181,10 @@ class hI {
 function KA(B) {
   if (!B.uint8Array || !B.name)
     throw new Error("模板文件信息错误");
-  const A = new vC(void 0, void 0, B.uint8Array, B.name);
+  const A = new _C(void 0, void 0, B.uint8Array, B.name);
   return A.isDecode = B.isDecode, A;
 }
-class vC {
+class _C {
   constructor(A, I, g, Q) {
     if (this.name = "", this.status = 0, this.isDecode = !1, this.tempImages = {}, this._output = void 0, this._type = void 0, g ? (this.uint8Array = g, this.setStatus(
       1
@@ -5244,7 +5251,7 @@ class vC {
       };
   }
 }
-class _C {
+class $C {
   #A;
   constructor(A) {
     this.#A = A;
@@ -5329,7 +5336,7 @@ class _C {
   }
 }
 var eA = /* @__PURE__ */ ((B) => (B[B.replace = 0] = "replace", B[B.replaceProgress = 1] = "replaceProgress", B[B.sign = 2] = "sign", B[B.signReply = 3] = "signReply", B[B.methodCall = 4] = "methodCall", B[B.methodCallReply = 5] = "methodCallReply", B))(eA || {});
-const $C = /* @__PURE__ */ new Set(["addTempFile", "extractVariables", "extractMedias", "execute", "filesEncrypt", "fileEncrypt", "executeMultipleParams"]), AE = /* @__PURE__ */ new Map([
+const AE = /* @__PURE__ */ new Set(["addTempFile", "extractVariables", "extractMedias", "execute", "filesEncrypt", "fileEncrypt", "executeMultipleParams"]), BE = /* @__PURE__ */ new Map([
   ["execute", (B, A = []) => {
     for (const I in B) {
       const g = B[I];
@@ -5361,10 +5368,10 @@ const $C = /* @__PURE__ */ new Set(["addTempFile", "extractVariables", "extractM
   }]
 ]), LB = /* @__PURE__ */ new Map();
 let tB;
-function BE(B) {
-  tB = new _C(B);
+function IE(B) {
+  tB = new $C(B);
 }
-function IE(B, ...A) {
+function gE(B, ...A) {
   const I = NC();
   return postMessage({
     type: eA.methodCall,
@@ -5383,7 +5390,7 @@ addEventListener("message", async (B) => {
     switch (A.type) {
       case eA.methodCall:
         const I = A.data, g = I.method;
-        if (!$C.has(g))
+        if (!AE.has(g))
           return;
         const Q = tB[g];
         if (!Q)
@@ -5398,7 +5405,7 @@ addEventListener("message", async (B) => {
           return;
         const D = [];
         if (C) {
-          const w = AE.get(g);
+          const w = BE.get(g);
           w && w(C, D);
         }
         postMessage(
@@ -5424,8 +5431,8 @@ addEventListener("message", async (B) => {
     }
 });
 const Ag = new zC();
-BE(Ag);
-Ag.sign = (B) => IE("sign", B);
+IE(Ag);
+Ag.sign = (B) => gE("sign", B);
 `, g = typeof self < "u" && self.Blob && new Blob(["URL.revokeObjectURL(import.meta.url);", Q], { type: "text/javascript;charset=utf-8" });
 function E(B) {
   let A;

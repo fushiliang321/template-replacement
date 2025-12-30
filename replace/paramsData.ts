@@ -62,7 +62,7 @@ export default class paramsData {
               Image: {
                 index,
                 id,
-                suffix: '',
+                suffix: value.suffix ?? '',
                 wp_extent: value.wpExtent ?? { cx: 0, cy: 0 },
                 text_wrap: value.textWrap,
               },
@@ -98,7 +98,7 @@ export default class paramsData {
               Image: {
                 index,
                 id,
-                suffix: '',
+                suffix: value.suffix ?? '',
                 wp_extent: value.wpExtent ?? { cx: 0, cy: 0 },
                 text_wrap: value.textWrap,
               },
