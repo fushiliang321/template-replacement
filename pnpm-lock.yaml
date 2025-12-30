@@ -21,11 +21,11 @@ importers:
         specifier: ^2.0.6
         version: 2.0.6
       template-replacement-core-wasm:
-        specifier: ^1.8.1
-        version: 1.8.1
+        specifier: ^1.8.2
+        version: 1.8.2
       template-replacement-sign-core-wasm:
-        specifier: ^1.8.1
-        version: 1.8.1
+        specifier: ^1.8.2
+        version: 1.8.2
     devDependencies:
       '@rollup/pluginutils':
         specifier: ^5.3.0
@@ -1135,11 +1135,11 @@ packages:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
 
-  template-replacement-core-wasm@1.8.1:
-    resolution: {integrity: sha512-R+twRjxp8zQr/2+mzQiv2ZTfqnLtkEACUeyQYqBaZ0AWHOPCd00twms9oCXMQ6UgHcRBXhsOqs1f9FOn6Se88w==}
+  template-replacement-core-wasm@1.8.2:
+    resolution: {integrity: sha512-lIwIttCSFWcfWtnbdo2Ac+JLYzOOXWXC0cTRh2RxXB2r5RQHNyb7wgvUSwBhnc+qmX20yNgRfFn362v3D0jtZw==}
 
-  template-replacement-sign-core-wasm@1.8.1:
-    resolution: {integrity: sha512-WRn26jZjPismPyQ6sd95DqKgPehCP1DpxYwJxtwHpEVwwLNsyDCy2TnJ+iBCL+YV40/38i9m0NOOXoXkWYio7Q==}
+  template-replacement-sign-core-wasm@1.8.2:
+    resolution: {integrity: sha512-02ZZwiAVvNQNiTpLdOsFgbqKDIu0naHbrXjBHQtiQl8fRJgZmvRjXW60COo0VJxxqUwxii1wFm2FWBfHbeBscQ==}
 
   terser@5.44.1:
     resolution: {integrity: sha512-t/R3R/n0MSwnnazuPpPNVO60LX0SKL45pyl9YlvxIdkH0Of7D5qM2EVe+yASRIlY5pZ73nclYJfNANGWPwFDZw==}
@@ -2168,9 +2168,9 @@ snapshots:
     dependencies:
       has-flag: 4.0.0
 
-  template-replacement-core-wasm@1.8.1: {}
+  template-replacement-core-wasm@1.8.2: {}
 
-  template-replacement-sign-core-wasm@1.8.1: {}
+  template-replacement-sign-core-wasm@1.8.2: {}
 
   terser@5.44.1:
     dependencies:

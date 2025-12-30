@@ -1,7 +1,7 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "3.5.4",
+  "version": "3.5.5",
   "author": "fushiliang <994301536@qq.com>",
   "type": "module",
   "main": "index.ts",
@@ -15,8 +15,8 @@
     "fflate": "^0.8.2",
     "file-type": "^19.6.0",
     "streamsaver": "^2.0.6",
-    "template-replacement-core-wasm": "^1.8.1",
-    "template-replacement-sign-core-wasm": "^1.8.1"
+    "template-replacement-core-wasm": "^1.8.2",
+    "template-replacement-sign-core-wasm": "^1.8.2"
   },
   "devDependencies": {
     "@rollup/pluginutils": "^5.3.0",
