@@ -1,5 +1,6 @@
 import Base from './base'
 import core, {
+  awaitInit,
   add_media,
   add_template,
   replace_batch,
@@ -8,6 +9,9 @@ import core, {
   replace_params_encode_multiple_params,
 } from '../core/sign'
 import paramsData, { replaceParams } from './paramsData'
+
+// 核心初始化完成
+let coreInited = false;
 
 export default class Sign extends Base {
   constructor() {
@@ -19,6 +23,10 @@ export default class Sign extends Base {
     files: Uint8Array[],
     encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
+    if (!coreInited) {
+      await awaitInit;
+      coreInited = true
+    }
     paramsData.add_media = add_media
     const tempFiles = []
     for (const file of files) {
@@ -42,6 +50,10 @@ export default class Sign extends Base {
     files: Uint8Array[],
     encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
+    if (!coreInited) {
+      await awaitInit;
+      coreInited = true
+    }
     let variablesTasks: Promise<replaceParams>[] = []
     for (const paramsData of paramsList) {
       paramsData.add_media = add_media

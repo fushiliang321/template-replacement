@@ -15,7 +15,7 @@ import {
 import init from 'template-replacement-sign-core-wasm'
 import base, { rawCoreInterface } from './base'
 
-let awaitInit: Promise<rawCoreInterface> | undefined
+export let awaitInit: Promise<rawCoreInterface> | undefined
 
 export {
   add_media,

@@ -1,9 +1,14 @@
 import Base from './base'
 import core, {
+  awaitInit,
   replace_batch,
   replace_batch_multiple_params
 } from '../core/general'
 import paramsData, { replaceParams } from './paramsData'
+
+// 核心初始化完成
+let coreInited = false;
+
 export default class General extends Base {
   constructor() {
     super(core())
@@ -15,6 +20,10 @@ export default class General extends Base {
     encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
     const [params, mediaBuffers] = await paramsData.toReplaceParams()
+    if (!coreInited) {
+      await awaitInit;
+      coreInited = true
+    }
     return replace_batch(params, mediaBuffers, files, encode_files)
   }
 
@@ -23,6 +32,10 @@ export default class General extends Base {
     files: Uint8Array[],
     encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
+    if (!coreInited) {
+      await awaitInit;
+      coreInited = true
+    }
     const mediaBuffers: Uint8Array[] = [],
       newParamsListTasks: Promise<replaceParams>[] = []
     for (const paramsData of paramsList) {
