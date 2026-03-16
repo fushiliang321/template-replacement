@@ -1,30 +1,38 @@
 import FileSystem, { fileDataType } from '../interface'
 
-let opfsRoot: FileSystemDirectoryHandle | undefined = undefined
+// let opfsRoot: FileSystemDirectoryHandle | undefined = undefined
 
-async function getOpfsRoot(): Promise<FileSystemDirectoryHandle> {
+const defaultRootDir = 'template_replacement'
+
+const directoryMap = new Map<string, FileSystemDirectoryHandle>()
+
+async function getOpfsRoot(dir: string): Promise<FileSystemDirectoryHandle> {
+  let opfsRoot = directoryMap.get(dir)
   if (!opfsRoot) {
     opfsRoot = await (
       await navigator.storage.getDirectory()
-    ).getDirectoryHandle('template_replacement', {
+    ).getDirectoryHandle(dir, {
       create: true,
     })
+    directoryMap.set(dir, opfsRoot)
   }
   return opfsRoot
 }
 
 export default class OpfsFile implements FileSystem {
   #name: string = ''
+  #rootDir: string = ''
   private _handle: FileSystemFileHandle | undefined
 
-  constructor(name: string) {
+  constructor(name: string, rootDir = defaultRootDir) {
     this.#name = name
+    this.#rootDir = rootDir
   }
 
   async getHandle(): Promise<FileSystemFileHandle> {
     if (!this._handle) {
       this._handle = await (
-        await getOpfsRoot()
+        await getOpfsRoot(this.#rootDir)
       ).getFileHandle(this.#name, { create: true })
     }
     return this._handle
@@ -47,6 +55,6 @@ export default class OpfsFile implements FileSystem {
   }
 
   async remove(): Promise<void> {
-    return (await getOpfsRoot()).removeEntry(this.#name)
+    return (await getOpfsRoot(this.#rootDir)).removeEntry(this.#name)
   }
 }
