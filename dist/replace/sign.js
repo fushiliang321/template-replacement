@@ -378,3 +378,5 @@ var z, B = () => (z ||= new Promise((e) => {
 };
 //#endregion
 export { H as default };
+
+//# sourceMappingURL=sign.js.map
