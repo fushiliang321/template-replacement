@@ -37,6 +37,7 @@
     "template-replacement"
   ],
   "repository": {
-    "url": "https://github.com/fushiliang/template-replacement.git"
+    "type": "git",
+    "url": "git+https://github.com/fushiliang/template-replacement.git"
   }
 }
