@@ -35,5 +35,9 @@
   },
   "keywords": [
     "template-replacement"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fushiliang/template-replacement.git"
+  }
 }
