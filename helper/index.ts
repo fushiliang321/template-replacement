@@ -1,5 +1,7 @@
 import urlDownloadTask from '../task/urlDownloadTask'
 import { fileTypeFromBuffer } from 'file-type'
+import { v4 as uuidV4 } from 'uuid'
+import { sha1 } from 'js-sha1'
 
 export function urlSuffix(url: string): string {
   url = url.split('?')[0]
@@ -62,7 +64,11 @@ export async function fileTypeByBuffer(
 }
 
 export function generateId(): string {
-  return crypto.randomUUID()
+  try {
+    return window.crypto.randomUUID()
+  } catch (error) {
+    return uuidV4()
+  }
 }
 
 export type fileArrayBufferData = {
@@ -180,9 +186,13 @@ export function splitArrayIntoChunks<T>(array: T[], chunkSize: number): T[][] {
 
 // 字符串SHA-1哈希值
 export async function hashString(str: string): Promise<string> {
-  const encoder = new TextEncoder()
-  const data = encoder.encode(str)
-  const hashBuffer = await window.crypto.subtle.digest('SHA-1', data)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+  try {
+    const encoder = new TextEncoder()
+    const data = encoder.encode(str)
+    const hashBuffer = await window.crypto.subtle.digest('SHA-1', data)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+  } catch (error) {
+    return sha1(str)
+  }
 }
