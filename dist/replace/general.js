@@ -1,4 +1,4 @@
-import { n as e, t } from "../base-hBGwfxE_.js";
+import { n as e, t } from "../base-CIzqVHPC.js";
 //#region node_modules/.pnpm/template-replacement-core-wasm@1.8.2/node_modules/template-replacement-core-wasm/template_replacement_core_wasm.js
 var n;
 function r(e) {

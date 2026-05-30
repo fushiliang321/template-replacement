@@ -3,6 +3,7 @@ import { AsyncCoreInterface } from '../core/base'
 import paramsData from './paramsData'
 import Temp from '../temp'
 import { fileTypes } from '../helper'
+import "web-streams-polyfill/polyfill";
 import { Zip, ZipDeflate } from 'fflate'
 
 export type filesTidyResultItem = {

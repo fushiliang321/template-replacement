@@ -4,6 +4,7 @@ import { generateId, splitArrayIntoChunks } from '../../helper'
 import ReplaceInterface, { media } from '../../replace/interface'
 import paramsData from '../../replace/paramsData'
 import Temp, { transmitFileInfo } from '../../temp'
+import "web-streams-polyfill/polyfill";
 import { Zip, ZipDeflate } from 'fflate'
 
 type methodKeys<T> = {

@@ -55,12 +55,51 @@ export async function fileTypeByBuffer(
     }
     buffer = await buffer.arrayBuffer()
   }
-  const type = await fileTypeFromBuffer(buffer)
 
-  if (type && officeMIMETypes[type.mime]) {
-    return officeMIMETypes[type.mime]
+  const uint8Array = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer)
+
+  if (uint8Array.length >= 4 && uint8Array[0] === 0x50 && uint8Array[1] === 0x4B) {
+    return detectOfficeFromZip(uint8Array)
   }
+
+  try {
+    const type = await fileTypeFromBuffer(buffer)
+    if (type && officeMIMETypes[type.mime]) {
+      return officeMIMETypes[type.mime]
+    }
+  } catch (error) {
+    console.error('file-type not available or failed', error)
+  }
+
   return fileTypes.unknown
+}
+
+function detectOfficeFromZip(data: Uint8Array): fileTypes {
+  const signature = readZipSignature(data)
+  if (signature === 'word/document.xml') return fileTypes.word
+  if (signature === 'xl/workbook.xml' || signature === 'xl/workbook.bin') return fileTypes.excel
+  return fileTypes.unknown
+}
+
+function readZipSignature(data: Uint8Array): string {
+  const decoder = new TextDecoder('utf-8', { fatal: false })
+  const chunkSize = 1024
+  const chunks: string[] = []
+
+  for (let i = 0; i < Math.min(data.length - chunkSize, 100); i += chunkSize) {
+    chunks.push(decoder.decode(data.slice(i, i + chunkSize), { stream: false }))
+  }
+
+  const combined = chunks.join('')
+
+  if (combined.includes('[Content_Types].xml') && combined.includes('word/')) {
+    return 'word/document.xml'
+  }
+  if (combined.includes('[Content_Types].xml') && combined.includes('xl/')) {
+    return 'xl/workbook.xml'
+  }
+
+  return ''
 }
 
 export function generateId(): string {
