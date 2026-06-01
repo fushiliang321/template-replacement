@@ -13,10 +13,33 @@ export interface rawCoreInterface {
   ): string[]
   file_encrypt(file: Uint8Array): Uint8Array
   files_encrypt(files: Uint8Array[]): Uint8Array[]
+
+  replace_batch(params: unknown, medias: Uint8Array[], files: Uint8Array[], encode_files: Uint8Array[]): Uint8Array[]
+  replace_batch_multiple_params(params: unknown, medias: Uint8Array[], files: Uint8Array[], encode_files: Uint8Array[]): Uint8Array[]
+
+  replace_batch(verify_code: string, params_data: string): Uint8Array[]
+  replace_batch_multiple_params(verify_code: string, params_data: string): Uint8Array[]
+  replace_params_encode?(params: unknown): { data: string }
+  replace_params_encode_multiple_params?(params: unknown): { data: string }
+
 }
 
 type PromisifyAll<T> = {
-  [K in keyof T]: T[K] extends (...args: infer Args) => infer R
+  [K in keyof T]: undefined extends T[K]
+  ? (() => T[K]) extends () => infer R
+  ? R extends { (...args: infer Args1): infer R1; (...args: infer Args2): infer R2 }
+  ? ((...args: Args1) => R1 extends Promise<unknown> ? R1 : Promise<R1>) &
+  ((...args: Args2) => R2 extends Promise<unknown> ? R2 : Promise<R2>)
+  : R extends (...args: infer Args) => infer R1
+  ? (...args: Args) => R1 extends Promise<unknown>
+    ? R1
+    : Promise<R1>
+  : undefined
+  : never
+  : T[K] extends { (...args: infer Args1): infer R1; (...args: infer Args2): infer R2 }
+  ? ((...args: Args1) => R1 extends Promise<unknown> ? R1 : Promise<R1>) &
+  ((...args: Args2) => R2 extends Promise<unknown> ? R2 : Promise<R2>)
+  : T[K] extends (...args: infer Args) => infer R
   ? (...args: Args) => R extends Promise<unknown>
     ? R
     : Promise<R>
@@ -25,42 +48,32 @@ type PromisifyAll<T> = {
 
 export type AsyncCoreInterface = PromisifyAll<rawCoreInterface>;
 
-export default class implements AsyncCoreInterface {
-  awaitInit: Promise<rawCoreInterface>
+export default function core(init: Promise<rawCoreInterface>): AsyncCoreInterface {
+  return new Proxy({} as AsyncCoreInterface, {
+    get(_, methodName: keyof rawCoreInterface) {
+      return async (...args: unknown[]) => {
+        const core = await init;
+        console.log('core', core)
+        return (core[methodName] as (...args: unknown[]) => unknown)(...args);
+      };
+    },
+  });
+};
 
-  constructor(init: Promise<rawCoreInterface>) {
-    this.awaitInit = init
-  }
+export async function loadPackageName(packageName: string): Promise<rawCoreInterface> {
+  const wasm = await import(packageName)
+  const { default: init, ...wasmMethods } = wasm
+  await init()
+  return wasmMethods as unknown as rawCoreInterface
+}
 
-  async add_template(file: Uint8Array, is_decode: boolean) {
-    return (await this.awaitInit).add_template(file, is_decode)
-  }
+const loadPackageNameMap = new Map<string, Promise<rawCoreInterface>>()
 
-  async add_media(file: Uint8Array) {
-    return (await this.awaitInit).add_media(file)
+export function load(packageName: string): AsyncCoreInterface {
+  let _loadPackageName = loadPackageNameMap.get(packageName)
+  if (!_loadPackageName) {
+    _loadPackageName = loadPackageName(packageName)
+    loadPackageNameMap.set(packageName, _loadPackageName)
   }
-
-  async extract_one_file_variable_names(data: Uint8Array, is_decode: boolean) {
-    return (await this.awaitInit).extract_one_file_variable_names(data, is_decode)
-  }
-
-  async extract_variable_names(files: Uint8Array[], encode_files: Uint8Array[]) {
-    return (await this.awaitInit).extract_variable_names(files, encode_files)
-  }
-
-  async extract_one_file_medias(data: Uint8Array, is_decode: boolean) {
-    return (await this.awaitInit).extract_one_file_medias(data, is_decode)
-  }
-
-  async extract_medias(files: Uint8Array[], encode_files: Uint8Array[]) {
-    return (await this.awaitInit).extract_medias(files, encode_files)
-  }
-
-  async file_encrypt(file: Uint8Array) {
-    return (await this.awaitInit).file_encrypt(file)
-  }
-
-  async files_encrypt(files: Uint8Array[]) {
-    return (await this.awaitInit).files_encrypt(files)
-  }
+  return core(_loadPackageName)
 }

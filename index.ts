@@ -29,6 +29,7 @@ export default (concurrency?: number, signFn?: signFun): ReplaceInterface => {
       res.sign = signFn
     } else {
       res = general()
+      console.log('res', res)
     }
   }
   return res

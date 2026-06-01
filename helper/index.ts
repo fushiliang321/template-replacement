@@ -75,28 +75,69 @@ export async function fileTypeByBuffer(
 }
 
 function detectOfficeFromZip(data: Uint8Array): fileTypes {
-  const signature = readZipSignature(data)
-  if (signature === 'word/document.xml') return fileTypes.word
-  if (signature === 'xl/workbook.xml' || signature === 'xl/workbook.bin') return fileTypes.excel
+  const decoder = new TextDecoder('utf-8', { fatal: false })
+  let offset = 0
+
+  while (offset + 30 <= data.length) {
+    if (data[offset] !== 0x50 || data[offset + 1] !== 0x4B) {
+      break
+    }
+
+    if (data[offset + 2] === 0x03 && data[offset + 3] === 0x04) {
+      const fileNameLength = (data[offset + 26] | (data[offset + 27] << 8))
+      const extraFieldLength = (data[offset + 28] | (data[offset + 29] << 8))
+
+      if (offset + 30 + fileNameLength <= data.length) {
+        const fileNameBytes = data.slice(offset + 30, offset + 30 + fileNameLength)
+        const fileName = decoder.decode(fileNameBytes)
+
+        if (fileName === '[Content_Types].xml') {
+          const nextOffset = offset + 30 + fileNameLength + extraFieldLength +
+            ((data[offset + 18] | (data[offset + 19] << 8) |
+              (data[offset + 20] << 16) | (data[offset + 21] << 24)))
+
+          const innerSig = findNextLocalFileHeader(data, nextOffset)
+          if (innerSig.includes('word/')) {
+            return fileTypes.word
+          }
+          if (innerSig.includes('xl/')) {
+            return fileTypes.excel
+          }
+        }
+
+        if (fileName.startsWith('word/')) {
+          return fileTypes.word
+        }
+        if (fileName.startsWith('xl/')) {
+          return fileTypes.excel
+        }
+      }
+    }
+
+    const localHeaderSize = 30 +
+      (data[offset + 26] | (data[offset + 27] << 8)) +
+      (data[offset + 28] | (data[offset + 29] << 8)) +
+      ((data[offset + 18] | (data[offset + 19] << 8) |
+        (data[offset + 20] << 16) | (data[offset + 21] << 24)))
+    offset += localHeaderSize || 1024
+  }
+
   return fileTypes.unknown
 }
 
-function readZipSignature(data: Uint8Array): string {
+function findNextLocalFileHeader(data: Uint8Array, startOffset: number): string {
   const decoder = new TextDecoder('utf-8', { fatal: false })
-  const chunkSize = 1024
-  const chunks: string[] = []
 
-  for (let i = 0; i < Math.min(data.length - chunkSize, 100); i += chunkSize) {
-    chunks.push(decoder.decode(data.slice(i, i + chunkSize), { stream: false }))
-  }
+  for (let i = startOffset; i + 30 <= data.length; i++) {
+    if (data[i] === 0x50 && data[i + 1] === 0x4B &&
+      data[i + 2] === 0x03 && data[i + 3] === 0x04) {
 
-  const combined = chunks.join('')
-
-  if (combined.includes('[Content_Types].xml') && combined.includes('word/')) {
-    return 'word/document.xml'
-  }
-  if (combined.includes('[Content_Types].xml') && combined.includes('xl/')) {
-    return 'xl/workbook.xml'
+      const fileNameLength = (data[i + 26] | (data[i + 27] << 8))
+      if (i + 30 + fileNameLength <= data.length) {
+        const fileNameBytes = data.slice(i + 30, i + 30 + fileNameLength)
+        return decoder.decode(fileNameBytes)
+      }
+    }
   }
 
   return ''

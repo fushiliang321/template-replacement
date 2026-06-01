@@ -1,8 +1,7 @@
 import { stream } from '../download'
-import "web-streams-polyfill/polyfill";
 import {
   FlateError,
-  unzipSync,
+  unzip,
   Unzipped,
   zip,
   strToU8,
@@ -38,10 +37,12 @@ export default class Zip {
         if (blob) {
           const arrayBuffer = await blob.arrayBuffer()
           this._unzipData = await new Promise((resolve, reject) => {
-            const data = unzipSync(
+            unzip(
               new Uint8Array(arrayBuffer),
+              (err: FlateError | null, data: Unzipped) => {
+                resolve(data)
+              },
             )
-            resolve(data)
           })
         }
       } catch (e) {
@@ -71,7 +72,7 @@ export default class Zip {
       default:
         throw new Error('Invalid data type')
     }
-    fileZip[path] = data as Uint8Array
+    fileZip[path] = data as Uint8Array<ArrayBuffer>
     this._lastUpdateTime = new Date().getTime()
   }
 

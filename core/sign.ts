@@ -1,48 +1,13 @@
-import {
-  replace_batch_multiple_params,
-  replace_batch,
-  add_media,
-  add_template,
-  extract_medias,
-  extract_one_file_medias,
-  extract_one_file_variable_names,
-  extract_variable_names,
-  file_encrypt,
-  files_encrypt,
-  replace_params_encode,
-  replace_params_encode_multiple_params,
-} from 'template-replacement-sign-core-wasm'
-import init from 'template-replacement-sign-core-wasm'
+import { initSync, SyncInitInput } from 'template-replacement-sign-core-wasm'
 import base, { rawCoreInterface } from './base'
 
 export let awaitInit: Promise<rawCoreInterface> | undefined
 
-export {
-  add_media,
-  add_template,
-  replace_params_encode,
-  replace_params_encode_multiple_params,
-  replace_batch_multiple_params,
-  replace_batch
-}
-
-export default () => {
+export default (module: SyncInitInput) => {
   if (!awaitInit) {
     awaitInit = new Promise((resolve) => {
-      init().then(() => {
-        resolve({
-          add_media,
-          add_template,
-          extract_medias,
-          extract_one_file_medias,
-          extract_one_file_variable_names,
-          extract_variable_names,
-          file_encrypt,
-          files_encrypt,
-        })
-      })
+      resolve(initSync(module) as unknown as rawCoreInterface)
     })
   }
-  return new base(awaitInit)
+  return base(awaitInit)
 }
-

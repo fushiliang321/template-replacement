@@ -1,9 +1,11 @@
 import Replace from '../../replace/sign'
-import init, { call } from './base'
-
-const replace = new Replace()
-init(replace)
-
-replace.sign = (data: unknown): Promise<string> => {
-  return call<string>('sign', data)
+import init from './base'
+import wasmUrl from 'template-replacement-sign-core-wasm/template_replacement_sign_core_wasm_bg.wasm?url'
+const initWasm = async () => {
+  const response = await fetch(wasmUrl)
+  const wasmBuffer = await response.arrayBuffer()
+  init(new Replace(wasmBuffer))
 }
+
+initWasm()
+

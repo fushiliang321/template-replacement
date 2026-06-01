@@ -3,7 +3,6 @@ import { AsyncCoreInterface } from '../core/base'
 import paramsData from './paramsData'
 import Temp from '../temp'
 import { fileTypes } from '../helper'
-import "web-streams-polyfill/polyfill";
 import { Zip, ZipDeflate } from 'fflate'
 
 export type filesTidyResultItem = {
@@ -56,10 +55,10 @@ async function tempFilesTidy(files: Temp[] = []): Promise<filesTidyResult> {
 
 export default class Base implements Interface {
   #files: Temp[] = []
-  #core: AsyncCoreInterface
+  core: AsyncCoreInterface
 
   constructor(core: AsyncCoreInterface) {
-    this.#core = core
+    this.core = core
   }
 
   addTempFile(tempFile: Temp) {
@@ -77,9 +76,10 @@ export default class Base implements Interface {
       return
     }
     if ((await file.type()) === fileTypes.unknown && !file.isDecode) {
+      console.warn('file type is unknown and not decode', file)
       return
     }
-    variables[file.name] = await this.#core.extract_one_file_variable_names(
+    variables[file.name] = await this.core.extract_one_file_variable_names(
       buffer,
       file.isDecode,
     )
@@ -110,7 +110,7 @@ export default class Base implements Interface {
     if ((await file.type()) === fileTypes.unknown && !file.isDecode) {
       return
     }
-    const res = await this.#core.extract_one_file_medias(
+    const res = await this.core.extract_one_file_medias(
       buffer,
       file.isDecode,
     )
@@ -302,11 +302,11 @@ export default class Base implements Interface {
 
   //文件加密
   fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
-    return this.#core.file_encrypt(file)
+    return this.core.file_encrypt(file)
   }
 
   //文件批量加密
   filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
-    return this.#core.files_encrypt(files)
+    return this.core.files_encrypt(files)
   }
 }
