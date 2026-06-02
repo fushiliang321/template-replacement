@@ -7,4 +7,4 @@ const initWasm = async () => {
   init(new Replace(wasmBuffer))
 }
 
-initWasm()
+export default initWasm()
