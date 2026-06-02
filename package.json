@@ -1,13 +1,14 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "4.0.0-beta2",
+  "version": "4.0.0-beta3",
   "author": "fushiliang <994301536@qq.com>",
   "type": "module",
   "main": "index.ts",
   "license": "Apache 2.0",
   "scripts": {
-    "build": "vite build --config vite.config.ts",
+    "build": "vite build --config vite.config.ts && npm run build:types",
+    "build:types": "node scripts/build-types.js",
     "lint": "npx oxlint && npx eslint"
   },
   "dependencies": {

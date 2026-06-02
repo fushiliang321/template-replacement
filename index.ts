@@ -17,8 +17,8 @@ export default async (concurrency?: number, signFn?: signFun): Promise<ReplaceIn
     const { default: init } = await import('./dispatcher/sign')
     const res = await init()
     res.sign = signFn
-    return res
+    return res as unknown as ReplaceInterface
   }
   const { default: init } = await import('./dispatcher/general')
-  return await init()
+  return await init() as unknown as ReplaceInterface
 }

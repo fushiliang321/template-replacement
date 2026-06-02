@@ -12,22 +12,22 @@ export default class Sign extends Base {
     files: Uint8Array[],
     encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
-    paramsData.add_media = this.core.add_media
+    paramsData.add_media = this.core!.add_media
     const tempFiles = []
     for (const file of files) {
-      tempFiles.push(this.core.add_template(file, false))
+      tempFiles.push(this.core!.add_template(file, false))
     }
     for (const file of encode_files) {
-      tempFiles.push(this.core.add_template(file, true))
+      tempFiles.push(this.core!.add_template(file, true))
     }
     const [variables] = await paramsData.toReplaceParams()
     const encodeData = {
-      files: await Promise.all(tempFiles),
+      files: tempFiles,
       variables,
     }
-    const paramsEncode = await this.core.replace_params_encode!(encodeData)
+    const paramsEncode = this.core!.replace_params_encode!(encodeData)
     const verifyCode = await this.sign(paramsEncode)
-    return this.core.replace_batch(verifyCode, paramsEncode.data)
+    return this.core!.replace_batch(verifyCode, paramsEncode.data)
   }
 
   async handleMultipleParams(
@@ -37,7 +37,7 @@ export default class Sign extends Base {
   ): Promise<Uint8Array[]> {
     let variablesTasks: Promise<replaceParams>[] = []
     for (const paramsData of paramsList) {
-      paramsData.add_media = this.core.add_media
+      paramsData.add_media = this.core!.add_media
       variablesTasks.push(
         new Promise((resolve, reject) => {
           paramsData
@@ -51,20 +51,20 @@ export default class Sign extends Base {
     }
     const tempFiles = []
     for (const file of files) {
-      tempFiles.push(this.core.add_template(file, false))
+      tempFiles.push(this.core!.add_template(file, false))
     }
     for (const file of encode_files) {
-      tempFiles.push(this.core.add_template(file, true))
+      tempFiles.push(this.core!.add_template(file, true))
     }
 
     const encodeData = {
-      files: await Promise.all(tempFiles),
+      files: tempFiles,
       variables: await Promise.all(variablesTasks),
     }
 
-    const paramsEncode = await this.core.replace_params_encode_multiple_params!(encodeData)
+    const paramsEncode = this.core!.replace_params_encode_multiple_params!(encodeData)
     const verifyCode = await this.sign(paramsEncode)
-    return this.core.replace_batch_multiple_params(
+    return this.core!.replace_batch_multiple_params(
       verifyCode,
       paramsEncode.data,
     )

@@ -5,3 +5,4 @@ const replace = new Replace()
 replace.init().then(() => {
   init(replace)
 })
+export default {}

@@ -1,0 +1,8 @@
+{
+    "entry": [
+        "./worker/main/sign.ts",
+        "./worker/main/general.ts",
+        "./noWorker/general.ts",
+        "./noWorker/sign.ts"
+    ]
+}

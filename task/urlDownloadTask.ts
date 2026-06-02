@@ -55,7 +55,7 @@ export default class urlDownloadTask {
       if (matches != null && matches[1]) {
         const filename = matches[1].replace(/['"]/g, '')
         return new File([response.data], filename, {
-          type: response.headers['content-type'] ?? 'application/octet-stream',
+          type: response.headers['content-type'] as string ?? 'application/octet-stream',
         })
       }
     }
