@@ -11,6 +11,8 @@ export default defineConfig({
         './worker/main/general.ts',
         './noWorker/general.ts',
         './noWorker/sign.ts',
+        './replace/general.ts',
+        './replace/sign.ts',
       ],
       name: 'template-replacement',
       fileName: (format, entryName) => `${entryName}.js`,

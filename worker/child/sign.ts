@@ -9,4 +9,3 @@ replace.sign = async (data: unknown): Promise<string> => {
 replace.init().then(() => {
   init(replace)
 })
-export default {}
