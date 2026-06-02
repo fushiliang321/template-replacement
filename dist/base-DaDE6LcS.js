@@ -1,5 +1,12 @@
 //#region \0rolldown/runtime.js
-var e = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports);
+var e = Object.defineProperty, t = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), n = (t, n) => {
+	let r = {};
+	for (var i in t) e(r, i, {
+		get: t[i],
+		enumerable: !0
+	});
+	return n || e(r, Symbol.toStringTag, { value: "Module" }), r;
+};
 new class {
 	#e;
 	#t;
@@ -89,16 +96,16 @@ new class {
 }();
 //#endregion
 //#region __vite-browser-external
-var t = /* @__PURE__ */ e(((e, t) => {
+var r = /* @__PURE__ */ t(((e, t) => {
 	t.exports = {};
 }));
-(/* @__PURE__ */ e(((e, n) => {
+(/* @__PURE__ */ t(((e, t) => {
 	(function() {
-		var e = "input is invalid type", r = "finalize already called", i = typeof window == "object", a = i ? window : {};
+		var e = "input is invalid type", n = "finalize already called", i = typeof window == "object", a = i ? window : {};
 		a.JS_SHA1_NO_WINDOW && (i = !1);
 		var o = !i && typeof self == "object", s = !a.JS_SHA1_NO_NODE_JS && typeof process == "object" && process.versions && process.versions.node;
 		s ? a = global : o && (a = self);
-		var c = !a.JS_SHA1_NO_COMMON_JS && typeof n == "object" && n.exports, l = typeof define == "function" && define.amd, u = !a.JS_SHA1_NO_ARRAY_BUFFER && typeof ArrayBuffer < "u", d = "0123456789abcdef".split(""), f = [
+		var c = !a.JS_SHA1_NO_COMMON_JS && typeof t == "object" && t.exports, l = typeof define == "function" && define.amd, u = !a.JS_SHA1_NO_ARRAY_BUFFER && typeof ArrayBuffer < "u", d = "0123456789abcdef".split(""), f = [
 			-2147483648,
 			8388608,
 			32768,
@@ -144,14 +151,14 @@ var t = /* @__PURE__ */ e(((e, t) => {
 				e[n] = y(n);
 			}
 			return e;
-		}, x = function(n) {
-			var r = t(), i = t().Buffer, o = i.from && !a.JS_SHA1_NO_BUFFER_FROM ? i.from : function(e) {
+		}, x = function(t) {
+			var n = r(), i = r().Buffer, o = i.from && !a.JS_SHA1_NO_BUFFER_FROM ? i.from : function(e) {
 				return new i(e);
 			};
-			return function(t) {
-				if (typeof t == "string") return r.createHash("sha1").update(t, "utf8").digest("hex");
-				if (t == null) throw Error(e);
-				return t.constructor === ArrayBuffer && (t = new Uint8Array(t)), g(t) || _(t) || t.constructor === i ? r.createHash("sha1").update(o(t)).digest("hex") : n(t);
+			return function(r) {
+				if (typeof r == "string") return n.createHash("sha1").update(r, "utf8").digest("hex");
+				if (r == null) throw Error(e);
+				return r.constructor === ArrayBuffer && (r = new Uint8Array(r)), g(r) || _(r) || r.constructor === i ? n.createHash("sha1").update(o(r)).digest("hex") : t(r);
 			};
 		}, S = function(e) {
 			return function(t, n) {
@@ -192,11 +199,11 @@ var t = /* @__PURE__ */ e(((e, t) => {
 			], this.h0 = 1732584193, this.h1 = 4023233417, this.h2 = 2562383102, this.h3 = 271733878, this.h4 = 3285377520, this.block = this.start = this.bytes = this.hBytes = 0, this.finalized = this.hashed = !1, this.first = !0;
 		}
 		w.prototype.update = function(e) {
-			if (this.finalized) throw Error(r);
+			if (this.finalized) throw Error(n);
 			var t = v(e);
 			e = t[0];
-			for (var n = t[1], i, a = 0, o, s = e.length || 0, c = this.blocks; a < s;) {
-				if (this.hashed && (this.hashed = !1, c[0] = this.block, this.block = c[16] = c[1] = c[2] = c[3] = c[4] = c[5] = c[6] = c[7] = c[8] = c[9] = c[10] = c[11] = c[12] = c[13] = c[14] = c[15] = 0), n) for (o = this.start; a < s && o < 64; ++a) i = e.charCodeAt(a), i < 128 ? c[o >>> 2] |= i << p[o++ & 3] : i < 2048 ? (c[o >>> 2] |= (192 | i >>> 6) << p[o++ & 3], c[o >>> 2] |= (128 | i & 63) << p[o++ & 3]) : i < 55296 || i >= 57344 ? (c[o >>> 2] |= (224 | i >>> 12) << p[o++ & 3], c[o >>> 2] |= (128 | i >>> 6 & 63) << p[o++ & 3], c[o >>> 2] |= (128 | i & 63) << p[o++ & 3]) : (i = 65536 + ((i & 1023) << 10 | e.charCodeAt(++a) & 1023), c[o >>> 2] |= (240 | i >>> 18) << p[o++ & 3], c[o >>> 2] |= (128 | i >>> 12 & 63) << p[o++ & 3], c[o >>> 2] |= (128 | i >>> 6 & 63) << p[o++ & 3], c[o >>> 2] |= (128 | i & 63) << p[o++ & 3]);
+			for (var r = t[1], i, a = 0, o, s = e.length || 0, c = this.blocks; a < s;) {
+				if (this.hashed && (this.hashed = !1, c[0] = this.block, this.block = c[16] = c[1] = c[2] = c[3] = c[4] = c[5] = c[6] = c[7] = c[8] = c[9] = c[10] = c[11] = c[12] = c[13] = c[14] = c[15] = 0), r) for (o = this.start; a < s && o < 64; ++a) i = e.charCodeAt(a), i < 128 ? c[o >>> 2] |= i << p[o++ & 3] : i < 2048 ? (c[o >>> 2] |= (192 | i >>> 6) << p[o++ & 3], c[o >>> 2] |= (128 | i & 63) << p[o++ & 3]) : i < 55296 || i >= 57344 ? (c[o >>> 2] |= (224 | i >>> 12) << p[o++ & 3], c[o >>> 2] |= (128 | i >>> 6 & 63) << p[o++ & 3], c[o >>> 2] |= (128 | i & 63) << p[o++ & 3]) : (i = 65536 + ((i & 1023) << 10 | e.charCodeAt(++a) & 1023), c[o >>> 2] |= (240 | i >>> 18) << p[o++ & 3], c[o >>> 2] |= (128 | i >>> 12 & 63) << p[o++ & 3], c[o >>> 2] |= (128 | i >>> 6 & 63) << p[o++ & 3], c[o >>> 2] |= (128 | i & 63) << p[o++ & 3]);
 				else for (o = this.start; a < s && o < 64; ++a) c[o >>> 2] |= e[a] << p[o++ & 3];
 				this.lastByteIndex = o, this.bytes += o - this.start, o >= 64 ? (this.block = c[16], this.start = o - 64, this.hash(), this.hashed = !0) : this.start = o;
 			}
@@ -272,14 +279,14 @@ var t = /* @__PURE__ */ e(((e, t) => {
 			}
 		};
 		var E = b();
-		E.sha1 = E, E.sha1.hmac = C(), c ? n.exports = E : (a.sha1 = E, l && define(function() {
+		E.sha1 = E, E.sha1.hmac = C(), c ? t.exports = E : (a.sha1 = E, l && define(function() {
 			return E;
 		}));
 	})();
 })))();
-var n = /* @__PURE__ */ function(e) {
+var i = /* @__PURE__ */ function(e) {
 	return e.word = "word", e.excel = "excel", e.unknown = "unknown", e;
-}({}), r = Uint8Array, i = Uint16Array, a = Int32Array, o = new r([
+}({}), a = Uint8Array, o = Uint16Array, s = Int32Array, c = new a([
 	0,
 	0,
 	0,
@@ -312,7 +319,7 @@ var n = /* @__PURE__ */ function(e) {
 	0,
 	0,
 	0
-]), s = new r([
+]), l = new a([
 	0,
 	0,
 	0,
@@ -345,7 +352,7 @@ var n = /* @__PURE__ */ function(e) {
 	13,
 	0,
 	0
-]), c = new r([
+]), u = new a([
 	16,
 	17,
 	18,
@@ -365,42 +372,42 @@ var n = /* @__PURE__ */ function(e) {
 	14,
 	1,
 	15
-]), l = function(e, t) {
-	for (var n = new i(31), r = 0; r < 31; ++r) n[r] = t += 1 << e[r - 1];
-	for (var o = new a(n[30]), r = 1; r < 30; ++r) for (var s = n[r]; s < n[r + 1]; ++s) o[s] = s - n[r] << 5 | r;
+]), d = function(e, t) {
+	for (var n = new o(31), r = 0; r < 31; ++r) n[r] = t += 1 << e[r - 1];
+	for (var i = new s(n[30]), r = 1; r < 30; ++r) for (var a = n[r]; a < n[r + 1]; ++a) i[a] = a - n[r] << 5 | r;
 	return {
 		b: n,
-		r: o
+		r: i
 	};
-}, u = l(o, 2), d = u.b, f = u.r;
-d[28] = 258, f[258] = 28;
-var p = l(s, 0);
-p.b;
-for (var m = p.r, h = new i(32768), g = 0; g < 32768; ++g) {
-	var _ = (g & 43690) >> 1 | (g & 21845) << 1;
-	_ = (_ & 52428) >> 2 | (_ & 13107) << 2, _ = (_ & 61680) >> 4 | (_ & 3855) << 4, h[g] = ((_ & 65280) >> 8 | (_ & 255) << 8) >> 1;
+}, f = d(c, 2), p = f.b, m = f.r;
+p[28] = 258, m[258] = 28;
+var h = d(l, 0);
+h.b;
+for (var g = h.r, _ = new o(32768), v = 0; v < 32768; ++v) {
+	var y = (v & 43690) >> 1 | (v & 21845) << 1;
+	y = (y & 52428) >> 2 | (y & 13107) << 2, y = (y & 61680) >> 4 | (y & 3855) << 4, _[v] = ((y & 65280) >> 8 | (y & 255) << 8) >> 1;
 }
-for (var v = (function(e, t, n) {
-	for (var r = e.length, a = 0, o = new i(t); a < r; ++a) e[a] && ++o[e[a] - 1];
-	var s = new i(t);
-	for (a = 1; a < t; ++a) s[a] = s[a - 1] + o[a - 1] << 1;
+for (var b = (function(e, t, n) {
+	for (var r = e.length, i = 0, a = new o(t); i < r; ++i) e[i] && ++a[e[i] - 1];
+	var s = new o(t);
+	for (i = 1; i < t; ++i) s[i] = s[i - 1] + a[i - 1] << 1;
 	var c;
 	if (n) {
-		c = new i(1 << t);
+		c = new o(1 << t);
 		var l = 15 - t;
-		for (a = 0; a < r; ++a) if (e[a]) for (var u = a << 4 | e[a], d = t - e[a], f = s[e[a] - 1]++ << d, p = f | (1 << d) - 1; f <= p; ++f) c[h[f] >> l] = u;
-	} else for (c = new i(r), a = 0; a < r; ++a) e[a] && (c[a] = h[s[e[a] - 1]++] >> 15 - e[a]);
+		for (i = 0; i < r; ++i) if (e[i]) for (var u = i << 4 | e[i], d = t - e[i], f = s[e[i] - 1]++ << d, p = f | (1 << d) - 1; f <= p; ++f) c[_[f] >> l] = u;
+	} else for (c = new o(r), i = 0; i < r; ++i) e[i] && (c[i] = _[s[e[i] - 1]++] >> 15 - e[i]);
 	return c;
-}), y = new r(288), g = 0; g < 144; ++g) y[g] = 8;
-for (var g = 144; g < 256; ++g) y[g] = 9;
-for (var g = 256; g < 280; ++g) y[g] = 7;
-for (var g = 280; g < 288; ++g) y[g] = 8;
-for (var b = new r(32), g = 0; g < 32; ++g) b[g] = 5;
-var x = /* @__PURE__ */ v(y, 9, 0), S = /* @__PURE__ */ v(b, 5, 0), C = function(e) {
+}), x = new a(288), v = 0; v < 144; ++v) x[v] = 8;
+for (var v = 144; v < 256; ++v) x[v] = 9;
+for (var v = 256; v < 280; ++v) x[v] = 7;
+for (var v = 280; v < 288; ++v) x[v] = 8;
+for (var S = new a(32), v = 0; v < 32; ++v) S[v] = 5;
+var C = /*#__PURE__*/ b(x, 9, 0), w = /*#__PURE__*/ b(S, 5, 0), T = function(e) {
 	return (e + 7) / 8 | 0;
-}, w = function(e, t, n) {
-	return (t == null || t < 0) && (t = 0), (n == null || n > e.length) && (n = e.length), new r(e.subarray(t, n));
-}, T = [
+}, E = function(e, t, n) {
+	return (t == null || t < 0) && (t = 0), (n == null || n > e.length) && (n = e.length), new a(e.subarray(t, n));
+}, D = [
 	"unexpected EOF",
 	"invalid block type",
 	"invalid length/literal",
@@ -415,30 +422,30 @@ var x = /* @__PURE__ */ v(y, 9, 0), S = /* @__PURE__ */ v(b, 5, 0), C = function
 	"filename too long",
 	"stream finishing",
 	"invalid zip data"
-], E = function(e, t, n) {
-	var r = Error(t || T[e]);
-	if (r.code = e, Error.captureStackTrace && Error.captureStackTrace(r, E), !n) throw r;
+], O = function(e, t, n) {
+	var r = Error(t || D[e]);
+	if (r.code = e, Error.captureStackTrace && Error.captureStackTrace(r, O), !n) throw r;
 	return r;
-}, D = function(e, t, n) {
+}, k = function(e, t, n) {
 	n <<= t & 7;
 	var r = t / 8 | 0;
 	e[r] |= n, e[r + 1] |= n >> 8;
-}, O = function(e, t, n) {
+}, A = function(e, t, n) {
 	n <<= t & 7;
 	var r = t / 8 | 0;
 	e[r] |= n, e[r + 1] |= n >> 8, e[r + 2] |= n >> 16;
-}, k = function(e, t) {
-	for (var n = [], a = 0; a < e.length; ++a) e[a] && n.push({
-		s: a,
-		f: e[a]
+}, j = function(e, t) {
+	for (var n = [], r = 0; r < e.length; ++r) e[r] && n.push({
+		s: r,
+		f: e[r]
 	});
-	var o = n.length, s = n.slice();
-	if (!o) return {
-		t: N,
+	var i = n.length, s = n.slice();
+	if (!i) return {
+		t: I,
 		l: 0
 	};
-	if (o == 1) {
-		var c = new r(n[0].s + 1);
+	if (i == 1) {
+		var c = new a(n[0].s + 1);
 		return c[n[0].s] = 1, {
 			t: c,
 			l: 1
@@ -456,97 +463,97 @@ var x = /* @__PURE__ */ v(y, 9, 0), S = /* @__PURE__ */ v(b, 5, 0), C = function
 		f: l.f + u.f,
 		l,
 		r: u
-	}; f != o - 1;) l = n[n[d].f < n[p].f ? d++ : p++], u = n[d != f && n[d].f < n[p].f ? d++ : p++], n[f++] = {
+	}; f != i - 1;) l = n[n[d].f < n[p].f ? d++ : p++], u = n[d != f && n[d].f < n[p].f ? d++ : p++], n[f++] = {
 		s: -1,
 		f: l.f + u.f,
 		l,
 		r: u
 	};
-	for (var m = s[0].s, a = 1; a < o; ++a) s[a].s > m && (m = s[a].s);
-	var h = new i(m + 1), g = A(n[f - 1], h, 0);
+	for (var m = s[0].s, r = 1; r < i; ++r) s[r].s > m && (m = s[r].s);
+	var h = new o(m + 1), g = M(n[f - 1], h, 0);
 	if (g > t) {
-		var a = 0, _ = 0, v = g - t, y = 1 << v;
+		var r = 0, _ = 0, v = g - t, y = 1 << v;
 		for (s.sort(function(e, t) {
 			return h[t.s] - h[e.s] || e.f - t.f;
-		}); a < o; ++a) {
-			var b = s[a].s;
+		}); r < i; ++r) {
+			var b = s[r].s;
 			if (h[b] > t) _ += y - (1 << g - h[b]), h[b] = t;
 			else break;
 		}
 		for (_ >>= v; _ > 0;) {
-			var x = s[a].s;
-			h[x] < t ? _ -= 1 << t - h[x]++ - 1 : ++a;
+			var x = s[r].s;
+			h[x] < t ? _ -= 1 << t - h[x]++ - 1 : ++r;
 		}
-		for (; a >= 0 && _; --a) {
-			var S = s[a].s;
+		for (; r >= 0 && _; --r) {
+			var S = s[r].s;
 			h[S] == t && (--h[S], ++_);
 		}
 		g = t;
 	}
 	return {
-		t: new r(h),
+		t: new a(h),
 		l: g
 	};
-}, A = function(e, t, n) {
-	return e.s == -1 ? Math.max(A(e.l, t, n + 1), A(e.r, t, n + 1)) : t[e.s] = n;
-}, j = function(e) {
+}, M = function(e, t, n) {
+	return e.s == -1 ? Math.max(M(e.l, t, n + 1), M(e.r, t, n + 1)) : t[e.s] = n;
+}, N = function(e) {
 	for (var t = e.length; t && !e[--t];);
-	for (var n = new i(++t), r = 0, a = e[0], o = 1, s = function(e) {
+	for (var n = new o(++t), r = 0, i = e[0], a = 1, s = function(e) {
 		n[r++] = e;
-	}, c = 1; c <= t; ++c) if (e[c] == a && c != t) ++o;
+	}, c = 1; c <= t; ++c) if (e[c] == i && c != t) ++a;
 	else {
-		if (!a && o > 2) {
-			for (; o > 138; o -= 138) s(32754);
-			o > 2 && (s(o > 10 ? o - 11 << 5 | 28690 : o - 3 << 5 | 12305), o = 0);
-		} else if (o > 3) {
-			for (s(a), --o; o > 6; o -= 6) s(8304);
-			o > 2 && (s(o - 3 << 5 | 8208), o = 0);
+		if (!i && a > 2) {
+			for (; a > 138; a -= 138) s(32754);
+			a > 2 && (s(a > 10 ? a - 11 << 5 | 28690 : a - 3 << 5 | 12305), a = 0);
+		} else if (a > 3) {
+			for (s(i), --a; a > 6; a -= 6) s(8304);
+			a > 2 && (s(a - 3 << 5 | 8208), a = 0);
 		}
-		for (; o--;) s(a);
-		o = 1, a = e[c];
+		for (; a--;) s(i);
+		a = 1, i = e[c];
 	}
 	return {
 		c: n.subarray(0, r),
 		n: t
 	};
-}, M = function(e, t) {
+}, P = function(e, t) {
 	for (var n = 0, r = 0; r < t.length; ++r) n += e[r] * t[r];
 	return n;
 }, ee = function(e, t, n) {
-	var r = n.length, i = C(t + 2);
+	var r = n.length, i = T(t + 2);
 	e[i] = r & 255, e[i + 1] = r >> 8, e[i + 2] = e[i] ^ 255, e[i + 3] = e[i + 1] ^ 255;
 	for (var a = 0; a < r; ++a) e[i + a + 4] = n[a];
 	return (i + 4 + r) * 8;
-}, te = function(e, t, n, r, a, l, u, d, f, p, m) {
-	D(t, m++, n), ++a[256];
-	for (var h = k(a, 15), g = h.t, _ = h.l, C = k(l, 15), w = C.t, T = C.l, E = j(g), A = E.c, te = E.n, ne = j(w), N = ne.c, P = ne.n, F = new i(19), I = 0; I < A.length; ++I) ++F[A[I] & 31];
-	for (var I = 0; I < N.length; ++I) ++F[N[I] & 31];
-	for (var L = k(F, 7), R = L.t, z = L.l, B = 19; B > 4 && !R[c[B - 1]]; --B);
-	var V = p + 5 << 3, H = M(a, y) + M(l, b) + u, U = M(a, g) + M(l, w) + u + 14 + 3 * B + M(F, R) + 2 * F[16] + 3 * F[17] + 7 * F[18];
-	if (f >= 0 && V <= H && V <= U) return ee(t, m, e.subarray(f, f + p));
-	var W, G, K, q;
-	if (D(t, m, 1 + (U < H)), m += 2, U < H) {
-		W = v(g, _, 0), G = g, K = v(w, T, 0), q = w;
-		var re = v(R, z, 0);
-		D(t, m, te - 257), D(t, m + 5, P - 1), D(t, m + 10, B - 4), m += 14;
-		for (var I = 0; I < B; ++I) D(t, m + 3 * I, R[c[I]]);
-		m += 3 * B;
-		for (var J = [A, N], Y = 0; Y < 2; ++Y) for (var X = J[Y], I = 0; I < X.length; ++I) {
-			var Z = X[I] & 31;
-			D(t, m, re[Z]), m += R[Z], Z > 15 && (D(t, m, X[I] >> 5 & 127), m += X[I] >> 12);
+}, F = function(e, t, n, r, i, a, s, d, f, p, m) {
+	k(t, m++, n), ++i[256];
+	for (var h = j(i, 15), g = h.t, _ = h.l, v = j(a, 15), y = v.t, T = v.l, E = N(g), D = E.c, O = E.n, M = N(y), F = M.c, te = M.n, I = new o(19), L = 0; L < D.length; ++L) ++I[D[L] & 31];
+	for (var L = 0; L < F.length; ++L) ++I[F[L] & 31];
+	for (var R = j(I, 7), z = R.t, B = R.l, V = 19; V > 4 && !z[u[V - 1]]; --V);
+	var H = p + 5 << 3, U = P(i, x) + P(a, S) + s, W = P(i, g) + P(a, y) + s + 14 + 3 * V + P(I, z) + 2 * I[16] + 3 * I[17] + 7 * I[18];
+	if (f >= 0 && H <= U && H <= W) return ee(t, m, e.subarray(f, f + p));
+	var G, K, q, J;
+	if (k(t, m, 1 + (W < U)), m += 2, W < U) {
+		G = b(g, _, 0), K = g, q = b(y, T, 0), J = y;
+		var ne = b(z, B, 0);
+		k(t, m, O - 257), k(t, m + 5, te - 1), k(t, m + 10, V - 4), m += 14;
+		for (var L = 0; L < V; ++L) k(t, m + 3 * L, z[u[L]]);
+		m += 3 * V;
+		for (var re = [D, F], Y = 0; Y < 2; ++Y) for (var X = re[Y], L = 0; L < X.length; ++L) {
+			var Z = X[L] & 31;
+			k(t, m, ne[Z]), m += z[Z], Z > 15 && (k(t, m, X[L] >> 5 & 127), m += X[L] >> 12);
 		}
-	} else W = x, G = y, K = S, q = b;
-	for (var I = 0; I < d; ++I) {
-		var Q = r[I];
+	} else G = C, K = x, q = w, J = S;
+	for (var L = 0; L < d; ++L) {
+		var Q = r[L];
 		if (Q > 255) {
 			var Z = Q >> 18 & 31;
-			O(t, m, W[Z + 257]), m += G[Z + 257], Z > 7 && (D(t, m, Q >> 23 & 31), m += o[Z]);
+			A(t, m, G[Z + 257]), m += K[Z + 257], Z > 7 && (k(t, m, Q >> 23 & 31), m += c[Z]);
 			var $ = Q & 31;
-			O(t, m, K[$]), m += q[$], $ > 3 && (O(t, m, Q >> 5 & 8191), m += s[$]);
-		} else O(t, m, W[Q]), m += G[Q];
+			A(t, m, q[$]), m += J[$], $ > 3 && (A(t, m, Q >> 5 & 8191), m += l[$]);
+		} else A(t, m, G[Q]), m += K[Q];
 	}
-	return O(t, m, W[256]), m + G[256];
-}, ne = /* @__PURE__ */ new a([
+	return A(t, m, G[256]), m + K[256];
+}, te = /*#__PURE__*/ new s([
 	65540,
 	131080,
 	131088,
@@ -556,173 +563,173 @@ var x = /* @__PURE__ */ v(y, 9, 0), S = /* @__PURE__ */ v(b, 5, 0), C = function
 	1048832,
 	2114560,
 	2117632
-]), N = /* @__PURE__ */ new r(0), P = function(e, t, n, c, l, u) {
-	var d = u.z || e.length, p = new r(c + d + 5 * (1 + Math.ceil(d / 7e3)) + l), h = p.subarray(c, p.length - l), g = u.l, _ = (u.r || 0) & 7;
+]), I = /*#__PURE__*/ new a(0), L = function(e, t, n, r, i, u) {
+	var d = u.z || e.length, f = new a(r + d + 5 * (1 + Math.ceil(d / 7e3)) + i), p = f.subarray(r, f.length - i), h = u.l, _ = (u.r || 0) & 7;
 	if (t) {
-		_ && (h[0] = u.r >> 3);
-		for (var v = ne[t - 1], y = v >> 13, b = v & 8191, x = (1 << n) - 1, S = u.p || new i(32768), T = u.h || new i(x + 1), E = Math.ceil(n / 3), D = 2 * E, O = function(t) {
-			return (e[t] ^ e[t + 1] << E ^ e[t + 2] << D) & x;
-		}, k = new a(25e3), A = new i(288), j = new i(32), M = 0, N = 0, P = u.i || 0, F = 0, I = u.w || 0, L = 0; P + 2 < d; ++P) {
-			var R = O(P), z = P & 32767, B = T[R];
-			if (S[z] = B, T[R] = z, I <= P) {
-				var V = d - P;
-				if ((M > 7e3 || F > 24576) && (V > 423 || !g)) {
-					_ = te(e, h, 0, k, A, j, N, F, L, P - L, _), F = M = N = 0, L = P;
-					for (var H = 0; H < 286; ++H) A[H] = 0;
-					for (var H = 0; H < 30; ++H) j[H] = 0;
+		_ && (p[0] = u.r >> 3);
+		for (var v = te[t - 1], y = v >> 13, b = v & 8191, x = (1 << n) - 1, S = u.p || new o(32768), C = u.h || new o(x + 1), w = Math.ceil(n / 3), D = 2 * w, O = function(t) {
+			return (e[t] ^ e[t + 1] << w ^ e[t + 2] << D) & x;
+		}, k = new s(25e3), A = new o(288), j = new o(32), M = 0, N = 0, P = u.i || 0, I = 0, L = u.w || 0, R = 0; P + 2 < d; ++P) {
+			var z = O(P), B = P & 32767, V = C[z];
+			if (S[B] = V, C[z] = B, L <= P) {
+				var H = d - P;
+				if ((M > 7e3 || I > 24576) && (H > 423 || !h)) {
+					_ = F(e, p, 0, k, A, j, N, I, R, P - R, _), I = M = N = 0, R = P;
+					for (var U = 0; U < 286; ++U) A[U] = 0;
+					for (var U = 0; U < 30; ++U) j[U] = 0;
 				}
-				var U = 2, W = 0, G = b, K = z - B & 32767;
-				if (V > 2 && R == O(P - K)) for (var q = Math.min(y, V) - 1, re = Math.min(32767, P), J = Math.min(258, V); K <= re && --G && z != B;) {
-					if (e[P + U] == e[P + U - K]) {
-						for (var Y = 0; Y < J && e[P + Y] == e[P + Y - K]; ++Y);
-						if (Y > U) {
-							if (U = Y, W = K, Y > q) break;
-							for (var X = Math.min(K, Y - 2), Z = 0, H = 0; H < X; ++H) {
-								var Q = P - K + H & 32767, $ = Q - S[Q] & 32767;
-								$ > Z && (Z = $, B = Q);
+				var W = 2, G = 0, K = b, q = B - V & 32767;
+				if (H > 2 && z == O(P - q)) for (var J = Math.min(y, H) - 1, ne = Math.min(32767, P), re = Math.min(258, H); q <= ne && --K && B != V;) {
+					if (e[P + W] == e[P + W - q]) {
+						for (var Y = 0; Y < re && e[P + Y] == e[P + Y - q]; ++Y);
+						if (Y > W) {
+							if (W = Y, G = q, Y > J) break;
+							for (var X = Math.min(q, Y - 2), Z = 0, U = 0; U < X; ++U) {
+								var Q = P - q + U & 32767, $ = Q - S[Q] & 32767;
+								$ > Z && (Z = $, V = Q);
 							}
 						}
 					}
-					z = B, B = S[z], K += z - B & 32767;
+					B = V, V = S[B], q += B - V & 32767;
 				}
-				if (W) {
-					k[F++] = 268435456 | f[U] << 18 | m[W];
-					var ie = f[U] & 31, ae = m[W] & 31;
-					N += o[ie] + s[ae], ++A[257 + ie], ++j[ae], I = P + U, ++M;
-				} else k[F++] = e[P], ++A[e[P]];
+				if (G) {
+					k[I++] = 268435456 | m[W] << 18 | g[G];
+					var ie = m[W] & 31, ae = g[G] & 31;
+					N += c[ie] + l[ae], ++A[257 + ie], ++j[ae], L = P + W, ++M;
+				} else k[I++] = e[P], ++A[e[P]];
 			}
 		}
-		for (P = Math.max(P, I); P < d; ++P) k[F++] = e[P], ++A[e[P]];
-		_ = te(e, h, g, k, A, j, N, F, L, P - L, _), g || (u.r = _ & 7 | h[_ / 8 | 0] << 3, _ -= 7, u.h = T, u.p = S, u.i = P, u.w = I);
+		for (P = Math.max(P, L); P < d; ++P) k[I++] = e[P], ++A[e[P]];
+		_ = F(e, p, h, k, A, j, N, I, R, P - R, _), h || (u.r = _ & 7 | p[_ / 8 | 0] << 3, _ -= 7, u.h = C, u.p = S, u.i = P, u.w = L);
 	} else {
-		for (var P = u.w || 0; P < d + g; P += 65535) {
+		for (var P = u.w || 0; P < d + h; P += 65535) {
 			var oe = P + 65535;
-			oe >= d && (h[_ / 8 | 0] = g, oe = d), _ = ee(h, _ + 1, e.subarray(P, oe));
+			oe >= d && (p[_ / 8 | 0] = h, oe = d), _ = ee(p, _ + 1, e.subarray(P, oe));
 		}
 		u.i = d;
 	}
-	return w(p, 0, c + C(_) + l);
-}, F = /* @__PURE__ */ (function() {
+	return E(f, 0, r + T(_) + i);
+}, R = /*#__PURE__*/ (function() {
 	for (var e = new Int32Array(256), t = 0; t < 256; ++t) {
 		for (var n = t, r = 9; --r;) n = (n & 1 && -306674912) ^ n >>> 1;
 		e[t] = n;
 	}
 	return e;
-})(), I = function() {
+})(), z = function() {
 	var e = -1;
 	return {
 		p: function(t) {
-			for (var n = e, r = 0; r < t.length; ++r) n = F[n & 255 ^ t[r]] ^ n >>> 8;
+			for (var n = e, r = 0; r < t.length; ++r) n = R[n & 255 ^ t[r]] ^ n >>> 8;
 			e = n;
 		},
 		d: function() {
 			return ~e;
 		}
 	};
-}, L = function(e, t, n, i, a) {
-	if (!a && (a = { l: 1 }, t.dictionary)) {
-		var o = t.dictionary.subarray(-32768), s = new r(o.length + e.length);
-		s.set(o), s.set(e, o.length), e = s, a.w = o.length;
+}, B = function(e, t, n, r, i) {
+	if (!i && (i = { l: 1 }, t.dictionary)) {
+		var o = t.dictionary.subarray(-32768), s = new a(o.length + e.length);
+		s.set(o), s.set(e, o.length), e = s, i.w = o.length;
 	}
-	return P(e, t.level == null ? 6 : t.level, t.mem == null ? a.l ? Math.ceil(Math.max(8, Math.min(13, Math.log(e.length))) * 1.5) : 20 : 12 + t.mem, n, i, a);
-}, R = function(e, t) {
+	return L(e, t.level == null ? 6 : t.level, t.mem == null ? i.l ? Math.ceil(Math.max(8, Math.min(13, Math.log(e.length))) * 1.5) : 20 : 12 + t.mem, n, r, i);
+}, V = function(e, t) {
 	var n = {};
 	for (var r in e) n[r] = e[r];
 	for (var r in t) n[r] = t[r];
 	return n;
-}, z = function(e, t, n) {
+}, H = function(e, t, n) {
 	for (; n; ++t) e[t] = n, n >>>= 8;
-}, B = /* @__PURE__ */ function() {
+}, U = /* @__PURE__ */ function() {
 	function e(e, t) {
 		if (typeof e == "function" && (t = e, e = {}), this.ondata = t, this.o = e || {}, this.s = {
 			l: 0,
 			i: 32768,
 			w: 32768,
 			z: 32768
-		}, this.b = new r(98304), this.o.dictionary) {
+		}, this.b = new a(98304), this.o.dictionary) {
 			var n = this.o.dictionary.subarray(-32768);
 			this.b.set(n, 32768 - n.length), this.s.i = 32768 - n.length;
 		}
 	}
 	return e.prototype.p = function(e, t) {
-		this.ondata(L(e, this.o, 0, 0, this.s), t);
+		this.ondata(B(e, this.o, 0, 0, this.s), t);
 	}, e.prototype.push = function(e, t) {
-		this.ondata || E(5), this.s.l && E(4);
+		this.ondata || O(5), this.s.l && O(4);
 		var n = e.length + this.s.z;
 		if (n > this.b.length) {
 			if (n > 2 * this.b.length - 32768) {
-				var i = new r(n & -32768);
-				i.set(this.b.subarray(0, this.s.z)), this.b = i;
+				var r = new a(n & -32768);
+				r.set(this.b.subarray(0, this.s.z)), this.b = r;
 			}
-			var a = this.b.length - this.s.z;
-			this.b.set(e.subarray(0, a), this.s.z), this.s.z = this.b.length, this.p(this.b, !1), this.b.set(this.b.subarray(-32768)), this.b.set(e.subarray(a), 32768), this.s.z = e.length - a + 32768, this.s.i = 32766, this.s.w = 32768;
+			var i = this.b.length - this.s.z;
+			this.b.set(e.subarray(0, i), this.s.z), this.s.z = this.b.length, this.p(this.b, !1), this.b.set(this.b.subarray(-32768)), this.b.set(e.subarray(i), 32768), this.s.z = e.length - i + 32768, this.s.i = 32766, this.s.w = 32768;
 		} else this.b.set(e, this.s.z), this.s.z += e.length;
-		this.s.l = t & 1, (this.s.z > this.s.w + 8191 || t) && (this.p(this.b, t || !1), this.s.w = this.s.i, this.s.i -= 2), t && (this.s = this.o = {}, this.b = N);
+		this.s.l = t & 1, (this.s.z > this.s.w + 8191 || t) && (this.p(this.b, t || !1), this.s.w = this.s.i, this.s.i -= 2), t && (this.s = this.o = {}, this.b = I);
 	}, e.prototype.flush = function(e) {
-		if (this.ondata || E(5), this.s.l && E(4), this.p(this.b, !1), this.s.w = this.s.i, this.s.i -= 2, e) {
-			var t = new r(6);
+		if (this.ondata || O(5), this.s.l && O(4), this.p(this.b, !1), this.s.w = this.s.i, this.s.i -= 2, e) {
+			var t = new a(6);
 			t[0] = this.s.r >> 3;
-			var n = ee(t, this.s.r, N);
+			var n = ee(t, this.s.r, I);
 			this.s.r = 0, this.ondata(t.subarray(0, n >> 3), !1);
 		}
 	}, e;
-}(), V = typeof TextEncoder < "u" && /* @__PURE__ */ new TextEncoder(), H = typeof TextDecoder < "u" && /* @__PURE__ */ new TextDecoder();
+}(), W = typeof TextEncoder < "u" && /*#__PURE__*/ new TextEncoder(), G = typeof TextDecoder < "u" && /*#__PURE__*/ new TextDecoder();
 try {
-	H.decode(N, { stream: !0 });
+	G.decode(I, { stream: !0 });
 } catch {}
-function U(e, t) {
+function K(e, t) {
 	if (t) {
-		for (var n = new r(e.length), i = 0; i < e.length; ++i) n[i] = e.charCodeAt(i);
+		for (var n = new a(e.length), r = 0; r < e.length; ++r) n[r] = e.charCodeAt(r);
 		return n;
 	}
-	if (V) return V.encode(e);
-	for (var a = e.length, o = new r(e.length + (e.length >> 1)), s = 0, c = function(e) {
+	if (W) return W.encode(e);
+	for (var i = e.length, o = new a(e.length + (e.length >> 1)), s = 0, c = function(e) {
 		o[s++] = e;
-	}, i = 0; i < a; ++i) {
+	}, r = 0; r < i; ++r) {
 		if (s + 5 > o.length) {
-			var l = new r(s + 8 + (a - i << 1));
+			var l = new a(s + 8 + (i - r << 1));
 			l.set(o), o = l;
 		}
-		var u = e.charCodeAt(i);
-		u < 128 || t ? c(u) : u < 2048 ? (c(192 | u >> 6), c(128 | u & 63)) : u > 55295 && u < 57344 ? (u = 65536 + (u & 1047552) | e.charCodeAt(++i) & 1023, c(240 | u >> 18), c(128 | u >> 12 & 63), c(128 | u >> 6 & 63), c(128 | u & 63)) : (c(224 | u >> 12), c(128 | u >> 6 & 63), c(128 | u & 63));
+		var u = e.charCodeAt(r);
+		u < 128 || t ? c(u) : u < 2048 ? (c(192 | u >> 6), c(128 | u & 63)) : u > 55295 && u < 57344 ? (u = 65536 + (u & 1047552) | e.charCodeAt(++r) & 1023, c(240 | u >> 18), c(128 | u >> 12 & 63), c(128 | u >> 6 & 63), c(128 | u & 63)) : (c(224 | u >> 12), c(128 | u >> 6 & 63), c(128 | u & 63));
 	}
-	return w(o, 0, s);
+	return E(o, 0, s);
 }
-var W = function(e) {
+var q = function(e) {
 	return e == 1 ? 3 : e < 6 ? 2 : +(e == 9);
-}, G = function(e) {
+}, J = function(e) {
 	var t = 0;
 	if (e) for (var n in e) {
 		var r = e[n].length;
-		r > 65535 && E(9), t += r + 4;
+		r > 65535 && O(9), t += r + 4;
 	}
 	return t;
-}, K = function(e, t, n, r, i, a, o, s) {
-	var c = r.length, l = n.extra, u = s && s.length, d = G(l);
-	z(e, t, o == null ? 67324752 : 33639248), t += 4, o != null && (e[t++] = 20, e[t++] = n.os), e[t] = 20, t += 2, e[t++] = n.flag << 1 | (a < 0 && 8), e[t++] = i && 8, e[t++] = n.compression & 255, e[t++] = n.compression >> 8;
+}, ne = function(e, t, n, r, i, a, o, s) {
+	var c = r.length, l = n.extra, u = s && s.length, d = J(l);
+	H(e, t, o == null ? 67324752 : 33639248), t += 4, o != null && (e[t++] = 20, e[t++] = n.os), e[t] = 20, t += 2, e[t++] = n.flag << 1 | (a < 0 && 8), e[t++] = i && 8, e[t++] = n.compression & 255, e[t++] = n.compression >> 8;
 	var f = new Date(n.mtime == null ? Date.now() : n.mtime), p = f.getFullYear() - 1980;
-	if ((p < 0 || p > 119) && E(10), z(e, t, p << 25 | f.getMonth() + 1 << 21 | f.getDate() << 16 | f.getHours() << 11 | f.getMinutes() << 5 | f.getSeconds() >> 1), t += 4, a != -1 && (z(e, t, n.crc), z(e, t + 4, a < 0 ? -a - 2 : a), z(e, t + 8, n.size)), z(e, t + 12, c), z(e, t + 14, d), t += 16, o != null && (z(e, t, u), z(e, t + 6, n.attrs), z(e, t + 10, o), t += 14), e.set(r, t), t += c, d) for (var m in l) {
+	if ((p < 0 || p > 119) && O(10), H(e, t, p << 25 | f.getMonth() + 1 << 21 | f.getDate() << 16 | f.getHours() << 11 | f.getMinutes() << 5 | f.getSeconds() >> 1), t += 4, a != -1 && (H(e, t, n.crc), H(e, t + 4, a < 0 ? -a - 2 : a), H(e, t + 8, n.size)), H(e, t + 12, c), H(e, t + 14, d), t += 16, o != null && (H(e, t, u), H(e, t + 6, n.attrs), H(e, t + 10, o), t += 14), e.set(r, t), t += c, d) for (var m in l) {
 		var h = l[m], g = h.length;
-		z(e, t, +m), z(e, t + 2, g), e.set(h, t + 4), t += 4 + g;
+		H(e, t, +m), H(e, t + 2, g), e.set(h, t + 4), t += 4 + g;
 	}
 	return u && (e.set(s, t), t += u), t;
-}, q = function(e, t, n, r, i) {
-	z(e, t, 101010256), z(e, t + 8, n), z(e, t + 10, n), z(e, t + 12, r), z(e, t + 16, i);
-}, re = /* @__PURE__ */ function() {
+}, re = function(e, t, n, r, i) {
+	H(e, t, 101010256), H(e, t + 8, n), H(e, t + 10, n), H(e, t + 12, r), H(e, t + 16, i);
+}, Y = /* @__PURE__ */ function() {
 	function e(e) {
-		this.filename = e, this.c = I(), this.size = 0, this.compression = 0;
+		this.filename = e, this.c = z(), this.size = 0, this.compression = 0;
 	}
 	return e.prototype.process = function(e, t) {
 		this.ondata(null, e, t);
 	}, e.prototype.push = function(e, t) {
-		this.ondata || E(5), this.c.p(e), this.size += e.length, t && (this.crc = this.c.d()), this.process(e, t || !1);
+		this.ondata || O(5), this.c.p(e), this.size += e.length, t && (this.crc = this.c.d()), this.process(e, t || !1);
 	}, e;
-}(), J = /* @__PURE__ */ function() {
+}(), X = /* @__PURE__ */ function() {
 	function e(e, t) {
 		var n = this;
-		t ||= {}, re.call(this, e), this.d = new B(t, function(e, t) {
+		t ||= {}, Y.call(this, e), this.d = new U(t, function(e, t) {
 			n.ondata(null, e, t);
-		}), this.compression = 8, this.flag = W(t.level);
+		}), this.compression = 8, this.flag = q(t.level);
 	}
 	return e.prototype.process = function(e, t) {
 		try {
@@ -731,20 +738,20 @@ var W = function(e) {
 			this.ondata(e, null, t);
 		}
 	}, e.prototype.push = function(e, t) {
-		re.prototype.push.call(this, e, t);
+		Y.prototype.push.call(this, e, t);
 	}, e;
-}(), Y = /* @__PURE__ */ function() {
+}(), Z = /* @__PURE__ */ function() {
 	function e(e) {
 		this.ondata = e, this.u = [], this.d = 1;
 	}
 	return e.prototype.add = function(e) {
 		var t = this;
-		if (this.ondata || E(5), this.d & 2) this.ondata(E(4 + (this.d & 1) * 8, 0, 1), null, !1);
+		if (this.ondata || O(5), this.d & 2) this.ondata(O(4 + (this.d & 1) * 8, 0, 1), null, !1);
 		else {
-			var n = U(e.filename), i = n.length, a = e.comment, o = a && U(a), s = i != e.filename.length || o && a.length != o.length, c = i + G(e.extra) + 30;
-			i > 65535 && this.ondata(E(11, 0, 1), null, !1);
-			var l = new r(c);
-			K(l, 0, e, n, s, -1);
+			var n = K(e.filename), r = n.length, i = e.comment, o = i && K(i), s = r != e.filename.length || o && i.length != o.length, c = r + J(e.extra) + 30;
+			r > 65535 && this.ondata(O(11, 0, 1), null, !1);
+			var l = new a(c);
+			ne(l, 0, e, n, s, -1);
 			var u = [l], d = function() {
 				for (var e = 0, n = u; e < n.length; e++) {
 					var r = n[e];
@@ -753,7 +760,7 @@ var W = function(e) {
 				u = [];
 			}, f = this.d;
 			this.d = 0;
-			var p = this.u.length, m = R(e, {
+			var p = this.u.length, m = V(e, {
 				f: n,
 				u: s,
 				o,
@@ -768,18 +775,18 @@ var W = function(e) {
 					f = 1;
 				}
 			}), h = 0;
-			e.ondata = function(n, i, a) {
-				if (n) t.ondata(n, i, a), t.terminate();
-				else if (h += i.length, u.push(i), a) {
-					var o = new r(16);
-					z(o, 0, 134695760), z(o, 4, e.crc), z(o, 8, h), z(o, 12, e.size), u.push(o), m.c = h, m.b = c + h + 16, m.crc = e.crc, m.size = e.size, f && m.r(), f = 1;
+			e.ondata = function(n, r, i) {
+				if (n) t.ondata(n, r, i), t.terminate();
+				else if (h += r.length, u.push(r), i) {
+					var o = new a(16);
+					H(o, 0, 134695760), H(o, 4, e.crc), H(o, 8, h), H(o, 12, e.size), u.push(o), m.c = h, m.b = c + h + 16, m.crc = e.crc, m.size = e.size, f && m.r(), f = 1;
 				} else f && d();
 			}, this.u.push(m);
 		}
 	}, e.prototype.end = function() {
 		var e = this;
 		if (this.d & 2) {
-			this.ondata(E(4 + (this.d & 1) * 8, 0, 1), null, !0);
+			this.ondata(O(4 + (this.d & 1) * 8, 0, 1), null, !0);
 			return;
 		}
 		this.d ? this.e() : this.u.push({
@@ -789,15 +796,15 @@ var W = function(e) {
 			t: function() {}
 		}), this.d = 3;
 	}, e.prototype.e = function() {
-		for (var e = 0, t = 0, n = 0, i = 0, a = this.u; i < a.length; i++) {
-			var o = a[i];
-			n += 46 + o.f.length + G(o.extra) + (o.o ? o.o.length : 0);
+		for (var e = 0, t = 0, n = 0, r = 0, i = this.u; r < i.length; r++) {
+			var o = i[r];
+			n += 46 + o.f.length + J(o.extra) + (o.o ? o.o.length : 0);
 		}
-		for (var s = new r(n + 22), c = 0, l = this.u; c < l.length; c++) {
+		for (var s = new a(n + 22), c = 0, l = this.u; c < l.length; c++) {
 			var o = l[c];
-			K(s, e, o, o.f, o.u, -o.c - 2, t, o.o), e += 46 + o.f.length + G(o.extra) + (o.o ? o.o.length : 0), t += o.b;
+			ne(s, e, o, o.f, o.u, -o.c - 2, t, o.o), e += 46 + o.f.length + J(o.extra) + (o.o ? o.o.length : 0), t += o.b;
 		}
-		q(s, e, this.u.length, n, t), this.ondata(null, s, !0), this.d = 2;
+		re(s, e, this.u.length, n, t), this.ondata(null, s, !0), this.d = 2;
 	}, e.prototype.terminate = function() {
 		for (var e = 0, t = this.u; e < t.length; e++) t[e].t();
 		this.d = 2;
@@ -805,7 +812,7 @@ var W = function(e) {
 }();
 //#endregion
 //#region replace/base.ts
-async function X(e = []) {
+async function Q(e = []) {
 	let t = [];
 	for (let n of e) t.push(n.getBuffer());
 	await Promise.all(t);
@@ -822,10 +829,13 @@ async function X(e = []) {
 	for (let t of e) t.uint8Array && (t.isDecode ? (n.decode.names.push(t.name), n.decode.uint8Arrays.push(t.uint8Array)) : (n.noDecode.names.push(t.name), n.noDecode.uint8Arrays.push(t.uint8Array)));
 	return n;
 }
-var Z = class {
+var $ = class {
 	#e = [];
 	constructor(e) {
-		this.core = e;
+		this.asyncCore = e;
+	}
+	async init() {
+		this.core || (this.core = await this.asyncCore, this.asyncCore = void 0);
 	}
 	addTempFile(e) {
 		this.#e.push(e);
@@ -834,13 +844,13 @@ var Z = class {
 		this.#e.length = 0;
 	}
 	async extractOneFileVariables(e, t) {
-		let r = await t.getBuffer();
-		if (r) {
-			if (await t.type() === n.unknown && !t.isDecode) {
+		let n = await t.getBuffer();
+		if (n) {
+			if (await t.type() === i.unknown && !t.isDecode) {
 				console.warn("file type is unknown and not decode", t);
 				return;
 			}
-			e[t.name] = await this.core.extract_one_file_variable_names(r, t.isDecode);
+			e[t.name] = this.core.extract_one_file_variable_names(n, t.isDecode);
 		}
 	}
 	async extractVariables(e) {
@@ -850,12 +860,12 @@ var Z = class {
 		return await Promise.allSettled(n), t;
 	}
 	async extractOneFileMedias(e, t) {
-		let r = await t.getBuffer();
-		if (!r || await t.type() === n.unknown && !t.isDecode) return;
-		let i = await this.core.extract_one_file_medias(r, t.isDecode);
-		if (e[t.name] = [], Array.isArray(i)) for (let { id: n, data: r } of i) n && r && e[t.name].push({
+		let n = await t.getBuffer();
+		if (!n || await t.type() === i.unknown && !t.isDecode) return;
+		let r = this.core.extract_one_file_medias(n, t.isDecode);
+		if (e[t.name] = [], Array.isArray(r)) for (let { id: n, data: i } of r) n && i && e[t.name].push({
 			id: n,
-			data: new Uint8Array(r)
+			data: new Uint8Array(i)
 		});
 	}
 	async extractMedias(e) {
@@ -874,32 +884,32 @@ var Z = class {
 		return "";
 	}
 	async execute(e, t) {
-		let { noDecode: n, decode: r } = await X(t ?? this.#e), i = await this.handle(e, n.uint8Arrays, r.uint8Arrays), a = {}, o = 0;
+		let { noDecode: n, decode: r } = await Q(t ?? this.#e), i = await this.handle(e, n.uint8Arrays, r.uint8Arrays), a = {}, o = 0;
 		for (let e of n.names) a[e] = i[o++] ?? new Uint8Array();
 		for (let e of r.names) a[e] = i[o++] ?? new Uint8Array();
 		return a;
 	}
 	async executeToZip(e, t) {
-		let { noDecode: n, decode: r } = await X(t ?? this.#e), i = await this.handle(e, n.uint8Arrays, r.uint8Arrays);
+		let { noDecode: n, decode: r } = await Q(t ?? this.#e), i = await this.handle(e, n.uint8Arrays, r.uint8Arrays);
 		return new Promise((e, t) => {
-			let a = [], o = new Y((t, n, r) => {
+			let a = [], o = new Z((t, n, r) => {
 				n.length && a.push(n), r && new Blob(a).arrayBuffer().then((t) => {
 					e(new Uint8Array(t));
 				});
 			}), s = 0;
 			for (let e of n.names) {
-				let t = new J(e, { level: 9 });
+				let t = new X(e, { level: 9 });
 				o.add(t), t.push(i[s++] ?? new Uint8Array(), !0);
 			}
 			for (let e of r.names) {
-				let t = new J(e, { level: 9 });
+				let t = new X(e, { level: 9 });
 				o.add(t), t.push(i[s++] ?? new Uint8Array(), !0);
 			}
 			o.end();
 		});
 	}
 	async executeMultipleParams(e, t) {
-		let { noDecode: n, decode: r } = await X(t ?? this.#e), i = await this.handleMultipleParams(e, n.uint8Arrays, r.uint8Arrays), a = Array(e.length), o = 0;
+		let { noDecode: n, decode: r } = await Q(t ?? this.#e), i = await this.handleMultipleParams(e, n.uint8Arrays, r.uint8Arrays), a = Array(e.length), o = 0;
 		for (let t = 0; t < e.length; t++) {
 			let e = {};
 			for (let t of n.names) {
@@ -915,9 +925,9 @@ var Z = class {
 		return a;
 	}
 	async executeMultipleParamsToZip(e, t) {
-		let { noDecode: n, decode: r } = await X(t ?? this.#e), i = await this.handleMultipleParams(e, n.uint8Arrays, r.uint8Arrays);
+		let { noDecode: n, decode: r } = await Q(t ?? this.#e), i = await this.handleMultipleParams(e, n.uint8Arrays, r.uint8Arrays);
 		return new Promise((t, a) => {
-			let o = [], s = new Y((e, n, r) => {
+			let o = [], s = new Z((e, n, r) => {
 				n.length && o.push(n), r && new Blob(o).arrayBuffer().then((e) => {
 					t(new Uint8Array(e));
 				});
@@ -926,14 +936,14 @@ var Z = class {
 				for (let e of n.names) {
 					let n = i[c++];
 					if (n.length) {
-						let r = new J(t + "/" + e, { level: 9 });
+						let r = new X(t + "/" + e, { level: 9 });
 						s.add(r), r.push(n, !0);
 					}
 				}
 				for (let e of r.names) {
 					let n = i[c++];
 					if (n.length) {
-						let r = new J(t + "/" + e, { level: 9 });
+						let r = new X(t + "/" + e, { level: 9 });
 						s.add(r), r.push(n, !0);
 					}
 				}
@@ -941,24 +951,22 @@ var Z = class {
 			s.end();
 		});
 	}
-	fileEncrypt(e) {
+	async fileEncrypt(e) {
 		return this.core.file_encrypt(e);
 	}
-	filesEncrypt(e) {
+	async filesEncrypt(e) {
 		return this.core.files_encrypt(e);
 	}
-};
-//#endregion
-//#region core/base.ts
-function Q(e) {
-	return new Proxy({}, { get(t, n) {
-		return async (...t) => {
-			let r = await e;
-			return console.log("core", r), r[n](...t);
-		};
-	} });
+}, ie = /* @__PURE__ */ new Map();
+async function ae(e) {
+	let t = ie.get(e);
+	return t || (t = new Promise((t) => {
+		e.default().then(() => {
+			t(e);
+		});
+	}), ie.set(e, t)), t;
 }
 //#endregion
-export { Z as n, Q as t };
+export { $ as n, n as r, ae as t };
 
-//# sourceMappingURL=base-wat0ROUP.js.map
+//# sourceMappingURL=base-DaDE6LcS.js.map

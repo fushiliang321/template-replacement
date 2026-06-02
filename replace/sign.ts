@@ -3,8 +3,8 @@ import core from '../core/sign'
 import paramsData, { replaceParams } from './paramsData'
 
 export default class Sign extends Base {
-  constructor(wasmBuffer: RequestInfo | URL | Response | BufferSource | WebAssembly.Module) {
-    super(core(wasmBuffer))
+  constructor() {
+    super(core())
   }
 
   async handle(

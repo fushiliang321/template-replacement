@@ -48,32 +48,32 @@ type PromisifyAll<T> = {
 
 export type AsyncCoreInterface = PromisifyAll<rawCoreInterface>;
 
-export default function core(init: Promise<rawCoreInterface>): AsyncCoreInterface {
+export default function asyncCore(init: Promise<rawCoreInterface>): AsyncCoreInterface {
   return new Proxy({} as AsyncCoreInterface, {
     get(_, methodName: keyof rawCoreInterface) {
       return async (...args: unknown[]) => {
         const core = await init;
-        console.log('core', core)
         return (core[methodName] as (...args: unknown[]) => unknown)(...args);
       };
     },
   });
-};
-
-export async function loadPackageName(packageName: string): Promise<rawCoreInterface> {
-  const wasm = await import(packageName)
-  const { default: init, ...wasmMethods } = wasm
-  await init()
-  return wasmMethods as unknown as rawCoreInterface
 }
 
-const loadPackageNameMap = new Map<string, Promise<rawCoreInterface>>()
+type ModuleType = {
+  default(): Promise<unknown>
+} & Record<string | symbol, unknown>
 
-export function load(packageName: string): AsyncCoreInterface {
-  let _loadPackageName = loadPackageNameMap.get(packageName)
-  if (!_loadPackageName) {
-    _loadPackageName = loadPackageName(packageName)
-    loadPackageNameMap.set(packageName, _loadPackageName)
+const initMap = new Map<ModuleType, Promise<ModuleType>>()
+
+export async function init(Module: ModuleType): Promise<rawCoreInterface> {
+  let _init = initMap.get(Module)
+  if (!_init) {
+    _init = new Promise((resolve) => {
+      Module.default().then(() => {
+        resolve(Module)
+      })
+    })
+    initMap.set(Module, _init)
   }
-  return core(_loadPackageName)
+  return _init as unknown as Promise<rawCoreInterface>
 }

@@ -25,19 +25,19 @@ application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 
 #### 功能演示
 ##### 一、实例化替换对象
-1、模板替换：
+1、模板替换（主线程）：
 ``` javascript
 import tr from 'template-replacement'
-const replaceInstance = tr()
+const replaceInstance = await tr()
 ```
-2、多线程模板替换：
+2、模板替换（多线程）：
 需要同时替换大量文件时使用
 ``` javascript
 import tr from 'template-replacement'
-const worker = navigator.hardwareConcurrency ?? 4 //线程数量，建议<=CPU核心数
-const replaceInstance = tr(worker)
+const worker = navigator.hardwareConcurrency ?? 4 //线程数量，为0时回退到主线程模式，建议<=CPU核心数
+const replaceInstance = await tr(worker)
 ```
-3、模板替换并校验签名：
+3、模板替换并校验签名（主线程）：
 需结合后端做签名校验，前端替换之前需要请求后端获取签名，不想让前端直接使用模板替换功能的场景可以用这个方式，可以确保每次模板替换都是经过后端授权验证的。
 ``` javascript
 import tr from 'template-replacement'
@@ -51,13 +51,13 @@ async function getSignature(data) {
    */
 }
 
-const replaceInstance = tr(0, getSignature)
+const replaceInstance = await tr(0, getSignature)
 ```
-4、多线程模板替换并校验签名：
+4、模板替换并校验签名（多线程）：
 ``` javascript
 import tr from 'template-replacement'
-const worker = navigator.hardwareConcurrency ?? 4 //线程数量，建议<=CPU核心数
-const replaceInstance = tr(worker, getSignature)
+const worker = navigator.hardwareConcurrency ?? 4 //线程数量，为0时回退到主线程模式，建议<=CPU核心数
+const replaceInstance = await tr(worker, getSignature)
 ```
 
 ##### 二、添加模板

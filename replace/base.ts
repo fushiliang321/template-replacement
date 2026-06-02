@@ -1,5 +1,5 @@
 import Interface, { media } from './interface'
-import { AsyncCoreInterface } from '../core/base'
+import { AsyncCoreInterface, rawCoreInterface } from '../core/base'
 import paramsData from './paramsData'
 import Temp from '../temp'
 import { fileTypes } from '../helper'
@@ -55,10 +55,19 @@ async function tempFilesTidy(files: Temp[] = []): Promise<filesTidyResult> {
 
 export default class Base implements Interface {
   #files: Temp[] = []
-  core: AsyncCoreInterface
+  core?: rawCoreInterface
+  asyncCore?: Promise<rawCoreInterface>
 
-  constructor(core: AsyncCoreInterface) {
-    this.core = core
+  constructor(asyncCore: Promise<rawCoreInterface>) {
+    this.asyncCore = asyncCore
+  }
+
+  async init(): Promise<void> {
+    if (this.core) {
+      return
+    }
+    this.core = await this.asyncCore
+    this.asyncCore = undefined
   }
 
   addTempFile(tempFile: Temp) {
@@ -79,7 +88,7 @@ export default class Base implements Interface {
       console.warn('file type is unknown and not decode', file)
       return
     }
-    variables[file.name] = await this.core.extract_one_file_variable_names(
+    variables[file.name] = this.core!.extract_one_file_variable_names(
       buffer,
       file.isDecode,
     )
@@ -110,7 +119,7 @@ export default class Base implements Interface {
     if ((await file.type()) === fileTypes.unknown && !file.isDecode) {
       return
     }
-    const res = await this.core.extract_one_file_medias(
+    const res = this.core!.extract_one_file_medias(
       buffer,
       file.isDecode,
     )
@@ -231,7 +240,6 @@ export default class Base implements Interface {
     const { noDecode, decode } = await tempFilesTidy(files ?? this.#files)
     const resFileList = await this.handleMultipleParams(paramsList, noDecode.uint8Arrays, decode.uint8Arrays);
     const result: Record<string, Uint8Array>[] = Array(paramsList.length)
-
     let resFileIndex = 0
     for (let index = 0; index < paramsList.length; index++) {
       const resultItem: Record<string, Uint8Array> = {}
@@ -301,12 +309,12 @@ export default class Base implements Interface {
   }
 
   //文件加密
-  fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
-    return this.core.file_encrypt(file)
+  async fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
+    return this.core!.file_encrypt(file)
   }
 
   //文件批量加密
-  filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
-    return this.core.files_encrypt(files)
+  async filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
+    return this.core!.files_encrypt(files)
   }
 }

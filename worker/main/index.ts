@@ -323,7 +323,6 @@ export default class WorkerReplace implements ReplaceInterface {
 
   async filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
     const chunks = this.#chunk<Uint8Array>(files)
-
     const tasks: Promise<Uint8Array[]>[] = []
     for (const chunk of chunks) {
       tasks.push(this.#call('filesEncrypt', [chunk]))

@@ -64,9 +64,15 @@ const resultHandles = new Map<methodKeys<ReplaceInterface>, (result: any, transf
 const tasks = new Map<string, (value: unknown) => void>()
 
 let dispatch: ReplaceInterface
+let initResolve: () => void;
+const awaitInit = new Promise<void>(resolve => {
+  initResolve = resolve
+})
+
 
 export default function _init(replace: ReplaceInterface) {
   dispatch = new agency(replace)
+  initResolve()
 }
 
 export function call<T>(method: string, ...params: unknown[]): Promise<T> {
@@ -99,6 +105,7 @@ addEventListener('message', async (event) => {
         //跳过不允许被调用的方法
         return
       }
+      await awaitInit
       // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
       const fun = dispatch[method] as Function | undefined
       if (!fun) {

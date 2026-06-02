@@ -3,6 +3,4 @@ import WorkerReplace from '../worker/main'
 // import replace from '../worker/main/general'
 import replace from '../dist/main/general'
 
-export default (concurrency?: number): ReplaceInterface => {
-  return new WorkerReplace(new replace(concurrency))
-}
+export default (concurrency?: number): ReplaceInterface => new WorkerReplace(new replace(concurrency))

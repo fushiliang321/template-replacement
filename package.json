@@ -1,7 +1,7 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "3.6.1-beta4",
+  "version": "4.0.0-beta1",
   "author": "fushiliang <994301536@qq.com>",
   "type": "module",
   "main": "index.ts",
@@ -17,23 +17,23 @@
     "file-type": "^22.0.1",
     "js-sha1": "^0.7.0",
     "streamsaver": "^2.0.6",
-    "template-replacement-core-wasm": "^1.8.2",
-    "template-replacement-sign-core-wasm": "^1.8.2",
+    "template-replacement-core-wasm": "^1.8.5",
+    "template-replacement-sign-core-wasm": "^1.8.5",
     "uuid": "^14.0.0",
     "web-streams-polyfill": "^4.3.0"
   },
   "devDependencies": {
-    "@rollup/pluginutils": "^5.3.0",
+    "@rollup/pluginutils": "^5.4.0",
     "@types/streamsaver": "^2.0.5",
-    "@typescript-eslint/eslint-plugin": "^8.60.0",
-    "@typescript-eslint/parser": "^8.60.0",
+    "@typescript-eslint/eslint-plugin": "^8.60.1",
+    "@typescript-eslint/parser": "^8.60.1",
     "eslint": "^9.39.4",
-    "eslint-plugin-oxlint": "^1.67.0",
+    "eslint-plugin-oxlint": "^1.68.0",
     "oxfmt": "^0.16.0",
-    "oxlint": "^1.67.0",
+    "oxlint": "^1.68.0",
     "terser": "^5.48.0",
     "typescript": "^5.9.3",
-    "vite": "^8.0.14"
+    "vite": "^8.0.16"
   },
   "keywords": [
     "template-replacement"

@@ -1,36 +1,24 @@
-import general from './dispatcher/general'
-import sign from './dispatcher/sign'
-import workerGeneral from './dispatcher/workerGeneral'
-import workerSign from './dispatcher/workerSign'
 import ReplaceInterface from './replace/interface'
-
-export const General = general
-
-export const Sign = sign
-
-export const WorkerGeneral = workerGeneral
-
-export const WorkerSign = workerSign
 
 type signFun = (data: unknown) => Promise<string>
 
-export default (concurrency?: number, signFn?: signFun): ReplaceInterface => {
-  let res = undefined
+export default async (concurrency?: number, signFn?: signFun): Promise<ReplaceInterface> => {
   if (concurrency) {
     if (signFn) {
-      res = workerSign(concurrency)
+      const { default: init } = await import('./dispatcher/workerSign')
+      const res = init(concurrency)
       res.sign = signFn
-    } else {
-      res = workerGeneral(concurrency)
+      return res
     }
-  } else {
-    if (signFn) {
-      res = sign()
-      res.sign = signFn
-    } else {
-      res = general()
-      console.log('res', res)
-    }
+    const { default: init } = await import('./dispatcher/workerGeneral')
+    return init(concurrency)
   }
-  return res
+  if (signFn) {
+    const { default: init } = await import('./dispatcher/sign')
+    const res = await init()
+    res.sign = signFn
+    return res
+  }
+  const { default: init } = await import('./dispatcher/general')
+  return await init()
 }

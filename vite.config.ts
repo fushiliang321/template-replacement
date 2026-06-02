@@ -9,14 +9,14 @@ export default defineConfig({
       entry: [
         './worker/main/sign.ts',
         './worker/main/general.ts',
-        './replace/general.ts',
-        './replace/sign.ts',
+        './noWorker/general.ts',
+        './noWorker/sign.ts',
       ],
       name: 'template-replacement',
       fileName: (format, entryName) => `${entryName}.js`,
       formats: ['es'],
     },
-    rollupOptions: {
+    rolldownOptions: {
       output: {
         entryFileNames: (info) => {
           const modules = info.facadeModuleId?.split('/')

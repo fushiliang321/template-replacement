@@ -3,8 +3,8 @@ import core from '../core/general'
 import paramsData, { replaceParams } from './paramsData'
 
 export default class General extends Base {
-  constructor(wasmBuffer: RequestInfo | URL | Response | BufferSource | WebAssembly.Module) {
-    super(core(wasmBuffer))
+  constructor() {
+    super(core())
   }
 
   async handle(
@@ -13,7 +13,7 @@ export default class General extends Base {
     encode_files: Uint8Array[],
   ): Promise<Uint8Array[]> {
     const [params, mediaBuffers] = await paramsData.toReplaceParams()
-    return await this.core.replace_batch(params, mediaBuffers, files, encode_files)
+    return this.core!.replace_batch(params, mediaBuffers, files, encode_files)
   }
 
   async handleMultipleParams(
@@ -36,7 +36,7 @@ export default class General extends Base {
       )
     }
     const newParamsList = await Promise.all(newParamsListTasks)
-    return await this.core.replace_batch_multiple_params(
+    return this.core!.replace_batch_multiple_params(
       newParamsList,
       mediaBuffers,
       files,
