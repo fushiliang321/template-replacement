@@ -18,19 +18,8 @@ export interface rawCoreInterface {
         data: string;
     };
 }
-type PromisifyAll<T> = {
-    [K in keyof T]: undefined extends T[K] ? (() => T[K]) extends () => infer R ? R extends {
-        (...args: infer Args1): infer R1;
-        (...args: infer Args2): infer R2;
-    } ? ((...args: Args1) => R1 extends Promise<unknown> ? R1 : Promise<R1>) & ((...args: Args2) => R2 extends Promise<unknown> ? R2 : Promise<R2>) : R extends (...args: infer Args) => infer R1 ? (...args: Args) => R1 extends Promise<unknown> ? R1 : Promise<R1> : undefined : never : T[K] extends {
-        (...args: infer Args1): infer R1;
-        (...args: infer Args2): infer R2;
-    } ? ((...args: Args1) => R1 extends Promise<unknown> ? R1 : Promise<R1>) & ((...args: Args2) => R2 extends Promise<unknown> ? R2 : Promise<R2>) : T[K] extends (...args: infer Args) => infer R ? (...args: Args) => R extends Promise<unknown> ? R : Promise<R> : never;
-};
-export type AsyncCoreInterface = PromisifyAll<rawCoreInterface>;
-export default function asyncCore(init: Promise<rawCoreInterface>): AsyncCoreInterface;
 type ModuleType = {
     default(): Promise<unknown>;
 } & Record<string | symbol, unknown>;
-export declare function init(Module: ModuleType): Promise<rawCoreInterface>;
-export {};
+declare const _default: (Module: ModuleType) => Promise<rawCoreInterface>;
+export default _default;

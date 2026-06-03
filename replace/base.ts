@@ -1,5 +1,5 @@
 import Interface, { media } from './interface'
-import { AsyncCoreInterface, rawCoreInterface } from '../core/base'
+import { rawCoreInterface } from '../core/base'
 import paramsData from './paramsData'
 import Temp from '../temp'
 import { fileTypes } from '../helper'

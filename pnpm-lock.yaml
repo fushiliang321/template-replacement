@@ -29,7 +29,13 @@ importers:
       template-replacement-core-wasm:
         specifier: ^1.8.5
         version: 1.8.5
+      template-replacement-core-wasm-polyfill:
+        specifier: ^1.8.5
+        version: 1.8.5
       template-replacement-sign-core-wasm:
+        specifier: ^1.8.5
+        version: 1.8.5
+      template-replacement-sign-core-wasm-polyfill:
         specifier: ^1.8.5
         version: 1.8.5
       uuid:
@@ -1362,8 +1368,14 @@ packages:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
 
+  template-replacement-core-wasm-polyfill@1.8.5:
+    resolution: {integrity: sha512-jm8aeTZg8u3Jr9I5CewW5rSccZGgmUwjlRUIT1tL0vNFiisH64jnb3Xf/aFYctiCkz+v2iycTRLlJiauzzwjnA==}
+
   template-replacement-core-wasm@1.8.5:
     resolution: {integrity: sha512-Ivby6B4rO61eQVK/S7lSMK4RqBVN9CvzlPWZHqGsMW3D7zdhUTkG6+To68h3EO8zadkGygDU0c1q7k9xg6xCIw==}
+
+  template-replacement-sign-core-wasm-polyfill@1.8.5:
+    resolution: {integrity: sha512-eqx6potPK7waYSI/rGOXObZkZ546fjgSwdIzVw9KgMplXsDaqri9yNguwn3MBFesrbsZPC0RRsWaJ7Ha902TuA==}
 
   template-replacement-sign-core-wasm@1.8.5:
     resolution: {integrity: sha512-TCEJxE74lc0wiQ5F1VXtMxF1FzR3gjTdeBtucqAnNgCKPnsvRrrKZz/gn7VwkxHGRP9c9sYBUZB0ikoZzh/ENQ==}
@@ -2602,7 +2614,11 @@ snapshots:
     dependencies:
       has-flag: 4.0.0
 
+  template-replacement-core-wasm-polyfill@1.8.5: {}
+
   template-replacement-core-wasm@1.8.5: {}
+
+  template-replacement-sign-core-wasm-polyfill@1.8.5: {}
 
   template-replacement-sign-core-wasm@1.8.5: {}
 

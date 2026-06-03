@@ -1,7 +1,7 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "4.0.0-beta3",
+  "version": "4.0.0-beta4",
   "author": "fushiliang <994301536@qq.com>",
   "type": "module",
   "main": "index.ts",
@@ -19,7 +19,9 @@
     "js-sha1": "^0.7.0",
     "streamsaver": "^2.0.6",
     "template-replacement-core-wasm": "^1.8.5",
+    "template-replacement-core-wasm-polyfill": "^1.8.5",
     "template-replacement-sign-core-wasm": "^1.8.5",
+    "template-replacement-sign-core-wasm-polyfill": "^1.8.5",
     "uuid": "^14.0.0",
     "web-streams-polyfill": "^4.3.0"
   },

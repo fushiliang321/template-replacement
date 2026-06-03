@@ -2,6 +2,8 @@
     "entry": [
         "./worker/main/sign.ts",
         "./worker/main/general.ts",
+        "./worker/main/signPolyfill.ts",
+        "./worker/main/generalPolyfill.ts",
         "./noWorker/general.ts",
         "./noWorker/sign.ts"
     ]

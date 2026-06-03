@@ -957,16 +957,15 @@ var $ = class {
 	async filesEncrypt(e) {
 		return this.core.files_encrypt(e);
 	}
-}, ie = /* @__PURE__ */ new Map();
-async function ae(e) {
+}, ie = /* @__PURE__ */ new Map(), ae = (e) => {
 	let t = ie.get(e);
 	return t || (t = new Promise((t) => {
 		e.default().then(() => {
 			t(e);
 		});
 	}), ie.set(e, t)), t;
-}
+};
 //#endregion
 export { $ as n, n as r, ae as t };
 
-//# sourceMappingURL=base-DaDE6LcS.js.map
+//# sourceMappingURL=base-ClACy4YD.js.map

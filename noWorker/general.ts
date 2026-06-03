@@ -1,7 +1,6 @@
 import ReplaceInterface from '../replace/interface'
-import replace from '../replace/general'
-
-export default async (): Promise<ReplaceInterface> => {
+export default async (polyfill: boolean = false): Promise<ReplaceInterface> => {
+  const { default: replace } = await (polyfill ? import('../replace/generalPolyfill') : import('../replace/general'))
   const res = new replace()
   await res.init()
   return res
