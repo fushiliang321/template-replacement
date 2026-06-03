@@ -2,23 +2,23 @@ import ReplaceInterface from './replace/interface'
 
 type signFun = (data: unknown) => Promise<string>
 
-export default async (concurrency?: number, signFn?: signFun, polyfill: boolean = false): Promise<ReplaceInterface> => {
-  if (concurrency) {
-    if (signFn) {
-      const { default: init } = await import('./dispatcher/workerSign')
-      const res = await init(concurrency, polyfill)
-      res.sign = signFn
-      return res
-    }
-    const { default: init } = await import('./dispatcher/workerGeneral')
-    return await init(concurrency, polyfill)
+export type options = {
+  concurrency?: number
+  sign?: signFun
+  polyfill?: boolean
+}
+
+export default async (options: options): Promise<ReplaceInterface> => {
+  let res: ReplaceInterface
+  let dispatcher
+  if (options.concurrency) {
+    dispatcher = (await import(options.sign ? './dispatcher/workerSign' : './dispatcher/workerGeneral')).default
+  } else {
+    dispatcher = (await import(options.sign ? './dispatcher/sign' : './dispatcher/general')).default
   }
-  if (signFn) {
-    const { default: init } = await import('./dispatcher/sign')
-    const res = await init(polyfill)
-    res.sign = signFn
-    return res as unknown as ReplaceInterface
+  res = await dispatcher(options)
+  if (options.sign) {
+    res.sign = options.sign
   }
-  const { default: init } = await import('./dispatcher/general')
-  return await init(polyfill) as unknown as ReplaceInterface
+  return res
 }

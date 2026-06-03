@@ -1,6 +1,6 @@
 //#region noWorker/general.ts
-var e = async (e = !1) => {
-	let { default: t } = await (e ? import("../generalPolyfill-BvcTgAzf.js") : import("../general-BF2jz1IM.js")), n = new t();
+var e = async (e) => {
+	let { default: t } = await (e.polyfill ? import("../generalPolyfill-BvcTgAzf.js") : import("../general-BF2jz1IM.js")), n = new t();
 	return await n.init(), n;
 };
 //#endregion
