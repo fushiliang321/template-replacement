@@ -1,5 +1,4 @@
 import urlDownloadTask from '../task/urlDownloadTask'
-import { fileTypeFromBuffer } from 'file-type'
 import { v4 as uuidV4 } from 'uuid'
 import { sha1 } from 'js-sha1'
 
@@ -61,16 +60,6 @@ export async function fileTypeByBuffer(
   if (uint8Array.length >= 4 && uint8Array[0] === 0x50 && uint8Array[1] === 0x4B) {
     return detectOfficeFromZip(uint8Array)
   }
-
-  try {
-    const type = await fileTypeFromBuffer(buffer)
-    if (type && officeMIMETypes[type.mime]) {
-      return officeMIMETypes[type.mime]
-    }
-  } catch (error) {
-    console.error('file-type not available or failed', error)
-  }
-
   return fileTypes.unknown
 }
 
