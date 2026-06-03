@@ -1,3 +1,3 @@
-import replace from '../dist/noWorker/sign'
+import replace from '../dist/worker/common/sign'
 
 export default replace

@@ -12,10 +12,8 @@ export type filesTidyResult = {
 };
 export default class Base implements Interface {
     #private;
-    core?: rawCoreInterface;
-    asyncCore?: Promise<rawCoreInterface>;
-    constructor(asyncCore: Promise<rawCoreInterface>);
-    init(): Promise<void>;
+    core: rawCoreInterface;
+    constructor(core: rawCoreInterface);
     addTempFile(tempFile: Temp): void;
     clear(): void;
     extractOneFileVariables(variables: Record<string, string[]>, file: Temp): Promise<void>;

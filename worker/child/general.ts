@@ -1,8 +1,7 @@
-import Replace from '../../replace/general'
+import replace from '../common/general'
 import init from './base'
 
-const replace = new Replace()
-replace.init().then(() => {
-  init(replace)
+replace({}).then((r) => {
+  init(r)
 })
 export default {}

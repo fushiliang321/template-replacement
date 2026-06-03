@@ -1,12 +1,7 @@
 import Base from './base'
-import core from '../core/general'
 import paramsData, { replaceParams } from './paramsData'
 
 export default class General extends Base {
-  constructor() {
-    super(core())
-  }
-
   async handle(
     paramsData: paramsData,
     files: Uint8Array[],

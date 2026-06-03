@@ -1,12 +1,11 @@
-import Replace from '../../replace/sign'
 import init, { call } from './base'
+import replace from '../common/sign'
 
-const replace = new Replace()
-
-replace.sign = async (data: unknown): Promise<string> => {
-  return call<string>('sign', data)
-}
-replace.init().then(() => {
-  init(replace)
+replace({
+  sign: async (data: unknown): Promise<string> => {
+    return call<string>('sign', data)
+  },
+}).then((r) => {
+  init(r)
 })
 export default {}

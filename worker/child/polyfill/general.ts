@@ -1,8 +1,9 @@
-import Replace from '../../../replace/generalPolyfill'
+import replace from '../../common/general'
 import init from '../base'
 
-const replace = new Replace()
-replace.init().then(() => {
-  init(replace)
+replace({
+  polyfill: true,
+}).then((r) => {
+  init(r)
 })
 export default {}

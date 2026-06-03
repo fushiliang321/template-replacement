@@ -25,7 +25,7 @@ export interface rawCoreInterface {
 
 type ModuleType = {
   default(): Promise<unknown>
-} & Record<string | symbol, unknown>
+}
 
 const initMap = new Map<ModuleType, Promise<ModuleType>>()
 

@@ -20,6 +20,6 @@ export interface rawCoreInterface {
 }
 type ModuleType = {
     default(): Promise<unknown>;
-} & Record<string | symbol, unknown>;
+};
 declare const _default: (Module: ModuleType) => Promise<rawCoreInterface>;
 export default _default;

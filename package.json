@@ -1,7 +1,7 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "4.0.0-beta6",
+  "version": "4.0.0-beta7",
   "author": "fushiliang <994301536@qq.com>",
   "type": "module",
   "main": "index.ts",
@@ -12,16 +12,15 @@
     "lint": "npx oxlint && npx eslint"
   },
   "dependencies": {
-    "axios": "^1.16.1",
+    "axios": "^1.17.0",
     "compression-streams-polyfill": "^0.1.7",
     "fflate": "^0.8.3",
-    "file-type": "^22.0.1",
     "js-sha1": "^0.7.0",
     "streamsaver": "^2.0.6",
-    "template-replacement-core-wasm": "^1.8.6",
-    "template-replacement-core-wasm-polyfill": "^1.8.6",
-    "template-replacement-sign-core-wasm": "^1.8.6",
-    "template-replacement-sign-core-wasm-polyfill": "^1.8.6",
+    "template-replacement-core-wasm": "^1.8.7",
+    "template-replacement-core-wasm-polyfill": "^1.8.7",
+    "template-replacement-sign-core-wasm": "^1.8.7",
+    "template-replacement-sign-core-wasm-polyfill": "^1.8.7",
     "uuid": "^14.0.0",
     "web-streams-polyfill": "^4.3.0"
   },

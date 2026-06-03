@@ -4,7 +4,7 @@
         "./worker/main/general.ts",
         "./worker/main/signPolyfill.ts",
         "./worker/main/generalPolyfill.ts",
-        "./noWorker/general.ts",
-        "./noWorker/sign.ts"
+        "./worker/common/sign.ts",
+        "./worker/common/general.ts"
     ]
 }

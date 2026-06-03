@@ -55,19 +55,10 @@ async function tempFilesTidy(files: Temp[] = []): Promise<filesTidyResult> {
 
 export default class Base implements Interface {
   #files: Temp[] = []
-  core?: rawCoreInterface
-  asyncCore?: Promise<rawCoreInterface>
+  core: rawCoreInterface
 
-  constructor(asyncCore: Promise<rawCoreInterface>) {
-    this.asyncCore = asyncCore
-  }
-
-  async init(): Promise<void> {
-    if (this.core) {
-      return
-    }
-    this.core = await this.asyncCore
-    this.asyncCore = undefined
+  constructor(core: rawCoreInterface) {
+    this.core = core
   }
 
   addTempFile(tempFile: Temp) {
