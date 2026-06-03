@@ -1,6 +1,6 @@
 //#region noWorker/sign.ts
 var e = async (e) => {
-	let { default: t } = await (e.polyfill ? import("../signPolyfill-CliGNLfa.js") : import("../sign-DI2458wW.js")), n = new t();
+	let { default: t } = await (e.polyfill ? import("../signPolyfill-Bmon7Eny.js") : import("../sign-DrJ62mok.js")), n = new t();
 	return await n.init(), n;
 };
 //#endregion

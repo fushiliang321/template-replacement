@@ -27,17 +27,17 @@ importers:
         specifier: ^2.0.6
         version: 2.0.6
       template-replacement-core-wasm:
-        specifier: ^1.8.5
-        version: 1.8.5
+        specifier: ^1.8.6
+        version: 1.8.6
       template-replacement-core-wasm-polyfill:
-        specifier: ^1.8.5
-        version: 1.8.5
+        specifier: ^1.8.6
+        version: 1.8.6
       template-replacement-sign-core-wasm:
-        specifier: ^1.8.5
-        version: 1.8.5
+        specifier: ^1.8.6
+        version: 1.8.6
       template-replacement-sign-core-wasm-polyfill:
-        specifier: ^1.8.5
-        version: 1.8.5
+        specifier: ^1.8.6
+        version: 1.8.6
       uuid:
         specifier: ^14.0.0
         version: 14.0.0
@@ -1368,17 +1368,17 @@ packages:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
 
-  template-replacement-core-wasm-polyfill@1.8.5:
-    resolution: {integrity: sha512-jm8aeTZg8u3Jr9I5CewW5rSccZGgmUwjlRUIT1tL0vNFiisH64jnb3Xf/aFYctiCkz+v2iycTRLlJiauzzwjnA==}
+  template-replacement-core-wasm-polyfill@1.8.6:
+    resolution: {integrity: sha512-NwMZOPWDtKu+Fa6bztkATj+OsrpaSZRh6V6AtSW+l/sQyRmbBppe4yERp8vjvvZx2VkbPsqPvR5W9KHdgqsYKQ==}
 
-  template-replacement-core-wasm@1.8.5:
-    resolution: {integrity: sha512-Ivby6B4rO61eQVK/S7lSMK4RqBVN9CvzlPWZHqGsMW3D7zdhUTkG6+To68h3EO8zadkGygDU0c1q7k9xg6xCIw==}
+  template-replacement-core-wasm@1.8.6:
+    resolution: {integrity: sha512-DqqiPRGZLlpDALje03Zy61qf9b59b3jvJ6TosaHu0R1D1uJETw21RpAXFlW7UIhm+nRXbNk8xGcQRl/Rz5vGJw==}
 
-  template-replacement-sign-core-wasm-polyfill@1.8.5:
-    resolution: {integrity: sha512-eqx6potPK7waYSI/rGOXObZkZ546fjgSwdIzVw9KgMplXsDaqri9yNguwn3MBFesrbsZPC0RRsWaJ7Ha902TuA==}
+  template-replacement-sign-core-wasm-polyfill@1.8.6:
+    resolution: {integrity: sha512-7horf7lk7G3phfiHF0B840ZivY6I+GBFo00qNTh8WZAmBYurRqIidmbIs7cstFoV75dkEiSf9L5Wf4A5Hy61kA==}
 
-  template-replacement-sign-core-wasm@1.8.5:
-    resolution: {integrity: sha512-TCEJxE74lc0wiQ5F1VXtMxF1FzR3gjTdeBtucqAnNgCKPnsvRrrKZz/gn7VwkxHGRP9c9sYBUZB0ikoZzh/ENQ==}
+  template-replacement-sign-core-wasm@1.8.6:
+    resolution: {integrity: sha512-cwkxUcHgB82Gmj4BjILZAwRUl/qFjNPS2sMxoq0EKslSebv/z42IAbA3qtdBznzax0a2zvtXucj4SzG/Wim5rQ==}
 
   terser@5.48.0:
     resolution: {integrity: sha512-J/9An6vs9Us6wKRriSFXBWdRZapREHqFzdNUKk0pmu804EMR6dr6winwo7e5JDxN4xahxQsuysyYFwlwj4XN/Q==}
@@ -2614,13 +2614,13 @@ snapshots:
     dependencies:
       has-flag: 4.0.0
 
-  template-replacement-core-wasm-polyfill@1.8.5: {}
+  template-replacement-core-wasm-polyfill@1.8.6: {}
 
-  template-replacement-core-wasm@1.8.5: {}
+  template-replacement-core-wasm@1.8.6: {}
 
-  template-replacement-sign-core-wasm-polyfill@1.8.5: {}
+  template-replacement-sign-core-wasm-polyfill@1.8.6: {}
 
-  template-replacement-sign-core-wasm@1.8.5: {}
+  template-replacement-sign-core-wasm@1.8.6: {}
 
   terser@5.48.0:
     dependencies:
