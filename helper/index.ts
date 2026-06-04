@@ -1,5 +1,4 @@
 import urlDownloadTask from '../task/urlDownloadTask'
-import { v4 as uuidV4 } from 'uuid'
 import { sha1 } from 'js-sha1'
 
 export function urlSuffix(url: string): string {
@@ -132,12 +131,11 @@ function findNextLocalFileHeader(data: Uint8Array, startOffset: number): string 
   return ''
 }
 
+const idSuffix = String(Math.random());
+let idIndex = 0
+
 export function generateId(): string {
-  try {
-    return window.crypto.randomUUID()
-  } catch (error) {
-    return uuidV4()
-  }
+  return `${idIndex++}${idSuffix}`
 }
 
 export type fileArrayBufferData = {
