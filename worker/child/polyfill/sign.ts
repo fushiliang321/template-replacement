@@ -1,12 +1,11 @@
 import init, { call } from '../base'
-import replace from '../../common/sign'
+import replace from '../../common/polyfill/sign'
 
-replace({
-  polyfill: true,
-  sign: async (data: unknown): Promise<string> => {
+replace(
+  data => {
     return call<string>('sign', data)
-  },
-}).then((r) => {
+  }
+).then(r => {
   init(r)
 })
 export default {}

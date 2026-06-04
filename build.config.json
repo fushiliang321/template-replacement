@@ -2,9 +2,11 @@
     "entry": [
         "./worker/main/sign.ts",
         "./worker/main/general.ts",
-        "./worker/main/signPolyfill.ts",
-        "./worker/main/generalPolyfill.ts",
+        "./worker/main/polyfill/sign.ts",
+        "./worker/main/polyfill/general.ts",
         "./worker/common/sign.ts",
-        "./worker/common/general.ts"
+        "./worker/common/general.ts",
+        "./worker/common/polyfill/sign.ts",
+        "./worker/common/polyfill/general.ts"
     ]
 }

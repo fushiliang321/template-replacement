@@ -1,8 +1,7 @@
-import { options } from '../../index'
 import Replace from '../../replace/general'
 import ReplaceInterface from '../../replace/interface'
+import core from '../../core/general'
 
-export default async (options: options): Promise<ReplaceInterface> => {
-  const { default: core } = await (options.polyfill ? import('../../core/generalPolyfill') : import('../../core/general'))
+export default async (): Promise<ReplaceInterface> => {
   return new Replace(await core())
 }

@@ -1,4 +1,3 @@
 import base from '../index';
-export default class extends base {
-    constructor(concurrency?: number);
-}
+declare const _default: (concurrency?: number) => base;
+export default _default;

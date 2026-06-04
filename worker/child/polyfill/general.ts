@@ -1,9 +1,7 @@
-import replace from '../../common/general'
+import replace from '../../common/polyfill/general'
 import init from '../base'
 
-replace({
-  polyfill: true,
-}).then((r) => {
+replace().then(r => {
   init(r)
 })
 export default {}
