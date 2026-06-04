@@ -5,5 +5,5 @@ export type options = {
     sign?: signFun;
     polyfill?: boolean;
 };
-declare const _default: (options: options) => Promise<ReplaceInterface>;
+declare const _default: (options?: options) => Promise<ReplaceInterface>;
 export default _default;

@@ -8,7 +8,7 @@ export type options = {
   polyfill?: boolean
 }
 
-export default async (options: options): Promise<ReplaceInterface> => {
+export default async (options: options = {}): Promise<ReplaceInterface> => {
   let dispatcher
   if (options.concurrency) {
     dispatcher = (await import(options.sign ? './dispatcher/workerSign' : './dispatcher/workerGeneral')).default
