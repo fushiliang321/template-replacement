@@ -31,7 +31,7 @@ options参数
 | --- | --- | --- | --- |
 | concurrency | number | 0 | 默认0，0为主线程模式，大于0开启多线程模式，需要同时替换大量文件时使用，建议线程数<=CPU核心数 |
 | sign |  (data: unknown) => Promise< string> | undefined | 校验签名函数，用于校验模板替换结果是否被篡改，需结合后端做签名校验，前端替换之前需要请求后端获取签名，不想让前端直接使用模板替换功能的场景可以用这个方式，可以确保每次模板替换都是经过后端授权验证的。 |
-| polyfill | boolean | false | 是否切换为兼容模式，默认false | |
+| polyfill | boolean | false | 是否切换为兼容模式，默认false，开启后兼容旧版本浏览器，但会损失部分性能 | |
 
 
 ``` javascript
