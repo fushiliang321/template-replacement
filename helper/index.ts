@@ -131,7 +131,7 @@ function findNextLocalFileHeader(data: Uint8Array, startOffset: number): string 
   return ''
 }
 
-const idSuffix = String(Math.random());
+const idSuffix = String(Math.random())
 let idIndex = 0
 
 export function generateId(): string {
