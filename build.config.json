@@ -1,11 +1,13 @@
 {
-    "entry": [
+    "modern": [
         "./worker/main/sign.ts",
         "./worker/main/general.ts",
+        "./worker/common/sign.ts",
+        "./worker/common/general.ts"
+    ],
+    "polyfill": [
         "./worker/main/polyfill/sign.ts",
         "./worker/main/polyfill/general.ts",
-        "./worker/common/sign.ts",
-        "./worker/common/general.ts",
         "./worker/common/polyfill/sign.ts",
         "./worker/common/polyfill/general.ts"
     ]

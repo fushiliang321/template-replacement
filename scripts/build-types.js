@@ -10,38 +10,46 @@ const __dirname = dirname(__filename);
 const buildConfig = JSON.parse(readFileSync(join(__dirname, "../build.config.json"), "utf-8"));
 
 // 提取 entry 文件路径（去掉开头的 ./）
-const entryFiles = buildConfig.entry.map((path) => path.replace(/^\.\//, ""));
+const entryFiles = buildConfig.modern.map((path) => path.replace(/^\.\//, ""));
+const entryFilesLegacy = buildConfig.polyfill.map((path) => path.replace(/^\.\//, ""));
+function build(entryFiles, distDir) {
+  console.log("Building types for entry files:", entryFiles);
 
-console.log("Building types for entry files:", entryFiles);
+  // 构建 tsc 命令参数（不使用 --project，直接指定所有选项）
+  const args = [
+    "--declaration",
+    "--emitDeclarationOnly",
+    "--outDir",
+    distDir,
+    "--target",
+    "es2021",
+    "--module",
+    "es2022",
+    "--moduleResolution",
+    "bundler",
+    "--esModuleInterop",
+    "--strict",
+    "--skipLibCheck",
+    "--baseUrl",
+    ".",
+    "vite-env.d.ts",
+    ...entryFiles,
+  ];
 
-// 构建 tsc 命令参数（不使用 --project，直接指定所有选项）
-const args = [
-  "--declaration",
-  "--emitDeclarationOnly",
-  "--outDir",
-  "dist",
-  "--target",
-  "es2021",
-  "--module",
-  "es2022",
-  "--moduleResolution",
-  "bundler",
-  "--esModuleInterop",
-  "--strict",
-  "--skipLibCheck",
-  "--baseUrl",
-  ".",
-  "vite-env.d.ts",
-  ...entryFiles,
-];
+  console.log("Running: tsc", args.join(" "));
 
-console.log("Running: tsc", args.join(" "));
+  // 执行 tsc 命令
+  const result = spawnSync("tsc", args, {
+    stdio: "inherit",
+    shell: true,
+    cwd: join(__dirname, ".."),
+  });
+  if (result.status) {
+    process.exit(result.status);
+  }
+}
 
-// 执行 tsc 命令
-const result = spawnSync("tsc", args, {
-  stdio: "inherit",
-  shell: true,
-  cwd: join(__dirname, ".."),
-});
+build(entryFiles, "dist");
+build(entryFilesLegacy, "dist-legacy");
 
-process.exit(result.status || 0);
+process.exit(0);

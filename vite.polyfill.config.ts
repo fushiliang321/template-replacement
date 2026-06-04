@@ -11,11 +11,11 @@ const buildConfig = require('./build.config.json')
 
 export default defineConfig({
   build: {
-    target: 'esnext',
+    target: 'es2015',
     sourcemap: true,
-    outDir: './dist',
+    outDir: './dist-legacy',
     lib: {
-      entry: buildConfig.entry,
+      entry: buildConfig.polyfill,
       name: 'template-replacement',
       formats: ['es'],
     },
@@ -26,16 +26,12 @@ export default defineConfig({
           if (!facadeModuleId) {
             return '[name].js'
           }
-
           // 将绝对路径转换为相对于项目根目录的路径
           let relativePath = relative(__dirname, facadeModuleId)
-
           // 统一使用正斜杠
           relativePath = relativePath.split(sep).join(posix.sep)
-
           // 去掉开头的 ./ 和 .ts 后缀
           relativePath = relativePath.replace(/^\.\//, '').replace(/\.ts$/, '')
-
           // 返回目录结构保持不变的 js 路径
           return `${relativePath}.js`
         },
@@ -43,6 +39,6 @@ export default defineConfig({
     },
   },
   worker: {
-    format: 'es',
+    format: 'iife',
   },
 })

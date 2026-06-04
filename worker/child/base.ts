@@ -64,7 +64,7 @@ const resultHandles = new Map<methodKeys<ReplaceInterface>, (result: any, transf
 const tasks = new Map<string, (value: unknown) => void>()
 
 let dispatch: ReplaceInterface
-let initResolve: () => void;
+let initResolve: () => void
 const awaitInit = new Promise<void>(resolve => {
   initResolve = resolve
 })
