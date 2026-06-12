@@ -1,1 +1,0 @@
-{"version":3,"file":"sign.js","names":[],"sources":["../../../worker/main/sign.ts"],"sourcesContent":["import webworker from '../child/sign.ts?worker&inline'\nimport base from '../index'\n\nexport default (concurrency?: number) => {\n  return new base(webworker, concurrency)\n}\n\n"],"mappings":";;;;;;;;;;;;;;;;;;;;;;;AAGA,IAAA,KAAgB,MACP,IAAI,EAAK,GAAW,CAAW"}

@@ -1,13 +1,36 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "4.0.4",
+  "version": "4.1.0-beta1",
   "author": "fushiliang <994301536@qq.com>",
   "type": "module",
   "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./general": "./dist/src/dispatcher/general",
+    "./sign": "./dist/src/dispatcher/sign",
+    "./workerGeneral": "./dist/src/dispatcher/workerGeneral",
+    "./workerSign": "./dist/src/dispatcher/workerSign",
+    "./polyfill/*": "./dist/src/dispatcher/polyfill/*",
+    "./replace": "./src/replace/index.ts",
+    "./replace/*": "./src/replace/*.ts",
+    "./replace/*.ts": "./src/replace/*.ts",
+    "./helper": "./src/helper/index.ts",
+    "./helper/*": "./src/helper/*.ts",
+    "./helper/*.ts": "./src/helper/*.ts",
+    "./download": "./src/download/index.ts",
+    "./download/*": "./src/download/*.ts",
+    "./download/*.ts": "./src/download/*.ts",
+    "./office": "./src/office/index.ts",
+    "./office/*": "./src/office/*.ts",
+    "./office/*.ts": "./src/office/*.ts",
+    "./temp": "./src/temp/index.ts",
+    "./temp/*": "./src/temp/*.ts",
+    "./temp/*.ts": "./src/temp/*.ts"
+  },
   "license": "Apache 2.0",
   "scripts": {
-    "build": "vite build --config vite.modern.config.ts && vite build --config vite.polyfill.config.ts && npm run build:types",
+    "build": "vite build --config vite.config.ts && npm run build:types",
     "build:types": "node scripts/build-types.js",
     "lint": "npx oxlint && npx eslint"
   },
@@ -16,20 +39,21 @@
     "fflate": "^0.8.3",
     "js-sha1": "^0.7.0",
     "streamsaver": "^2.0.6",
-    "template-replacement-core-wasm": "^1.8.7",
-    "template-replacement-core-wasm-polyfill": "^1.8.7",
-    "template-replacement-sign-core-wasm": "^1.8.7",
-    "template-replacement-sign-core-wasm-polyfill": "^1.8.7"
+    "template-replacement-core-wasm": "^1.8.8",
+    "template-replacement-core-wasm-polyfill": "^1.8.8",
+    "template-replacement-sign-core-wasm": "^1.8.8",
+    "template-replacement-sign-core-wasm-polyfill": "^1.8.8"
   },
   "devDependencies": {
     "@rollup/pluginutils": "^5.4.0",
     "@types/streamsaver": "^2.0.5",
-    "@typescript-eslint/eslint-plugin": "^8.60.1",
-    "@typescript-eslint/parser": "^8.60.1",
+    "@typescript-eslint/eslint-plugin": "^8.61.0",
+    "@typescript-eslint/parser": "^8.61.0",
+    "@vitejs/plugin-legacy": "^8.0.2",
     "eslint": "^9.39.4",
-    "eslint-plugin-oxlint": "^1.68.0",
+    "eslint-plugin-oxlint": "^1.69.0",
     "oxfmt": "^0.16.0",
-    "oxlint": "^1.68.0",
+    "oxlint": "^1.69.0",
     "terser": "^5.48.0",
     "typescript": "^5.9.3",
     "vite": "^8.0.16"
@@ -41,5 +65,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fushiliang321/template-replacement.git"
+  },
+  "publishConfig": {
+    "tag": "beta"
   }
 }

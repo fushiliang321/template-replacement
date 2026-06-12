@@ -35,7 +35,15 @@ options参数
 
 
 ``` javascript
-import tr from 'template-replacement'
+import tr from 'template-replacement' // 自动选择替换模式，不推荐使用
+import general from 'template-replacement/general' // 主线程模式
+import general from 'template-replacement/polyfill/general' // 主线程兼容模式
+import sign from 'template-replacement/sign' // 主线程签名模式
+import sign from 'template-replacement/polyfill/sign' // 主线程签名兼容模式
+import workerGeneral from 'template-replacement/workerGeneral' // 多线程模式
+import workerGeneral from 'template-replacement/polyfill/workerGeneral' // 多线程兼容模式
+import workerSign from 'template-replacement/workerSign' // 多线程签名模式
+import workerSign from 'template-replacement/polyfill/workerSign' // 多线程签名兼容模式
 
 type options = {
   concurrency?: number
@@ -52,11 +60,32 @@ function getSignature(data: unknown): Promise<string> {
    */
 }
 
+// 主线程模式
+const replaceInstance = await general()
+
+// 主线程签名模式
+const replaceInstance = await sign({
+  sign: getSignature, //sign 必填
+})
+
+// 多线程模式
+const replaceInstance = await workerGeneral({
+  concurrency: navigator.hardwareConcurrency ?? 4, // concurrency 必填
+})
+
+// 多线程签名模式
+const replaceInstance = await workerSign({
+  concurrency: navigator.hardwareConcurrency ?? 4, // concurrency 必填
+  sign: getSignature, //sign 必填
+})
+
+// 根据参数自动选择替换模式（不建议使用，这种方式无法使用Tree Shaking优化）
 const replaceInstance = await tr({
   concurrency: navigator.hardwareConcurrency ?? 4,
   sign: getSignature,
-  polyfill: false,
+  polyfill: true,
 })
+
 ```
 
 ##### 二、添加模板
