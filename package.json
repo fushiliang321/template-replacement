@@ -1,17 +1,17 @@
 {
   "name": "template-replacement",
   "description": "模板文件替换",
-  "version": "4.1.0-beta1",
+  "version": "4.1.0",
   "author": "fushiliang <994301536@qq.com>",
   "type": "module",
   "main": "index.ts",
   "exports": {
-    ".": "./index.ts",
-    "./general": "./dist/src/dispatcher/general",
-    "./sign": "./dist/src/dispatcher/sign",
-    "./workerGeneral": "./dist/src/dispatcher/workerGeneral",
-    "./workerSign": "./dist/src/dispatcher/workerSign",
-    "./polyfill/*": "./dist/src/dispatcher/polyfill/*",
+    ".": "./dist/src/index.js",
+    "./general": "./dist/src/dispatcher/general.js",
+    "./sign": "./dist/src/dispatcher/sign.js",
+    "./workerGeneral": "./dist/src/dispatcher/workerGeneral.js",
+    "./workerSign": "./dist/src/dispatcher/workerSign.js",
+    "./polyfill/*": "./dist/src/dispatcher/polyfill/*.js",
     "./replace": "./src/replace/index.ts",
     "./replace/*": "./src/replace/*.ts",
     "./replace/*.ts": "./src/replace/*.ts",
@@ -65,8 +65,5 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fushiliang321/template-replacement.git"
-  },
-  "publishConfig": {
-    "tag": "beta"
   }
 }

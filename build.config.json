@@ -1,4 +1,5 @@
 [
+    "./src/index.ts",
     "./src/dispatcher/general.ts",
     "./src/dispatcher/sign.ts",
     "./src/dispatcher/workerGeneral.ts",

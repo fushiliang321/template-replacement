@@ -1,0 +1,9 @@
+*.log
+.env
+.idea/
+.vscode/
+node_modules/
+test/
+__tests__/
+./src/core/
+./src/dispatcher/

@@ -2,22 +2,22 @@ import ReplaceInterface from './replace/interface'
 import { options, SignOptions, WorkerGeneralOptions, WorkerSignOptions } from '../types/options'
 
 async function general(options: options) {
-  const { default: dispatcher } = options.polyfill ? (await import('../dist/dispatcher/polyfill/general')) : (await import('../dist/dispatcher/general'))
+  const { default: dispatcher } = options.polyfill ? (await import('./dispatcher/polyfill/general')) : (await import('./dispatcher/general'))
   return await dispatcher()
 }
 
 async function sign(options: SignOptions) {
-  const { default: dispatcher } = options.polyfill ? (await import('../dist/dispatcher/polyfill/sign')) : (await import('../dist/dispatcher/sign'))
+  const { default: dispatcher } = options.polyfill ? (await import('./dispatcher/polyfill/sign')) : (await import('./dispatcher/sign'))
   return await dispatcher(options)
 }
 
 async function workerGeneral(options: WorkerGeneralOptions) {
-  const { default: dispatcher } = options.polyfill ? (await import('../dist/dispatcher/polyfill/workerGeneral')) : (await import('../dist/dispatcher/workerGeneral'))
+  const { default: dispatcher } = options.polyfill ? (await import('./dispatcher/polyfill/workerGeneral')) : (await import('./dispatcher/workerGeneral'))
   return await dispatcher(options)
 }
 
 async function workerSign(options: WorkerSignOptions) {
-  const { default: dispatcher } = options.polyfill ? (await import('../dist/dispatcher/polyfill/workerSign')) : (await import('../dist/dispatcher/workerSign'))
+  const { default: dispatcher } = options.polyfill ? (await import('./dispatcher/polyfill/workerSign')) : (await import('./dispatcher/workerSign'))
   return await dispatcher(options)
 }
 
