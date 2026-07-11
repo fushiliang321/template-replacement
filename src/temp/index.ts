@@ -1,4 +1,5 @@
 import {
+  allowSharedArrayBuffer,
   fileTypeByBuffer,
   fileTypes,
   getFileNameFromUrl,
@@ -23,12 +24,16 @@ export enum status {
 //传递的文件信息
 export type transmitFileInfo = {
   name: string
-  uint8Array: Uint8Array
+  uint8Array?: Uint8Array
+  sharedArrayBuffer?: SharedArrayBuffer
   isDecode: boolean
 }
 
 //将传递的文件信息转为模板对象
 export function transmitFileInfoToTemp(data: transmitFileInfo): Temp {
+  if (!data.uint8Array && data.sharedArrayBuffer) {
+    data.uint8Array = new Uint8Array(data.sharedArrayBuffer)
+  }
   if (!data.uint8Array || !data.name) {
     throw new Error('模板文件信息错误')
   }
@@ -41,6 +46,7 @@ export default class Temp implements TempInterface {
   name: string = ''
   blob?: File | Blob
   uint8Array?: Uint8Array
+  sharedArrayBuffer?: SharedArrayBuffer
   url?: string
   status = status.waitLoad // 0文件待加载,1文件已加载,2完成替换,3替换失败
   isDecode: boolean = false //文件是否需要解密
@@ -104,12 +110,27 @@ export default class Temp implements TempInterface {
     if (this.uint8Array) {
       return this.uint8Array
     }
+    if (this.sharedArrayBuffer) {
+      this.uint8Array = new Uint8Array(this.sharedArrayBuffer)
+      return this.uint8Array
+    }
     const blob = await this.getBlob()
     if (blob) {
       this.uint8Array = new Uint8Array(await blob.arrayBuffer())
     }
-
     return this.uint8Array
+  }
+
+  async getSharedArrayBuffer(): Promise<SharedArrayBuffer | undefined> {
+    if (this.sharedArrayBuffer) {
+      return this.sharedArrayBuffer
+    }
+    const buffer = await this.getBuffer()
+    if (buffer) {
+      this.sharedArrayBuffer = new SharedArrayBuffer(buffer.byteLength);
+      new Uint8Array(this.sharedArrayBuffer).set(buffer);
+    }
+    return this.sharedArrayBuffer
   }
 
   async getBlob(): Promise<Blob | undefined> {
@@ -155,6 +176,19 @@ export default class Temp implements TempInterface {
   }
 
   async getTransmitFileInfo(): Promise<transmitFileInfo | undefined> {
+    if (allowSharedArrayBuffer) {
+      const sharedArrayBuffer = this.sharedArrayBuffer
+        ? this.sharedArrayBuffer
+        : await this.getSharedArrayBuffer()
+      if (!sharedArrayBuffer) {
+        return undefined
+      }
+      return {
+        name: this.getName(),
+        sharedArrayBuffer,
+        isDecode: this.isDecode,
+      }
+    }
     const uint8Array = this.uint8Array
       ? this.uint8Array
       : await this.getBuffer()

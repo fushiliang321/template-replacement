@@ -251,15 +251,20 @@ export function splitArrayIntoChunks<T>(array: T[], chunkSize: number): T[][] {
   return result
 }
 
+const _window = typeof window !== 'undefined' ? window : self
+
 // 字符串SHA-1哈希值
 export async function hashString(str: string): Promise<string> {
   try {
     const encoder = new TextEncoder()
     const data = encoder.encode(str)
-    const hashBuffer = await window.crypto.subtle.digest('SHA-1', data)
+    const hashBuffer = await _window.crypto.subtle.digest('SHA-1', data)
     const hashArray = Array.from(new Uint8Array(hashBuffer))
     return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
   } catch (error) {
     return sha1(str)
   }
 }
+
+// 判断是否允许使用 SharedArrayBuffer
+export const allowSharedArrayBuffer = !!_window.crossOriginIsolated
