@@ -47,8 +47,8 @@ export default interface ReplaceInterface {
   ): Promise<Uint8Array>
 
   //文件加密
-  fileEncrypt(file: Uint8Array): Promise<Uint8Array>
+  fileEncrypt(file: Uint8Array | SharedArrayBuffer): Promise<Uint8Array>
 
   //文件批量加密
-  filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]>
+  filesEncrypt(files: (Uint8Array | SharedArrayBuffer)[]): Promise<Uint8Array[]>
 }

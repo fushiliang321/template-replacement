@@ -11,8 +11,8 @@ export default class implements ReplaceInterface {
   }
 
   addTempFile(tempFile: transmitFileInfo | Temp): void {
-    tempFile = transmitFileInfoToTemp(tempFile as transmitFileInfo)
-    return this.replace.addTempFile(tempFile)
+    const temp = transmitFileInfoToTemp(tempFile as transmitFileInfo)
+    return this.replace.addTempFile(temp)
   }
 
   clear() {
@@ -135,12 +135,20 @@ export default class implements ReplaceInterface {
   }
 
   //文件加密
-  async fileEncrypt(file: Uint8Array): Promise<Uint8Array> {
+  async fileEncrypt(file: Uint8Array | SharedArrayBuffer): Promise<Uint8Array> {
+    if (file instanceof SharedArrayBuffer) {
+      file = new Uint8Array(file)
+    }
     return this.replace.fileEncrypt(file)
   }
 
   //文件批量加密
-  async filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]> {
+  async filesEncrypt(files: (Uint8Array | SharedArrayBuffer)[]): Promise<Uint8Array[]> {
+    for (const i in files) {
+      if (files[i] instanceof SharedArrayBuffer) {
+        files[i] = new Uint8Array(files[i])
+      }
+    }
     return this.replace.filesEncrypt(files)
   }
 }
