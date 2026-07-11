@@ -35,7 +35,7 @@
     "lint": "npx oxlint && npx eslint"
   },
   "dependencies": {
-    "axios": "^1.17.0",
+    "axios": "^1.18.1",
     "fflate": "^0.8.3",
     "js-sha1": "^0.7.0",
     "streamsaver": "^2.0.6",
@@ -47,16 +47,16 @@
   "devDependencies": {
     "@rollup/pluginutils": "^5.4.0",
     "@types/streamsaver": "^2.0.5",
-    "@typescript-eslint/eslint-plugin": "^8.61.0",
-    "@typescript-eslint/parser": "^8.61.0",
-    "@vitejs/plugin-legacy": "^8.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.63.0",
+    "@typescript-eslint/parser": "^8.63.0",
+    "@vitejs/plugin-legacy": "^8.2.0",
     "eslint": "^9.39.4",
-    "eslint-plugin-oxlint": "^1.69.0",
+    "eslint-plugin-oxlint": "^1.73.0",
     "oxfmt": "^0.16.0",
-    "oxlint": "^1.69.0",
-    "terser": "^5.48.0",
+    "oxlint": "^1.73.0",
+    "terser": "^5.49.0",
     "typescript": "^5.9.3",
-    "vite": "^8.0.16"
+    "vite": "^8.1.4"
   },
   "keywords": [
     "template-replacement"
