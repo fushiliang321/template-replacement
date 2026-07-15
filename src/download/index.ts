@@ -1,4 +1,4 @@
-import Stream from './stream'
+import Stream, { setMitm } from './stream'
 
 export default function download(fileName: string, blob: Blob): void {
   const href = window.URL.createObjectURL(blob)
@@ -12,7 +12,8 @@ export default function download(fileName: string, blob: Blob): void {
   window.URL.revokeObjectURL(href)
 }
 
-//流式下载
 export function stream(fileName: string, size?: number): Stream {
   return new Stream(fileName, size)
 }
+
+export { setMitm }
