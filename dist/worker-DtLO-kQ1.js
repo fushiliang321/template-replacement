@@ -1,8 +1,8 @@
-import { a as e, i as t, n, t as r } from "./browser-CDStu86A.js";
+import { a as e, i as t, n, t as r } from "./browser-DoSoF-_k.js";
 //#region src/worker/type.ts
 var i = /* @__PURE__ */ function(e) {
 	return e[e.replace = 0] = "replace", e[e.replaceProgress = 1] = "replaceProgress", e[e.sign = 2] = "sign", e[e.signReply = 3] = "signReply", e[e.methodCall = 4] = "methodCall", e[e.methodCallReply = 5] = "methodCallReply", e;
-}({}), a = new Set(["sign", "getWasmUrl"]), o = 20, s = class {
+}({}), a = /* @__PURE__ */ new Set(["sign", "getWasmUrl"]), o = 20, s = class {
 	#e = [];
 	#t;
 	#n = /* @__PURE__ */ new Map();
@@ -210,4 +210,4 @@ var i = /* @__PURE__ */ function(e) {
 //#endregion
 export { s as n, c as t };
 
-//# sourceMappingURL=worker-Dj7Y9gmh.js.map
+//# sourceMappingURL=worker-DtLO-kQ1.js.map

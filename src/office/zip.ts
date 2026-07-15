@@ -16,7 +16,6 @@ export default class Zip {
   name: string = ''
   fileBlob?: Blob
   private _unzipData?: Unzipped
-  private _lastUpdateTime: number = 0
 
   constructor(file?: Blob) {
     if (!file) {
@@ -73,7 +72,6 @@ export default class Zip {
         throw new Error('Invalid data type')
     }
     fileZip[path] = data as Uint8Array<ArrayBuffer>
-    this._lastUpdateTime = new Date().getTime()
   }
 
   async generate(options: AsyncZipOptions): Promise<Blob | undefined> {

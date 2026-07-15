@@ -14,7 +14,8 @@ export declare enum status {
 }
 export type transmitFileInfo = {
     name: string;
-    uint8Array: Uint8Array;
+    uint8Array?: Uint8Array;
+    sharedArrayBuffer?: SharedArrayBuffer;
     isDecode: boolean;
 };
 export declare function transmitFileInfoToTemp(data: transmitFileInfo): Temp;
@@ -22,6 +23,7 @@ export default class Temp implements TempInterface {
     name: string;
     blob?: File | Blob;
     uint8Array?: Uint8Array;
+    sharedArrayBuffer?: SharedArrayBuffer;
     url?: string;
     status: status;
     isDecode: boolean;
@@ -32,6 +34,7 @@ export default class Temp implements TempInterface {
     getName(): string;
     type(): Promise<fileTypes>;
     getBuffer(): Promise<Uint8Array | undefined>;
+    getSharedArrayBuffer(): Promise<SharedArrayBuffer | undefined>;
     getBlob(): Promise<Blob | undefined>;
     setStatus(status: status): void;
     setOutputFile(file: File | Blob): void;

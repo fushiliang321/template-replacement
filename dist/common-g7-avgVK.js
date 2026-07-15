@@ -1,4 +1,4 @@
-import { n as e, r as t, t as n } from "./browser-CDStu86A.js";
+import { n as e, r as t, t as n } from "./browser-DoSoF-_k.js";
 //#region src/replace/base.ts
 async function r(e = []) {
 	let t = [];
@@ -70,8 +70,8 @@ var i = class {
 	}
 	async execute(e, t) {
 		let { noDecode: n, decode: i } = await r(t ?? this.#e), a = await this.handle(e, n.uint8Arrays, i.uint8Arrays), o = {}, s = 0;
-		for (let e of n.names) o[e] = a[s++] ?? new Uint8Array();
-		for (let e of i.names) o[e] = a[s++] ?? new Uint8Array();
+		for (let e of n.names) o[e] = a[s++] ?? /* @__PURE__ */ new Uint8Array();
+		for (let e of i.names) o[e] = a[s++] ?? /* @__PURE__ */ new Uint8Array();
 		return o;
 	}
 	async executeToZip(t, i) {
@@ -84,11 +84,11 @@ var i = class {
 			}), l = 0;
 			for (let t of a.names) {
 				let n = new e(t, { level: 9 });
-				c.add(n), n.push(s[l++] ?? new Uint8Array(), !0);
+				c.add(n), n.push(s[l++] ?? /* @__PURE__ */ new Uint8Array(), !0);
 			}
 			for (let t of o.names) {
 				let n = new e(t, { level: 9 });
-				c.add(n), n.push(s[l++] ?? new Uint8Array(), !0);
+				c.add(n), n.push(s[l++] ?? /* @__PURE__ */ new Uint8Array(), !0);
 			}
 			c.end();
 		});
@@ -149,4 +149,4 @@ var i = class {
 //#endregion
 export { i as n, a as t };
 
-//# sourceMappingURL=common-B1t7Jz-V.js.map
+//# sourceMappingURL=common-g7-avgVK.js.map

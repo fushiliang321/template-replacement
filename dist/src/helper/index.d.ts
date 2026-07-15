@@ -25,3 +25,5 @@ export declare function base64ToBlob(base64: string): Blob;
 export declare function urlsToFileBlobs(urls: string[], onDownloadProgress?: (progressEvent: unknown) => void): Promise<(Blob | undefined)[]>;
 export declare function splitArrayIntoChunks<T>(array: T[], chunkSize: number): T[][];
 export declare function hashString(str: string): Promise<string>;
+export declare const isCrossOriginIsolated: boolean;
+export declare const allowSharedArrayBuffer: boolean;

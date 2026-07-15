@@ -14,6 +14,6 @@ export default interface ReplaceInterface {
     executeToZip(params: paramsData, files: Temp[] | undefined): Promise<Uint8Array>;
     executeMultipleParams(params: paramsData[], files: Temp[] | undefined): Promise<Record<string, Uint8Array>[]>;
     executeMultipleParamsToZip(params: paramsData[], files: Temp[] | undefined): Promise<Uint8Array>;
-    fileEncrypt(file: Uint8Array): Promise<Uint8Array>;
-    filesEncrypt(files: Uint8Array[]): Promise<Uint8Array[]>;
+    fileEncrypt(file: Uint8Array | SharedArrayBuffer): Promise<Uint8Array>;
+    filesEncrypt(files: (Uint8Array | SharedArrayBuffer)[]): Promise<Uint8Array[]>;
 }

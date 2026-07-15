@@ -1,4 +1,4 @@
-import { n as e } from "./common-B1t7Jz-V.js";
+import { n as e } from "./common-g7-avgVK.js";
 //#region src/replace/sign.ts
 var t = class extends e {
 	async handle(e, t, n) {
@@ -32,4 +32,4 @@ var t = class extends e {
 //#endregion
 export { t };
 
-//# sourceMappingURL=sign-Dih8N_X_.js.map
+//# sourceMappingURL=sign-6nr91iv-.js.map
