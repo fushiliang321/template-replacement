@@ -266,5 +266,7 @@ export async function hashString(str: string): Promise<string> {
   }
 }
 
+export const isCrossOriginIsolated = 'crossOriginIsolated' in _window && _window.crossOriginIsolated
+
 // 判断是否允许使用 SharedArrayBuffer
-export const allowSharedArrayBuffer = !!_window.crossOriginIsolated
+export const allowSharedArrayBuffer = isCrossOriginIsolated
